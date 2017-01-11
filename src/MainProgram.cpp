@@ -5,8 +5,9 @@
 #include <IterativeRobot.h>
 #include <LiveWindow/LiveWindow.h>
 #include <SmartDashboard/SmartDashboard.h>
+#include "CANTalonSRX.h"
 
-class Robot: public frc::IterativeRobot {
+class MainProgram: public frc::IterativeRobot {
 
 public:
 	void RobotInit() {
@@ -34,4 +35,4 @@ public:
 	}
 };
 
-START_ROBOT_CLASS(Robot)
+START_ROBOT_CLASS(MainProgram)
