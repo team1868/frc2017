@@ -1,11 +1,18 @@
-#include <RobotModel.h>
+#include "RobotModel.h"
+#include "WPILib.h"
 
 RobotModel::RobotModel() {
-	// TODO Auto-generated constructor stub
+	timer = new Timer();
+	timer->Start();
+}
 
+void RobotModel::ResetTimer() {
+	timer->Reset();
+}
+
+double RobotModel::GetTime() {
+	return timer->Get();
 }
 
 RobotModel::~RobotModel() {
-	// TODO Auto-generated destructor stub
 }
-

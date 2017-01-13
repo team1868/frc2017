@@ -1,10 +1,25 @@
 #include <Auto/AutoController.h>
 
 AutoController::AutoController() {
-	// TODO Auto-generated constructor stub
+	autoMode = nullptr;
+}
+
+AutoController::AutoController(AutoMode *myAutoMode){
+	autoMode = myAutoMode;
+}
+
+void AutoController::SetAutonomousMode(AutoMode *myAutoMode) {
+	autoMode = myAutoMode;
+}
+
+void AutoController::Update(double currTimeSec, double deltaTimeSec) {
+	autoMode->Update(currTimeSec, deltaTimeSec);
+}
+
+void AutoController::Reset() {
 
 }
 
-AutoController::~AutoController() {
-	// TODO Auto-generated destructor stub
+bool AutoController::IsDone() {
+	return autoMode->IsDone();
 }
