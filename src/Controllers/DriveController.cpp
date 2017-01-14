@@ -2,53 +2,51 @@
 #include "WPILib.h"
 
 DriveController::DriveController(RobotModel* myRobot) {
-	robot = myRobot;
+//	robot = myRobot;
 	leftMaster = new CANTalon(0);	// TODO get deviceNumber
-	leftSlave = new CANTalon(0);
-	rightMaster = new CANTalon(0);
-	rightSlave = new CANTalon(0);
+	leftSlave = new CANTalon(1);
+	rightMaster = new CANTalon(2);
+	rightSlave = new CANTalon(3);
 
-	leftEncoder = new Encoder(0, 0, true);		// TODO
-	rightEncoder = new Encoder(0, 0, true);
+//	leftEncoder = new Encoder(0, 0, true);		// TODO
+//	rightEncoder = new Encoder(0, 0, true);
 
 	leftMaster->SetFeedbackDevice(CANTalon::AnalogEncoder);
 	rightMaster->SetFeedbackDevice(CANTalon::AnalogEncoder);
+
+	leftMaster->SetSensorDirection(true);	// TODO check
+	leftSlave->SetSensorDirection(true);
+	rightMaster->SetSensorDirection(true);
+	rightSlave->SetSensorDirection(true);
 
 //	// set PID constants for all
 //	leftMaster->SetF(0.0);
 //	leftMaster->SetP(0.1);
 //	leftMaster->SetI(0.0);
 //	leftMaster->SetD(0.0);
+	example = new MotionProfileExample(*leftMaster);
 }
 
 void DriveController::Init() {
-
+	leftMaster->ClearMotionProfileTrajectories();
 }
 
 void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 
 }
 
-void DriveController::FollowTrajectory(TrajectoryCandidate trajectoryCandidate) {
-	int length = trajectoryCandidate.length;
-	Segment *trajectory = (Segment*)malloc(length * sizeof(Segment));
-
-	pathfinder_generate(&trajectoryCandidate, trajectory);
-
-	Segment *leftTrajectory = (Segment*)malloc(sizeof(Segment) * length);
-	Segment *rightTrajectory = (Segment*)malloc(sizeof(Segment) * length);
-
-	double wheelbase_width = 0.6;			// CHECK THIS
-	pathfinder_modify_tank(trajectory, length, leftTrajectory, rightTrajectory, wheelbase_width);
-	free(trajectory);
-
+void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory) {
 	leftMaster->SetControlMode(CANTalon::kMotionProfile);
-
-	// to finish
+//	leftSlave->SetControlMode(CANTalon::kFollower);
+//	leftSlave->Set(0); // should be the port number of the leftMaster
+	example->control();
+	CANTalon::SetValueMotionProfile setOutput = example->getSetValue();
+	leftMaster->Set(setOutput);
+	example->start();
 }
 
-bool DriveController::IsDoneFollowingTrajectory() {
-	return true;
+bool DriveController::IsDone() {
+	return true;		// TODO change
 }
 
 DriveController::~DriveController() {

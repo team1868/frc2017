@@ -10,7 +10,7 @@ TestMode::TestMode(DriveController *driveController) {
 	points[1] = p2;
 	points[2] = p3;
 
-	testPath = new PathCommand(driveController, points);
+	testPath = new PathCommand(driveController, points, 3);
 }
 
 void TestMode::Init() {

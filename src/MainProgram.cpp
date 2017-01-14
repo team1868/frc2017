@@ -4,7 +4,7 @@
 #include "Auto/AutoController.h"
 #include "Auto/Modes/TestMode.h"
 
-class MainProgram: public frc::IterativeRobot {
+class MainProgram : public IterativeRobot {
 	RobotModel *robot;
 	DriveController *driveController;
 	AutoController *autoController;
