@@ -10,19 +10,19 @@ TestMode::TestMode(DriveController *driveController) {
 	points[1] = p2;
 	points[2] = p3;
 
-	testPath = new PathCommand(driveController, points, 3);
+	testPath_ = new PathCommand(driveController, points, 3);	// Hands over control of points memory to PathCommand
 }
 
 void TestMode::Init() {
-	testPath->Init();
+	testPath_->Init();
 }
 
 void TestMode::Update(double currTimeSec, double deltaTimeSec) {
-	testPath->Update(currTimeSec, deltaTimeSec);
+	testPath_->Update(currTimeSec, deltaTimeSec);
 }
 
 bool TestMode::IsDone() {
-	return testPath->IsDone();
+	return testPath_->IsDone();
 }
 
 TestMode::~TestMode() {

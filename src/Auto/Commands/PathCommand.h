@@ -11,17 +11,17 @@ extern "C" {
 
 class PathCommand : public AutoCommand {
 public:
-	PathCommand(DriveController *myDriveController, Waypoint *myPoints, int myPointLength);
+	PathCommand(DriveController *driveController, Waypoint *points, int pointLength);
 	~PathCommand();
 	void Init();
 	void Update(double currTimeSec, double deltaTimeSec);
 	bool IsDone();
 
 private:
-	Segment *leftTrajectory, *rightTrajectory;
-	DriveController *driveController;
-	Waypoint *points;
-	int pointLength;
+	Segment *leftTrajectory_, *rightTrajectory_;
+	DriveController *driveController_;
+	Waypoint *points_;
+	int pointLength_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_PATHCOMMAND_H_ */

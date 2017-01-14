@@ -13,7 +13,7 @@ public:
 	void Update(double currTimeSec, double deltaTimeSec);
 	bool IsDone();
 private:
-	PathCommand *testPath;
+	PathCommand *testPath_;
 };
 
 #endif /* SRC_AUTO_MODES_TESTMODE_H_ */

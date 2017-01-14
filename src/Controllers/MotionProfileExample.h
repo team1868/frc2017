@@ -11,9 +11,10 @@
 #include "WPILib.h"
 #include "CANTalon.h"
 #include <pathfinder/pathfinder.h>
+#include <math.h>
 
-
-double const pi = 3.1415926;
+const double WHEEL_DIAMETER = 7.5 / 12.0; // Feet
+const double SECONDS_PER_MINUTE = 60.0;
 
 class MotionProfileExample {
 public:
@@ -57,6 +58,7 @@ public:
 						_bStart = false;
 
 						_setValue = CANTalon::SetValueMotionProfileDisable;
+						startFilling(trajectory_, trajectoryLength_);	// moved startFIlling() from control() to transfer the Segment array and length into startFilling()
 						_state = 1;
 						_loopTimeout = kNumLoopsTimeout;
 					}
@@ -98,11 +100,9 @@ public:
 		_talon.ClearMotionProfileTrajectories();
 
 		for(int i=0;i<totalCnt;++i){	// pushing the positions, velocity, time durations from Jaci's trajectory to srx motion profile trajectory
-			// Assuming wheels are 7.5 inches and converted to meters which is .1905 m
-			// Assuming position and velocity are in meters for testing purposes
-			point.position = profile[i].position / (.1905 * pi);	// from trajectory
-			point.velocity = profile[i].velocity / (.1905 * pi);		// from trajectory
-			point.timeDurMs = (int) profile[i].dt;		// from trajectory
+			point.position = profile[i].position / (M_PI * WHEEL_DIAMETER);	// Converting to rotations
+			point.velocity = profile[i].velocity * (SECONDS_PER_MINUTE / (M_PI * WHEEL_DIAMETER));	// Converting to rotations per minute
+			point.timeDurMs = (int) profile[i].dt * 1000.0;		// to milliseconds
 			point.profileSlotSelect = 1;
 			point.velocityOnly = false;
 
@@ -118,14 +118,20 @@ public:
 		}
 	}
 
-	void start(Segment* trajectory, int trajectoryLength) {
+	void start(Segment *trajectory, int trajectoryLength) {
 		_bStart = true;
-		startFilling(trajectory, trajectoryLength);	// moved startFIlling() from control() to transfer the Segment array and length into startFilling()
+		trajectoryLength_ = trajectoryLength;
+		trajectory_= (Segment*)malloc(trajectoryLength_ * sizeof(Segment));
+
 	}
 
 	CANTalon::SetValueMotionProfile getSetValue() {
 		return _setValue;
 	}
+
+private:
+	Segment *trajectory_;
+	int trajectoryLength_;
 };
 
 #endif /* SRC_CONTROLLERS_MOTIONPROFILEEXAMPLE_H_ */

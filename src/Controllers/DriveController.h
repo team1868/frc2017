@@ -10,20 +10,20 @@ extern "C" {
 
 class DriveController {
 public:
-	DriveController(RobotModel* myRobot);
+	DriveController(RobotModel* robot);
 	void Init();
 	void Update(double currTimeSec, double deltaTimeSec);	// TODO, currently empty
-	void ArcadeDrive(double myX, double myY);				// TODO, currently empty
-	void SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int myLength);	// gets called in PathCommand::Update(double, double)
+	void ArcadeDrive(double x, double y);				// TODO, currently empty
+	void SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int trajectoryLength);	// gets called in PathCommand::Update(double, double)
 	bool IsDone();											// gets called in PathCommand::IsDone()
 	~DriveController();
 
 private:
 	// TODO add switch statement for drive states
 //	RobotModel *robot;
-	CANTalon *leftMaster, *leftSlave, *rightMaster, *rightSlave;		// TODO move all talon and encoder stuff into RobotModel (or not)
+	CANTalon *leftMaster_, *leftSlave_, *rightMaster_, *rightSlave_;		// TODO move all talon and encoder stuff into RobotModel (or not)
 //	Encoder *leftEncoder, *rightEncoder;
-	MotionProfileExample *leftExample, *rightExample;
+	MotionProfileExample *leftExample_, *rightExample_;
 };
 
 #endif /* SRC_CONTROLLERS_DRIVECONTROLLER_H_ */
