@@ -22,7 +22,7 @@ void PathCommand::Init() {
 	pathfinder_modify_tank(trajectory, length, leftTrajectory, rightTrajectory, wheelbase_width);
 	free(trajectory);
 
-	driveController->SetupTrajectory(leftTrajectory, rightTrajectory);
+	driveController->SetupTrajectory(leftTrajectory, rightTrajectory, length);
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {

@@ -19,12 +19,21 @@ DriveController::DriveController(RobotModel* myRobot) {
 	rightMaster->SetSensorDirection(true);
 	rightSlave->SetSensorDirection(true);
 
-//	// set PID constants for all
+
+//	// set PID constants for left	// TODO
 //	leftMaster->SetF(0.0);
 //	leftMaster->SetP(0.1);
 //	leftMaster->SetI(0.0);
 //	leftMaster->SetD(0.0);
-	example = new MotionProfileExample(*leftMaster);
+
+	// set PID constants for right
+//	rightMaster->SetF(0.0);
+//	rightMaster->SetP(0.1);
+//	rightMaster->SetI(0.0);
+//	rightMaster->SetD(0.0);
+
+	leftExample = new MotionProfileExample(*leftMaster);
+	rightExample = new MotionProfileExample(*rightMaster);
 }
 
 void DriveController::Init() {
@@ -32,17 +41,29 @@ void DriveController::Init() {
 }
 
 void DriveController::Update(double currTimeSec, double deltaTimeSec) {
-
+	leftExample->control();
+	rightExample->control();
+	CANTalon::SetValueMotionProfile setLeftOutput = leftExample->getSetValue();
+	CANTalon::SetValueMotionProfile setRightOutput = rightExample->getSetValue();
+	leftMaster->Set(setLeftOutput);
+	rightMaster->Set(setRightOutput);
 }
 
-void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory) {
+void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int myLength) {
+	// Setting up left motors for motion profiling
 	leftMaster->SetControlMode(CANTalon::kMotionProfile);
-//	leftSlave->SetControlMode(CANTalon::kFollower);
-//	leftSlave->Set(0); // should be the port number of the leftMaster
-	example->control();
-	CANTalon::SetValueMotionProfile setOutput = example->getSetValue();
-	leftMaster->Set(setOutput);
-	example->start();
+	leftSlave->SetControlMode(CANTalon::kFollower);
+	leftSlave->Set(0); // should be the port number of the leftMaster
+
+	// Setting up right motors for motion profiling
+	rightMaster->SetControlMode(CANTalon::kMotionProfile);
+	rightSlave->SetControlMode(CANTalon::kFollower);
+	rightSlave->Set(2); // should be the port number of the rightMaster
+
+	// Setting up trajectories for update
+	leftExample->start(leftTrajectory, myLength);
+	rightExample->start(rightTrajectory, myLength);
+
 }
 
 bool DriveController::IsDone() {

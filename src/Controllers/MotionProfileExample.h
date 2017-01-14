@@ -10,6 +10,10 @@
 
 #include "WPILib.h"
 #include "CANTalon.h"
+#include <pathfinder/pathfinder.h>
+
+
+double const pi = 3.1415926;
 
 class MotionProfileExample {
 public:
@@ -53,7 +57,6 @@ public:
 						_bStart = false;
 
 						_setValue = CANTalon::SetValueMotionProfileDisable;
-						startFilling();
 						_state = 1;
 						_loopTimeout = kNumLoopsTimeout;
 					}
@@ -72,6 +75,7 @@ public:
 					if (_status.activePointValid && _status.activePoint.isLastPoint) {
 						_setValue = CANTalon::SetValueMotionProfileHold;
 						_state = 0;
+
 						_loopTimeout = -1;
 					}
 					break;
@@ -84,7 +88,7 @@ public:
 		//startFilling() // TODO
 	}
 
-	void startFilling(const double profile[][3], int totalCnt) {
+	void startFilling(Segment* profile, int totalCnt) {
 		CANTalon::TrajectoryPoint point;
 
 		if(_status.hasUnderrun){
@@ -93,11 +97,12 @@ public:
 
 		_talon.ClearMotionProfileTrajectories();
 
-		for(int i=0;i<totalCnt;++i){
-			point.position = profile[i][0];		// TODO get from trajectory
-			point.velocity = profile[i][1];		// TODO get from trajectory
-			//point.timeDurMs = (int) profile[i][2];
-			point.timeDurMs = 10;
+		for(int i=0;i<totalCnt;++i){	// pushing the positions, velocity, time durations from Jaci's trajectory to srx motion profile trajectory
+			// Assuming wheels are 7.5 inches and converted to meters which is .1905 m
+			// Assuming position and velocity are in meters for testing purposes
+			point.position = profile[i].position / (.1905 * pi);	// from trajectory
+			point.velocity = profile[i].velocity / (.1905 * pi);		// from trajectory
+			point.timeDurMs = (int) profile[i].dt;		// from trajectory
 			point.profileSlotSelect = 1;
 			point.velocityOnly = false;
 
@@ -113,8 +118,9 @@ public:
 		}
 	}
 
-	void start() {
+	void start(Segment* trajectory, int trajectoryLength) {
 		_bStart = true;
+		startFilling(trajectory, trajectoryLength);	// moved startFIlling() from control() to transfer the Segment array and length into startFilling()
 	}
 
 	CANTalon::SetValueMotionProfile getSetValue() {

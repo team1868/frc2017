@@ -2,6 +2,7 @@
 #define SRC_ROBOTMODEL_H_
 
 #include "WPILib.h"
+#include "CANTalon.h"
 
 class RobotModel {
 public:
