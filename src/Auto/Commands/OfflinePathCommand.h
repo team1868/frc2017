@@ -8,16 +8,30 @@
 #ifndef SRC_AUTO_COMMANDS_OFFLINEPATHCOMMAND_H_
 #define SRC_AUTO_COMMANDS_OFFLINEPATHCOMMAND_H_
 
-class OfflinePathCommand {
+#include "WPILib.h"
+#include "Auto/Commands/AutoCommand.h"
+#include "RobotModel.h"
+#include "Controllers/DriveController.h"
+extern "C" {
+#include <pathfinder/pathfinder.h>
+}
+#include "Auto/Commands/LeftMotionProfile.h"
+#include "Auto/Commands/RightMotionProfile.h"
+
+class OfflinePathCommand : public AutoCommand {
 public:
-	OfflinePathCommand();
-	virtual ~OfflinePathCommand();
+	OfflinePathCommand(DriveController *driveController, Waypoint *points, int pointLength);
+	~OfflinePathCommand();
+	void Init();
+	void Update(double currTimeSec, double deltaTimeSec);
+	bool IsDone();
 
 private:
-/*	Segment *leftTrajectory_, *rightTrajectory_;
+	void FillTrajectory(const double motionProfile[][3], Segment *trajectory, int length);
+	Segment *leftTrajectory_, *rightTrajectory_;
 	DriveController *driveController_;
 	Waypoint *points_;
-	int pointLength_;*/
+	int pointLength_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_OFFLINEPATHCOMMAND_H_ */

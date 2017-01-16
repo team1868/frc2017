@@ -122,7 +122,6 @@ public:
 		_bStart = true;
 		trajectoryLength_ = trajectoryLength;
 		trajectory_= (Segment*)malloc(trajectoryLength_ * sizeof(Segment));
-
 	}
 
 	CANTalon::SetValueMotionProfile getSetValue() {
