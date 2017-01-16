@@ -3,6 +3,7 @@
 #include "Controllers/DriveController.h"
 #include "Auto/AutoController.h"
 #include "Auto/Modes/TestMode.h"
+#include "Auto/Vision/ZMQTest.h"
 
 class MainProgram : public IterativeRobot {
 	RobotModel *robot;
@@ -13,6 +14,8 @@ class MainProgram : public IterativeRobot {
 	double currTimeSec;
 	double lastTimeSec;
 	double deltaTimeSec;
+
+	ZMQTest *zmq;
 
 public:
 	void RobotInit() {
@@ -45,8 +48,12 @@ public:
 
 	}
 
-	void TestPeriodic() {
+	void TestInit() {
+		zmq = new ZMQTest();
+	}
 
+	void TestPeriodic() {
+		zmq->Update();
 	}
 
 private:
