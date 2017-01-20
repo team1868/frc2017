@@ -3,8 +3,8 @@
 
 DriveController::DriveController(RobotModel* myRobot) {
 //	robot = myRobot;
-	leftMaster_ = new CANTalon(0);	// TODO get deviceNumber
-	leftSlave_ = new CANTalon(1);
+	leftMaster_ = new CANTalon(5);
+	leftSlave_ = new CANTalon(4);
 	rightMaster_ = new CANTalon(2);
 	rightSlave_ = new CANTalon(3);
 
@@ -14,10 +14,10 @@ DriveController::DriveController(RobotModel* myRobot) {
 	leftMaster_->SetFeedbackDevice(CANTalon::AnalogEncoder);
 	rightMaster_->SetFeedbackDevice(CANTalon::AnalogEncoder);
 
-	leftMaster_->SetSensorDirection(true);	// TODO check
-	leftSlave_->SetSensorDirection(true);
-	rightMaster_->SetSensorDirection(true);
-	rightSlave_->SetSensorDirection(true);
+//	leftMaster_->SetSensorDirection(true);	// TODO check
+//	leftSlave_->SetSensorDirection(true);
+//	rightMaster_->SetSensorDirection(true);
+//	rightSlave_->SetSensorDirection(true);
 
 
 //	// set PID constants for left	// TODO
@@ -34,6 +34,8 @@ DriveController::DriveController(RobotModel* myRobot) {
 
 	leftExample_ = new MotionProfileExample(*leftMaster_);
 	rightExample_ = new MotionProfileExample(*rightMaster_);
+
+	isDone = false;
 }
 
 void DriveController::Init() {
@@ -53,7 +55,7 @@ void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTra
 	// Setting up left motors for motion profiling
 	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
 	leftSlave_->SetControlMode(CANTalon::kFollower);
-	leftSlave_->Set(0); // should be the port number of the leftMaster
+	leftSlave_->Set(5); // should be the port number of the leftMaster
 
 	// Setting up right motors for motion profiling
 	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
@@ -63,11 +65,10 @@ void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTra
 	// Setting up trajectories for update
 	leftExample_->start(leftTrajectory, trajectoryLength);
 	rightExample_->start(rightTrajectory, trajectoryLength);
-
 }
 
 bool DriveController::IsDone() {
-	return true;		// TODO change
+	return isDone;		// TODO set isDone somewhere
 }
 
 DriveController::~DriveController() {

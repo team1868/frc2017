@@ -3,7 +3,6 @@
 #include "Controllers/DriveController.h"
 #include "Auto/AutoController.h"
 #include "Auto/Modes/TestMode.h"
-#include "Auto/Vision/ZMQTest.h"
 
 class MainProgram : public IterativeRobot {
 	RobotModel *robot;
@@ -15,8 +14,6 @@ class MainProgram : public IterativeRobot {
 	double lastTimeSec;
 	double deltaTimeSec;
 
-	ZMQTest *zmq;
-
 public:
 	void RobotInit() {
 		ResetTimerVariables();
@@ -26,7 +23,7 @@ public:
 		liveWindow = LiveWindow::GetInstance();
 	}
 
-	void AutonomousInit() override {
+	void AutonomousInit() {
 		ResetTimerVariables();
 		driveController->Init();
 		TestMode *pathAuto = new TestMode(driveController);
@@ -49,11 +46,9 @@ public:
 	}
 
 	void TestInit() {
-		zmq = new ZMQTest();
 	}
 
 	void TestPeriodic() {
-		zmq->Update();
 	}
 
 private:

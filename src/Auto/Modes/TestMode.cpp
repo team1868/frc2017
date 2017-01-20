@@ -1,4 +1,4 @@
-#include <Auto/Modes/TestMode.h>
+#include "Auto/Modes/TestMode.h"
 
 TestMode::TestMode(DriveController *driveController) {
 	int POINT_LENGTH = 3;
@@ -10,7 +10,7 @@ TestMode::TestMode(DriveController *driveController) {
 	points[1] = p2;
 	points[2] = p3;
 
-	testPath_ = new PathCommand(driveController, points, 3);	// Hands over control of points memory to PathCommand
+	testPath_ = new PathCommand(driveController, points, POINT_LENGTH);	// Hands over control of points memory to PathCommand
 }
 
 void TestMode::Init() {
