@@ -10,7 +10,7 @@
 #include "DriverStation/ButtonReader.h"
 #include "WPILib.h"
 #include "DriverStation/RemoteControl.h"
-#include "RobotPorts2017.h"
+#include "Ports.h"
 
 class ControlBoard : public RemoteControl {
 public:
