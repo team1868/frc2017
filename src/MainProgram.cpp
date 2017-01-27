@@ -5,44 +5,48 @@
 #include "Auto/Modes/TestMode.h"
 
 class MainProgram : public IterativeRobot {
-	RobotModel *robot;
-	DriveController *driveController;
-	AutoController *autoController;
-	LiveWindow *liveWindow;
+	RobotModel *robot_;
+	ControlBoard *humanControl_;
+	DriveController *driveController_;
+	AutoController *autoController_;
+	LiveWindow *liveWindow_;
 
-	double currTimeSec;
-	double lastTimeSec;
-	double deltaTimeSec;
+	double currTimeSec_;
+	double lastTimeSec_;
+	double deltaTimeSec_;
 
 public:
 	void RobotInit() {
 		ResetTimerVariables();
-		robot = new RobotModel();
-		driveController = new DriveController(robot);
-		autoController = new AutoController();
-		liveWindow = LiveWindow::GetInstance();
+		robot_ = new RobotModel();
+		humanControl_ = new ControlBoard();
+		humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kX);
+		driveController_ = new DriveController(robot_, humanControl_);
+		autoController_ = new AutoController();
+		liveWindow_ = LiveWindow::GetInstance();
 	}
 
 	void AutonomousInit() {
 		ResetTimerVariables();
-		driveController->Init();
-		TestMode *pathAuto = new TestMode(driveController);
-		autoController->SetAutonomousMode(pathAuto);
+		driveController_->Init();
+		TestMode *pathAuto = new TestMode(driveController_);
+		autoController_->SetAutonomousMode(pathAuto);
 	}
 
 	void AutonomousPeriodic() {
 		UpdateTimerVariables();
-		if (!autoController->IsDone()) {
-			autoController->Update(currTimeSec, deltaTimeSec);
+		if (!autoController_->IsDone()) {
+			autoController_->Update(currTimeSec_, deltaTimeSec_);
 		}
 	}
 
 	void TeleopInit() {
-
+		driveController_->Init();
 	}
 
 	void TeleopPeriodic() {
-
+		humanControl_->ReadControls();
+		driveController_->Update(currTimeSec_, deltaTimeSec_);
 	}
 
 	void TestInit() {
@@ -53,15 +57,15 @@ public:
 
 private:
 	void ResetTimerVariables() {
-		currTimeSec = 0.0;
-		lastTimeSec = 0.0;
-		deltaTimeSec = 0.0;
+		currTimeSec_ = 0.0;
+		lastTimeSec_ = 0.0;
+		deltaTimeSec_ = 0.0;
 	}
 
 	void UpdateTimerVariables() {
-		lastTimeSec = currTimeSec;
-		currTimeSec = robot->GetTime();
-		deltaTimeSec = currTimeSec - lastTimeSec;
+		lastTimeSec_ = currTimeSec_;
+		currTimeSec_ = robot_->GetTime();
+		deltaTimeSec_ = currTimeSec_ - lastTimeSec_;
 	}
 };
 

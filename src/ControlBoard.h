@@ -1,42 +1,33 @@
-#ifndef SRC_CONTROLBOARD_H_
-#define SRC_CONTROLBOARD_H_
+/*
+ * ControlBoard.h
+ *
+ *  Created on: Jan 19, 2017
+ *      Author: Lynn D
+ */
+#ifndef SRC_CONTROLBOARD1_H_
+#define SRC_CONTROLBOARD1_H_
 
-#include "WPILib.h"
 #include "ButtonReader.h"
-#include "Ports.h"
+#include "WPILib.h"
+#include "RemoteControl.h"
+#include "RobotPorts2017.h"
 
-class ControlBoard {
+class ControlBoard : public RemoteControl {
 public:
 	ControlBoard();
-	~ControlBoard() {}
 
 	void ReadControls();
-
-	// Joysticks and Axes for switch case
-	enum Joysticks {kLeftJoy, kRightJoy};
-	enum Axes {kX, kY};
-
-	// Drive joystick accessors
 	double GetJoystickValue(Joysticks j, Axes a);
-
-	// Drive button accessors
-	bool GetReverseDriveDesired();
-	bool GetGearShiftDesired();
-	bool GetArcadeDriveDesired();
-	bool GetQuickTurnDesired();
-	bool GetBrakeDesired();
+	virtual ~ControlBoard();
 
 private:
-	// Joysticks and buttons
-	Joystick *leftJoy, *rightJoy, *operatorJoy, *operatorJoyB;
-	ButtonReader *driveDirectionButton, *gearShiftButton, *arcadeDriveButton, *quickTurnButton, *brakeButton;
-
-	// Desired states of drivetrain
-	bool reverseDriveDesired, gearShiftDesired, arcadeDriveDesired, quickTurnDesired, brakeDesired;
-
 	// Desired values for driving and pivoting
-	double leftJoyX, leftJoyY, rightJoyX, rightJoyY;
+	double leftJoyX_, leftJoyY_, rightJoyX_, rightJoyY_;
 
+	// Joysticks
+	Joystick *leftJoy_, *rightJoy_;
+
+	void ReadAllButtons();
 };
 
-#endif /* SRC_CONTROLBOARD_H_ */
+#endif /* SRC_CONTROLBOARD1_H_ */

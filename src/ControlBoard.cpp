@@ -1,92 +1,56 @@
+/*
+ * ControlBoard.cpp
+ *
+ *  Created on: Jan 19, 2017
+ *      Author: Lynn D
+ */
+
 #include <ControlBoard.h>
 
 ControlBoard::ControlBoard() {
-	// Four joysticks
-	leftJoy  = new Joystick(LEFT_JOY_USB_PORT);
-	rightJoy = new Joystick(RIGHT_JOY_USB_PORT);
-	operatorJoy = new Joystick(OPERATOR_JOY_USB_PORT);
-	operatorJoyB = new Joystick(OPERATOR_JOY_B_USB_PORT);
+	leftJoy_ = new Joystick(LEFT_JOY_USB_PORT);
+	rightJoy_ = new Joystick(RIGHT_JOY_USB_PORT);
 
-	// Drivetrain buttons
-	driveDirectionButton = new ButtonReader(leftJoy, DRIVE_DIRECTION_BUTTON_PORT);
-	gearShiftButton = new ButtonReader(operatorJoyB, HIGH_LOW_GEAR_BUTTON_PORT);
-	arcadeDriveButton = new ButtonReader(rightJoy, ARCADE_DRIVE_BUTTON_PORT);
-	quickTurnButton = new ButtonReader(rightJoy, QUICK_TURN_BUTTON_PORT);
-	brakeButton = new ButtonReader(leftJoy, BRAKE_BUTTON_PORT);
-
-	// Joystick values
-	leftJoyX = 0.0;
-	leftJoyY = 0.0;
-	rightJoyX = 0.0;
-	rightJoyY = 0.0;
-
-	// Drivetrain variables
-	reverseDriveDesired = false;
-	gearShiftDesired = false;
-	arcadeDriveDesired = false;
-	quickTurnDesired = false;
-	brakeDesired = false;
+	leftJoyX_ = 0;
+	leftJoyY_ = 0;
+	rightJoyX_ = 0;
+	rightJoyY_ = 0;
 }
 
 void ControlBoard::ReadControls() {
-//	// Reads buttons
-//	driveDirectionButton->ReadValue();
-//	gearShiftButton->ReadValue();
-//	arcadeDriveButton->ReadValue();
-//	quickTurnButton->ReadValue();
-//	brakeButton->ReadValue();
-//
-//	// Reads joystick positions
-//	leftJoyX = leftJoy->GetX();
-//	leftJoyY = leftJoy->GetY();
-//	rightJoyX = rightJoy->GetX();
-//	rightJoyY = rightJoy->GetY();
-//
-//	// Sets desired booleans
-//	reverseDriveDesired = driveDirectionButton->IsDown();
-//	gearShiftDesired = gearShiftButton->StateJustChanged();
-//	arcadeDriveDesired = !arcadeDriveButton->IsDown();
-//	quickTurnDesired = quickTurnButton->IsDown();
-//	brakeDesired = brakeButton->IsDown();
+	leftJoyX_ = leftJoy_->GetX();
+	leftJoyY_ = leftJoy_ ->GetY();
+	rightJoyX_ = rightJoy_ ->GetX();
+	rightJoyY_ = rightJoy_ ->GetY();
 }
 
-//Returns the joystick and axis being used
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
 	switch (j) {
-	case (kLeftJoy):
-		if (a == kX) {
-			return leftJoyX;
-		} else if (a == kY) {
-			return leftJoyY;
-		}
-		break;
-	case (kRightJoy):
-		if (a == kX) {
-			return rightJoyX;
-		} else if (a == kY) {
-			return rightJoyY;
-		}
-		break;
+		case(kRightJoy):
+			switch(a) {
+				case(kX):
+					return rightJoyX_;
+				case(kY):
+					return rightJoyY_;
+			}
+			break;
+		case(kLeftJoy):
+			switch(a) {
+				case(kX):
+					return leftJoyX_;
+				case(kY):
+					return leftJoyY_;
+			}
+			break;
 	}
 	return 0.0;
 }
 
-bool ControlBoard::GetReverseDriveDesired() {
-	return reverseDriveDesired;
+void ControlBoard::ReadAllButtons() {
+
 }
 
-bool ControlBoard::GetGearShiftDesired() {
-	return gearShiftDesired;
+ControlBoard::~ControlBoard() {
+	// TODO Auto-generated destructor stub
 }
 
-bool ControlBoard::GetArcadeDriveDesired() {
-	return arcadeDriveDesired;
-}
-
-bool ControlBoard::GetQuickTurnDesired() {
-	return quickTurnDesired;
-}
-
-bool ControlBoard::GetBrakeDesired() {
-	return brakeDesired;
-}

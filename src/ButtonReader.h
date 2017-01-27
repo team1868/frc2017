@@ -1,13 +1,14 @@
-#ifndef SRC_BUTTONREADER_H_
-#define SRC_BUTTONREADER_H_
+#ifndef BUTTONREADER_H_
+#define BUTTONREADER_H_
 
 #include "WPILib.h"
 
+//This file outlines classes that read the states of buttons.
+//ButtonReader reads the states of push buttons
 class ButtonReader {
 public:
-	ButtonReader(Joystick *joystick, int buttonNum);
-	virtual ~ButtonReader() {}
-
+	ButtonReader(Joystick *joy, int buttonNum);
+	virtual ~ButtonReader();
 	void ReadValue();
 	bool IsDown();
 	bool WasJustPressed();
@@ -17,8 +18,37 @@ public:
 private:
 	Joystick *joystick;
 	int buttonNum;
-	bool lastButtonState;
-	bool currButtonState;
+	bool lastState;
+	bool currState;
 };
 
-#endif /* SRC_BUTTONREADER_H_ */
+//ToggleButtonReader reads the states of toggles
+class ToggleButtonReader : public ButtonReader {
+public:
+	ToggleButtonReader(Joystick *joy, int buttonNum);
+	virtual ~ToggleButtonReader();
+	virtual bool GetState();
+
+private:
+	bool currToggleState;
+};
+
+enum SwitchState {
+	kUp = 1,
+	kNeutral = 0,
+	kDown = -1,
+};
+
+//SwitchReaader reads the state of switches
+class SwitchReader {
+public:
+	SwitchReader(Joystick *myJoy, int upButton, int downButton);
+	SwitchState GetSwitchState();
+
+private:
+	Joystick *joy;
+	int upB;
+	int downB;
+};
+
+#endif
