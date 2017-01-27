@@ -1,32 +1,20 @@
 #include <Auto/Vision/ZMQTest.h>
 
-// EXAMPLE from http://zguide.zeromq.org/cpp:hwserver
-
 ZMQTest::ZMQTest() {
-	// TODO Auto-generated constructor stub
-	//  Prepare our context and socket
 	context = new zmq::context_t(1);
-	socket = new zmq::socket_t(*context, ZMQ_REP);
-	socket->bind ("tcp://*:5555");
+	subscriber = new zmq::socket_t(*context, ZMQ_SUB);
+	subscriber->connect("tcp://10.18.68.29:5563");		// IP address of Jetson
+	subscriber->setsockopt( ZMQ_SUBSCRIBE, "B", 1);
 }
 
 void ZMQTest::Update() {
-	zmq::message_t request;
+	std::string address = s_recv (*subscriber);
+	std::string contents = s_recv (*subscriber);
 
-	//  Wait for next request from client
-	socket->recv (&request);
-	std::cout << "Received Hello" << std::endl;
-
-	//  Do some 'work'
-	sleep(1);
-
-	//  Send reply back to client
-	zmq::message_t reply (5);
-	memcpy (reply.data (), "World", 5);
-	socket->send (reply);
+	std::cout << "[" << address << "] " << contents << std::endl;
+	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 }
 
 ZMQTest::~ZMQTest() {
 
 }
-

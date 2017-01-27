@@ -1,8 +1,12 @@
 #ifndef SRC_AUTO_VISION_ZMQTEST_H_
 #define SRC_AUTO_VISION_ZMQTEST_H_
 
-#include <Auto/Vision/zmq.hpp>
+#include <zmq.hpp>
+#include <zhelpers.hpp>
 #include <string>
+#include <chrono>
+#include <thread>
+#include <memory>
 #include <iostream>
 #ifndef _WIN32
 #include <unistd.h>
@@ -20,7 +24,7 @@ public:
 
 private:
 	zmq::context_t *context;
-	zmq::socket_t *socket;
+	zmq::socket_t *subscriber;
 };
 
 #endif /* SRC_AUTO_VISION_ZMQTEST_H_ */

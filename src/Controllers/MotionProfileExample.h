@@ -10,8 +10,11 @@
 
 #include "WPILib.h"
 #include "CANTalon.h"
+#include "Controllers/Instrumentation.h"
 #include <pathfinder/pathfinder.h>
 #include <math.h>
+
+// TODO edit to fit style guidelines (methods are UpperCamelCase, private variables are variable_, etc.)
 
 const double WHEEL_DIAMETER = 7.5 / 12.0; // Feet
 const double SECONDS_PER_MINUTE = 60.0;
@@ -23,6 +26,7 @@ public:
 	int _state = 0;
 	int _loopTimeout = -1;
 	bool _bStart = false;
+	bool _isDone = true;
 	CANTalon::SetValueMotionProfile _setValue = CANTalon::SetValueMotionProfileDisable;
 	static const int kMinPointsInTalon = 5;
 	static const int kNumLoopsTimeout = 10;
@@ -49,6 +53,16 @@ public:
 	void control() {
 		_talon.GetMotionProfileStatus(_status);
 
+		if (_loopTimeout < 0) {
+			/* do nothing, timeout is disabled */
+		} else {
+			if (_loopTimeout == 0) {
+				instrumentation::OnNoProgress();
+			} else {
+				--_loopTimeout;
+			}
+		}
+
 		if(_talon.GetControlMode() != CANSpeedController::kMotionProfile){
 			_state = 0;
 		} else {
@@ -58,7 +72,7 @@ public:
 						_bStart = false;
 
 						_setValue = CANTalon::SetValueMotionProfileDisable;
-						startFilling(trajectory_, trajectoryLength_);	// moved startFIlling() from control() to transfer the Segment array and length into startFilling()
+						startFilling(trajectory_, trajectoryLength_);	// moved startFilling() from control() to transfer the Segment array and length into startFilling()
 						_state = 1;
 						_loopTimeout = kNumLoopsTimeout;
 					}
@@ -80,14 +94,11 @@ public:
 
 						_loopTimeout = -1;
 					}
+					_isDone = true;
 					break;
 			}
 		}
-	}
-
-	void startFilling(){
-		//startFilling(kMotionProfile, kMotionProfileSz);
-		//startFilling() // TODO
+		instrumentation::Process(_status);
 	}
 
 	void startFilling(Segment* profile, int totalCnt) {
@@ -126,6 +137,10 @@ public:
 
 	CANTalon::SetValueMotionProfile getSetValue() {
 		return _setValue;
+	}
+
+	bool isDone() {
+		return _isDone;
 	}
 
 private:

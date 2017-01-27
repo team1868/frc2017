@@ -6,7 +6,7 @@
 #include "RobotModel.h"
 #include "Controllers/DriveController.h"
 extern "C" {
-#include <pathfinder/pathfinder.h>
+#include "../ext/pathfinder/pathfinder.h"
 }
 
 class PathCommand : public AutoCommand {
