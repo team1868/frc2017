@@ -7,9 +7,9 @@
 #ifndef SRC_CONTROLBOARD1_H_
 #define SRC_CONTROLBOARD1_H_
 
-#include "ButtonReader.h"
+#include "DriverStation/ButtonReader.h"
 #include "WPILib.h"
-#include "RemoteControl.h"
+#include "DriverStation/RemoteControl.h"
 #include "RobotPorts2017.h"
 
 class ControlBoard : public RemoteControl {

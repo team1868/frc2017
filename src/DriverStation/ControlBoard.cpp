@@ -5,7 +5,7 @@
  *      Author: Lynn D
  */
 
-#include <ControlBoard.h>
+#include <DriverStation/ControlBoard.h>
 
 ControlBoard::ControlBoard() {
 	leftJoy_ = new Joystick(LEFT_JOY_USB_PORT);

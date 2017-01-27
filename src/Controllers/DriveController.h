@@ -7,7 +7,7 @@ extern "C" {
 #include "WPILib.h"
 #include "RobotModel.h"
 #include "Controllers/MotionProfileExample.h"
-#include "ControlBoard.h"
+#include "DriverStation/ControlBoard.h"
 
 class DriveController {
 public:
@@ -23,11 +23,10 @@ public:
 private:
 	// TODO add switch statement for drive states
 //	RobotModel *robot;
-	ControlBoard *controlBoard;
+	ControlBoard* humanControl_;
 	CANTalon *leftMaster_, *leftSlave_, *rightMaster_, *rightSlave_;		// TODO move all talon and encoder stuff into RobotModel (or not)
 //	Encoder *leftEncoder, *rightEncoder;
 	MotionProfileExample *leftExample_, *rightExample_;
-	ControlBoard* humanControl_;
 	bool isDone;
 
 	void PrintDriveValues();

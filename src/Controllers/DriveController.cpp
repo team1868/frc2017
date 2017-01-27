@@ -81,13 +81,9 @@ void DriveController::PrintDriveValues() {
 void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int trajectoryLength) {
 	// Setting up left motors for motion profiling
 	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
-	leftSlave_->SetControlMode(CANTalon::kFollower);
-	leftSlave_->Set(LEFT_DRIVE_MASTER_ID); 	// port number of the leftMaster
 
 	// Setting up right motors for motion profiling
 	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
-	rightSlave_->SetControlMode(CANTalon::kFollower);
-	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID); 	// port number of the rightMaster
 
 	// Setting up trajectories for update
 	leftExample_->start(leftTrajectory, trajectoryLength);
