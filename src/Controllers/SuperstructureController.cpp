@@ -5,6 +5,10 @@ SuperstructureController::SuperstructureController() {
 
 }
 
+void SuperstructureController::Reset() {
+
+}
+
 SuperstructureController::~SuperstructureController() {
 	// TODO Auto-generated destructor stub
 }

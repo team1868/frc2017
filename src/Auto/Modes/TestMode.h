@@ -1,6 +1,9 @@
 #ifndef SRC_AUTO_MODES_TESTMODE_H_
 #define SRC_AUTO_MODES_TESTMODE_H_
 
+extern "C" {
+#include <pathfinder/pathfinder.h>
+}
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Commands/PathCommand.h"
 #include "Auto/Commands/AutoCommand.h"

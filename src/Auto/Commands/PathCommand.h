@@ -5,8 +5,11 @@
 #include "Auto/Commands/AutoCommand.h"
 #include "RobotModel.h"
 #include "Controllers/DriveController.h"
+//extern "C" {
+//#include "../ext/pathfinder/pathfinder.h"
+//}
 extern "C" {
-#include "../ext/pathfinder/pathfinder.h"
+#include <pathfinder/pathfinder.h>
 }
 
 class PathCommand : public AutoCommand {

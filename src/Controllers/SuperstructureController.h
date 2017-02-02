@@ -4,6 +4,7 @@
 class SuperstructureController {
 public:
 	SuperstructureController();
+	void Reset();
 	virtual ~SuperstructureController();
 };
 

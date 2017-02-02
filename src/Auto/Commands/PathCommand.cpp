@@ -6,6 +6,8 @@ PathCommand::PathCommand(DriveController *driveController, Waypoint *points, int
 	pointLength_ = pointLength;
 }
 
+//int length;
+
 void PathCommand::Init() {
 	TrajectoryCandidate trajectoryCandidate;
 	pathfinder_prepare(points_, pointLength_, FIT_HERMITE_CUBIC, PATHFINDER_SAMPLES_HIGH, 0.01, 11.0, 10.0, 60.0, &trajectoryCandidate);	//TODO verify arguments
@@ -26,7 +28,9 @@ void PathCommand::Init() {
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
-	driveController_->Update(currTimeSec, deltaTimeSec);
+	//driveController_->Update(currTimeSec, deltaTimeSec);
+	//driveController_->SetupTrajectory(leftTrajectory_, rightTrajectory_, length);
+	driveController_->UpdateMotionProfile();
 }
 
 bool PathCommand::IsDone() {

@@ -12,24 +12,35 @@ extern "C" {
 class DriveController {
 public:
 	DriveController(RobotModel* robot, ControlBoard *humanControl);
-	void Init();
+	void Reset();
+	void SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int trajectoryLength);	// Gets called in PathCommand::Update(double, double)
+	void UpdateMotionProfile();
 	void Update(double currTimeSec, double deltaTimeSec);
-	void ArcadeDrive(double x, double y);				// TODO, currently empty
-	void TankDrive(double left, double right);
-	void SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int trajectoryLength);	// gets called in PathCommand::Update(double, double)
-	bool IsDone();											// gets called in PathCommand::IsDone()
-	~DriveController();
-
-private:
-	// TODO add switch statement for drive states
-//	RobotModel *robot;
-	ControlBoard* humanControl_;
-	CANTalon *leftMaster_, *leftSlave_, *rightMaster_, *rightSlave_;		// TODO move all talon and encoder stuff into RobotModel (or not)
-//	Encoder *leftEncoder, *rightEncoder;
-	MotionProfileExample *leftExample_, *rightExample_;
-	bool isDone;
+	bool IsDone();											// Gets called in PathCommand::IsDone()
 
 	void PrintDriveValues();
+
+	~DriveController();
+
+	enum DriveState {
+		kInitialize, kTeleopDrive, kMotionProfile
+	};
+
+private:
+	void ArcadeDrive(double myX, double myY);
+	void TankDrive(double myLeft, double myRight);
+	void QuickTurn(double myRight);
+	int DriveDirection();
+	int GetDriveState();
+
+//	RobotModel *robot;
+	ControlBoard* humanControl_;
+	CANTalon *leftMaster_, *leftSlave_, *rightMaster_, *rightSlave_; // TODO move all talon stuff into RobotModel (or not)
+	MotionProfileExample *leftExample_, *rightExample_;
+	bool isDone_;
+
+	uint32_t currState_;
+	uint32_t nextState_;
 };
 
 #endif /* SRC_CONTROLLERS_DRIVECONTROLLER_H_ */

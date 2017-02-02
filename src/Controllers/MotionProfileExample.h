@@ -1,10 +1,3 @@
-/*
- * MotionProfileExample.h
- *
- *  Created on: Jan 12, 2017
- *      Author: maggiewang
- */
-
 #ifndef SRC_CONTROLLERS_MOTIONPROFILEEXAMPLE_H_
 #define SRC_CONTROLLERS_MOTIONPROFILEEXAMPLE_H_
 
@@ -127,6 +120,8 @@ public:
 
 			_talon.PushMotionProfileTrajectory(point);
 		}
+
+		printf("Filling\n");
 	}
 
 	void start(Segment *trajectory, int trajectoryLength) {
