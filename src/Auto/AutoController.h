@@ -10,6 +10,7 @@ public:
 	virtual ~AutoController() {}
 	void SetAutonomousMode(AutoMode *autoMode);
 	void StartAutonomous();		// TODO
+	void Init();
 	void Update(double currTimeSec, double deltaTimeSec);
 	void Reset();	// TODO
 	bool IsDone();

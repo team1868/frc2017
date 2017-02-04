@@ -12,6 +12,10 @@ void AutoController::SetAutonomousMode(AutoMode *myAutoMode) {
 	autoMode = myAutoMode;
 }
 
+void AutoController::Init() {
+	autoMode->Init();
+}
+
 void AutoController::Update(double currTimeSec, double deltaTimeSec) {
 	autoMode->Update(currTimeSec, deltaTimeSec);
 }

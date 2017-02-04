@@ -33,13 +33,13 @@ public:
 		ResetControllers();
 		TestMode *pathAuto = new TestMode(driveController_);
 		autoController_->SetAutonomousMode(pathAuto);
+		autoController_->Init();
 	}
 
 	void AutonomousPeriodic() {
 		UpdateTimerVariables();
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
-			printf("In autonomous periodic\n");
 		}
 	}
 

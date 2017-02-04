@@ -3,6 +3,7 @@
 
 #include "WPILib.h"
 #include "CANTalon.h"
+#include "AHRS.h"
 
 class RobotModel {
 public:
@@ -12,6 +13,7 @@ public:
 	double GetTime();
 
 private:
+    AHRS *ahrs;             // navX MXP
 	Timer *timer;
 };
 

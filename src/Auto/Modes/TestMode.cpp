@@ -25,7 +25,6 @@ void TestMode::Init() {
 
 void TestMode::Update(double currTimeSec, double deltaTimeSec) {
 	testPath_->Update(currTimeSec, deltaTimeSec);
-	printf("in test path update\n");
 }
 
 bool TestMode::IsDone() {

@@ -8,7 +8,7 @@ public:
 
 //	virtual void CreateQueue();
 //	virtual void AddToQueue(AutonomousCommand *myNewAutoCommand, SimpleAutoCommand *myLastAutoCommand);
-
+	virtual void Init() = 0;
 	virtual void Update(double currTimeSec, double lastTimeSec) = 0;
 	virtual bool IsDone() = 0;
 };

@@ -6,7 +6,7 @@ extern "C" {
 }
 #include "WPILib.h"
 #include "RobotModel.h"
-#include "Controllers/MotionProfileExample.h"
+#include <Controllers/MotionProfileExample.h>
 #include "DriverStation/ControlBoard.h"
 
 class DriveController {
