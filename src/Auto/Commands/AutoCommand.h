@@ -1,5 +1,20 @@
-#ifndef SRC_AUTO_COMMANDS_AUTOCOMMAND_H_
-#define SRC_AUTO_COMMANDS_AUTOCOMMAND_H_
+#ifndef AUTOCOMMAND_H
+#define AUTOCOMMAND_H
+
+#include "WPILib.h"
+#include "Debugging.h"
+#include "RobotModel.h"
+#include "RemoteControl.h"
+#include "DriveController.h"
+#include "SuperstructureController.h"
+#include "ControlBoard.h"
+#include <vector>
+#include <string>
+#include <iostream>
+#include "DriveController.h"
+//#include "CameraController.h"
+
+using namespace std;
 
 class AutoCommand {
 public:
@@ -8,6 +23,7 @@ public:
 	virtual void Init() = 0;
 	virtual void Update(double currTimeSec, double deltaTimeSec) = 0;
 	virtual bool IsDone() = 0;
+	virtual AutoCommand* GetNextCommand() = 0;
 };
 
-#endif /* SRC_AUTO_COMMANDS_AUTOCOMMAND_H_ */
+#endif /* AUTOCOMMAND_H */
