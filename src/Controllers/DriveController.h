@@ -6,7 +6,6 @@ extern "C" {
 }
 #include "WPILib.h"
 #include "RobotModel.h"
-#include <Controllers/MotionProfileExample.h>
 #include "DriverStation/ControlBoard.h"
 
 class DriveController {
@@ -33,10 +32,9 @@ private:
 	int DriveDirection();
 	int GetDriveState();
 
-//	RobotModel *robot;
+	RobotModel *robot_;
 	ControlBoard* humanControl_;
-	CANTalon *leftMaster_, *leftSlave_, *rightMaster_, *rightSlave_; // TODO move all talon stuff into RobotModel (or not)
-	MotionProfileExample *leftExample_, *rightExample_;
+	//MotionProfileExample *leftExample_, *rightExample_;
 	bool isDone_;
 
 	uint32_t currState_;

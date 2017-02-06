@@ -1,23 +1,17 @@
+/*
+ * TestMode.h
+ *
+ *  Created on: Feb 5, 2017
+ *      Author: maggiewang
+ */
+
 #ifndef SRC_AUTO_MODES_TESTMODE_H_
 #define SRC_AUTO_MODES_TESTMODE_H_
 
-extern "C" {
-#include <pathfinder/pathfinder.h>
-}
-#include "Auto/Modes/AutoMode.h"
-#include "Auto/Commands/PathCommand.h"
-#include "Auto/Commands/AutoCommand.h"
-#include "RobotModel.h"
-
-class TestMode : public AutoMode {
+class TestMode {
 public:
-	TestMode(DriveController *driveController);
+	TestMode();
 	virtual ~TestMode();
-	void Init(); 	// to put in AutoMode
-	void Update(double currTimeSec, double deltaTimeSec);
-	bool IsDone();
-private:
-	PathCommand *testPath_;
 };
 
 #endif /* SRC_AUTO_MODES_TESTMODE_H_ */

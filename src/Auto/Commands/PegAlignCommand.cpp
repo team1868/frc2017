@@ -1,11 +1,4 @@
-/*
- * AlignWithPegCommand.cpp
- *
- *  Created on: Feb 4, 2017
- *      Author: bili
- */
-
-#include <Auto/Commands/AlignWithPegCommand.h>
+#include <Auto/Commands/PegAlignCommand.h>
 
 AlignWithPegCommand::AlignWithPegCommand() {
 	// TODO Auto-generated constructor stub
@@ -15,4 +8,3 @@ AlignWithPegCommand::AlignWithPegCommand() {
 AlignWithPegCommand::~AlignWithPegCommand() {
 	// TODO Auto-generated destructor stub
 }
-

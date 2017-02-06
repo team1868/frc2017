@@ -1,55 +1,55 @@
 #include "AutoController.h"
-#include "AutoCommand.h"
+#include "Auto/Commands/AutoCommand.h"
 #include "Debugging.h"
 
 AutoController::AutoController(RobotModel* myRobot, DriveController* myDrive, SuperstructureController* mySuperstructure,
 		/*CameraController* myCamera,*/	RemoteControl* myHumanControl) {
-	robot = myRobot;
-	firstCommand = NULL;
-	nextCommand = NULL;
-	currentCommand = NULL;
-	autoMode = 0;
-	autoStart = 0;
-	drive = myDrive;
-	superstructure = mySuperstructure;
+	robot_ = myRobot;
+	firstCommand_ = NULL;
+	nextCommand_ = NULL;
+	currentCommand_ = NULL;
+	autoMode_ = 0;
+	autoStart_ = 0;
+	drive_ = myDrive;
+	superstructure_ = mySuperstructure;
 //	camera = myCamera;
-	humanControl = myHumanControl;
-	timeFinished = 0.0;
-	hardCodeShoot = true;
-	hardCodeGear = true;
+	humanControl_ = myHumanControl;
+	timeFinished_ = 0.0;
+	hardCodeShoot_ = true;
+	hardCodeGear_ = true;
 }
 
 void AutoController::StartAutonomous() {
-	humanControl->ReadControls(); //CHECK CHECK CHECK CHECK
+	humanControl_->ReadControls(); //CHECK CHECK CHECK CHECK
 	CreateQueue();
-	currentCommand = firstCommand;
-	if (currentCommand != NULL) {
-		currentCommand->Init();
+	currentCommand_ = firstCommand_;
+	if (currentCommand_ != NULL) {
+		currentCommand_->Init();
 	}
 }
 
 void AutoController::Update(double currTimeSec, double deltaTimeSec) {
-	if (currentCommand != NULL) {
-		if (currentCommand->IsDone()) {
+	if (currentCommand_ != NULL) {
+		if (currentCommand_->IsDone()) {
 			DO_PERIODIC(1, printf("Command complete at: %f \n", currTimeSec));
 //			currentCommand = currentCommand->GetNextCommand();
-			if (currentCommand != NULL) {
-				currentCommand->Init();
+			if (currentCommand_ != NULL) {
+				currentCommand_->Init();
 			} else {
-				timeFinished = currTimeSec;
+				timeFinished_ = currTimeSec;
 			}
 		} else {
-			currentCommand->Update(currTimeSec, deltaTimeSec);
+			currentCommand_->Update(currTimeSec, deltaTimeSec);
 		}
 	} else {
-		DO_PERIODIC(100, printf("Queue finished at: %f \n", timeFinished));
+		DO_PERIODIC(100, printf("Queue finished at: %f \n", timeFinished_));
 	}
 }
 
 void AutoController::Reset() {
-	firstCommand = NULL;
-	currentCommand = NULL;
-	humanControl->ReadControls();
+	firstCommand_ = NULL;
+	currentCommand_ = NULL;
+	humanControl_->ReadControls();
 
 //	robot->ShiftToLowGear();
 //	robot->SetWheelSpeed(RobotModel::kAllWheels, 0.0);
@@ -60,13 +60,13 @@ void AutoController::RefreshIni() {
 }
 
 void AutoController::CreateQueue() {
-	firstCommand = NULL;
-	printf("AutoMode: %i \n", autoMode);
+	firstCommand_ = NULL;
+	printf("AutoMode: %i \n", autoMode_);
 //	if (humanControl->GetStopAutoDesired()) {
 //		autoMode = kBlankAuto;
 //	}
 
-	switch (autoMode) {
+	switch (autoMode_) {
 	case (kTestAuto): {
 		printf("kTestAuto ------------------\n");
 //		DUMP("TEST AUTO", 0.0);

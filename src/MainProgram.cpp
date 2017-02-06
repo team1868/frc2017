@@ -1,9 +1,9 @@
+#include <Auto/Modes/OneGearMode.h>
 #include <WPILib.h>
 #include "RobotModel.h"
 #include "Controllers/DriveController.h"
 #include "Controllers/SuperstructureController.h"
 #include "Auto/AutoController.h"
-#include "Auto/Modes/TestMode.h"
 
 class MainProgram : public IterativeRobot {
 	RobotModel *robot_;
@@ -12,6 +12,7 @@ class MainProgram : public IterativeRobot {
 	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
 	LiveWindow *liveWindow_;
+	OneGearMode *liftOneMode;	// move this later
 
 	double currTimeSec_;
 	double lastTimeSec_;
@@ -24,22 +25,24 @@ public:
 		humanControl_ = new ControlBoard();
 		driveController_ = new DriveController(robot_, humanControl_);
 		superstructureController_ = new SuperstructureController();		// TODO
-		autoController_ = new AutoController();
-		liveWindow_ = LiveWindow::GetInstance();
+		//autoController_ = new AutoController(robot_, driveController_, superstructureController_, humanControl_);
 	}
+
 
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-		TestMode *pathAuto = new TestMode(driveController_);
-		autoController_->SetAutonomousMode(pathAuto);
-		autoController_->Init();
+//		autoController_->SetAutonomousMode(liftOneMode);
+//		autoController_->Init();
+//		liftOneMode = new OneGearMode();
+		liftOneMode = new OneGearMode(robot_);
+		liftOneMode->Init();
 	}
 
 	void AutonomousPeriodic() {
 		UpdateTimerVariables();
-		if (!autoController_->IsDone()) {
-			autoController_->Update(currTimeSec_, deltaTimeSec_);
+		if (!liftOneMode->IsDone()) {
+			liftOneMode->Update(currTimeSec_, deltaTimeSec_);
 		}
 	}
 
@@ -74,7 +77,7 @@ private:
 	}
 
 	void ResetControllers() {
-		autoController_->Reset();
+//		autoController_->Reset();
 		driveController_->Reset();
 		superstructureController_->Reset();
 	}

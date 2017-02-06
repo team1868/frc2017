@@ -1,4 +1,5 @@
 #include <DriverStation/ButtonReader.h>
+#include "WPILib.h"
 
 //Class ButtonReader
 //Constructs a joystick and sets the port of the button on the joystick, and reads the state of the button
@@ -66,7 +67,7 @@ SwitchReader::SwitchReader(Joystick *myJoy, int upButton, int downButton) {
 	downB = downButton;
 }
 
-//Returns the state of the switch––up or down
+//Returns the state of the switchï¿½ï¿½up or down
 SwitchState SwitchReader::GetSwitchState() {
 	if (joy->GetRawButton(upB))
 		return kUp;

@@ -2,12 +2,13 @@
 #define AUTOCONTROLLER_H
 
 #include "Auto/Modes/AutoMode.h"
-#include "AutoCommand.h"
+#include "Auto/Commands/AutoCommand.h"
 //#include "Auto/Commands/DriveCommands.h"
 //#include "Auto/Commands/SuperstructureCommands.h"
-#include "DriveController.h"
-#include "SuperstructureController.h"
-#include "RemoteControl.h"
+#include "Controllers/DriveController.h"
+#include "Controllers/SuperstructureController.h"
+#include "DriverStation/RemoteControl.h"
+#include "Auto/Modes/OneGearMode.h"
 //#include "CameraController.h"
 #include <vector>
 #include <string>
@@ -38,19 +39,16 @@ public:
 private:
 	void CreateQueue();
 //	void AddtoQueue(AutoCommand* myNewAutoCommand, SimpleAutoCommand* myLastAutoCommand);
-	AutoCommand* firstCommand;
-	AutoCommand* nextCommand;
-	AutoCommand* currentCommand;
-	RobotModel* robot;
-	DriveController* drive;
-	SuperstructureController* superstructure;
-//	CameraController* camera;
-	RemoteControl* humanControl;
-	unsigned int autoMode;
-	unsigned int autoStart;
-	bool hardCodeShoot;
-	bool hardCodeGear;
-	double timeFinished;
+	AutoCommand *firstCommand_, *nextCommand_, *currentCommand_;
+	RobotModel *robot_;
+	DriveController *drive_;
+	SuperstructureController *superstructure_;
+	RemoteControl* humanControl_;
+	unsigned int autoMode_;
+	unsigned int autoStart_;
+	bool hardCodeShoot_;
+	bool hardCodeGear_;
+	double timeFinished_;
 };
 
 #endif /* AUTOCONTROLLER_H */

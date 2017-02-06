@@ -23,33 +23,31 @@
  * [1] Calling pushMotionProfileTrajectory() continuously while the Talon executes the motion profile, thereby keeping it going indefinitely.
  * [2] Instead of setting the sensor position to zero at the start of each MP, the program could offset the MP's position based on current position.
  */
-#include <Controllers/Instrumentation.h>
-#include <Controllers/MotionProfile.h>
-#include <Controllers/LeftMotionProfile.h>
-#include <Controllers/RightMotionProfile.h>
+#include "Auto/MotionProfiling/Instrumentation.h"
+#include "Auto/MotionProfiling/LiftOne_MotionProfile.h"
 #include "WPILib.h"
 #include "CANTalon.h"
 
-class MotionProfileExample
-{
+class MotionProfileExecutor {
+
 public:
 	/**
 	 * The status of the motion profile executer and buffer inside the Talon.
 	 * Instead of creating a new one every time we call getMotionProfileStatus,
 	 * keep one copy.
 	 */
-	CANTalon::MotionProfileStatus _status;
+	CANTalon::MotionProfileStatus status_;
 	/**
 	 * reference to the talon we plan on manipulating. We will not changeMode()
 	 * or call set(), just get motion profile status and make decisions based on
 	 * motion profile.
 	 */
-	CANTalon & _talon;
+	CANTalon & talon_;
 	/**
 	 * State machine to make sure we let enough of the motion profile stream to
 	 * talon before we fire it.
 	 */
-	int _state = 0;
+	int state_ = 0;
 	/**
 	 * Any time you have a state machine that waits for external events, its a
 	 * good idea to add a timeout. Set to -1 to disable. Set to nonzero to count
@@ -58,22 +56,25 @@ public:
 	 * timeout. Getting time-stamps would certainly work too, this is just
 	 * simple (no need to worry about timer overflows).
 	 */
-	int _loopTimeout = -1;
+	int loopTimeout_ = -1;
 	/**
 	 * If start() gets called, this flag is set and in the control() we will
 	 * service it.
 	 */
-	bool _bStart = false;
+	bool bStart_ = false;
 
-	bool _isLeft = false;
+	bool isLeft_ = false;
 	bool hasStarted = false;		// to change
+
+	double profile_[][3];
+	int trajLength_;
 
 	/**
 	 * Since the CANTalon.set() routine is mode specific, deduce what we want
 	 * the set value to be and let the calling module apply it whenever we
 	 * decide to switch to MP mode.
 	 */
-	CANTalon::SetValueMotionProfile _setValue = CANTalon::SetValueMotionProfileDisable;
+	CANTalon::SetValueMotionProfile setValue_ = CANTalon::SetValueMotionProfileDisable;
 	/**
 	 * How many trajectory points do we wait for before firing the motion
 	 * profile.
@@ -97,102 +98,105 @@ public:
 	void PeriodicTask()
 	{
 		/* keep Talons happy by moving the points from top-buffer to bottom-buffer */
-		_talon.ProcessMotionProfileBuffer();
+		talon_.ProcessMotionProfileBuffer();
 	}
 	/**
 	 * Lets create a periodic task to funnel our trajectory points into our talon.
 	 * It doesn't need to be very accurate, just needs to keep pace with the motion
 	 * profiler executer.
 	 */
-	Notifier _notifer;
+	Notifier notifer_;
 
-	MotionProfileExample(CANTalon & talon) : _talon(talon), _notifer(&MotionProfileExample::PeriodicTask, this)
+	MotionProfileExecutor(CANTalon & talon, double profile[][3], int trajLength) : talon_(talon), notifer_(&MotionProfileExecutor::PeriodicTask, this)
 	{
 		/*
 		 * since our MP is 10ms per point, set the control frame rate and the
 		 * notifer to half that
 		 */
-		_talon.ChangeMotionControlFramePeriod(5);
+		talon_.ChangeMotionControlFramePeriod(5);
 
 		/* start our tasking */
-		_notifer.StartPeriodic(0.005);
+		notifer_.StartPeriodic(0.005);
+
+		trajLength_ = trajLength;
+
+		memcpy(profile_, profile, sizeof (double*) * trajLength_ * 3);		// THIS DOESN'T WORK BUT FIGURE OUT HOW IT DOES
 	}
+
 	/**
 	 * Called to clear Motion profile buffer and reset state info during
 	 * disabled and when Talon is not in MP control mode.
 	 */
-	void reset()
-	{
+	void reset() {
 		/*
 		 * Let's clear the buffer just in case user decided to disable in the
 		 * middle of an MP, and now we have the second half of a profile just
 		 * sitting in memory.
 		 */
-		_talon.ClearMotionProfileTrajectories();
+		talon_.ClearMotionProfileTrajectories();
 		/* When we do re-enter motionProfile control mode, stay disabled. */
-		_setValue = CANTalon::SetValueMotionProfileDisable;
+		setValue_ = CANTalon::SetValueMotionProfileDisable;
 		/* When we do start running our state machine start at the beginning. */
-		_state = 0;
-		_loopTimeout = -1;
+		state_ = 0;
+		loopTimeout_ = -1;
 		/*
 		 * If application wanted to start an MP before, ignore and wait for next
 		 * button press
 		 */
-		_bStart = false;
+		bStart_ = false;
 	}
 
 	/**
 	 * Called every loop.
 	 */
-	void control()
-	{
+	void control() {
 		/* Get the motion profile status every loop */
-		_talon.GetMotionProfileStatus(_status);
+		talon_.GetMotionProfileStatus(status_);
 
 		/*
 		 * track time, this is rudimentary but that's okay, we just want to make
 		 * sure things never get stuck.
 		 */
-		if (_loopTimeout < 0) {
+		if (loopTimeout_ < 0) {
 			/* do nothing, timeout is disabled */
 		} else {
 			/* our timeout is nonzero */
-			if (_loopTimeout == 0) {
+			if (loopTimeout_ == 0) {
 				/*
 				 * something is wrong. Talon is not present, unplugged, breaker
 				 * tripped
 				 */
 				instrumentation::OnNoProgress();
 			} else {
-				--_loopTimeout;
+				--loopTimeout_;
 			}
 		}
 
 		/* first check if we are in MP mode */
-		if(_talon.GetControlMode() != CANSpeedController::kMotionProfile){
+		if (talon_.GetControlMode() != CANSpeedController::kMotionProfile){
 			/*
 			 * we are not in MP mode. We are probably driving the robot around
 			 * using gamepads or some other mode.
 			 */
-			_state = 0;
+			state_ = 0;
 		} else {
 			/*
 			 * we are in MP control mode. That means: starting Mps, checking Mp
 			 * progress, and possibly interrupting MPs if thats what you want to
 			 * do.
 			 */
-			switch (_state) {
+			switch (state_) {
 				case 0: /* wait for application to tell us to start an MP */
-					if (_bStart) {
-						_bStart = false;
+					if (bStart_) {
+						bStart_ = false;
 
-						_setValue = CANTalon::SetValueMotionProfileDisable;
+						setValue_ = CANTalon::SetValueMotionProfileDisable;
 						startFilling();
 						/*
 						 * MP is being sent to CAN bus, wait a small amount of time
 						 */
-						_state = 1;
-						_loopTimeout = kNumLoopsTimeout;
+						state_ = 1;
+						loopTimeout_ = kNumLoopsTimeout;
 					}
 					break;
 				case 1: /*
@@ -200,12 +204,12 @@ public:
 						 * points
 						 */
 					/* do we have a minimum numberof points in Talon */
-					if (_status.btmBufferCnt > kMinPointsInTalon) {
+					if (status_.btmBufferCnt > kMinPointsInTalon) {
 						/* start (once) the motion profile */
-						_setValue = CANTalon::SetValueMotionProfileEnable;
+						setValue_ = CANTalon::SetValueMotionProfileEnable;
 						/* MP will start once the control frame gets scheduled */
-						_state = 2;
-						_loopTimeout = kNumLoopsTimeout;
+						state_ = 2;
+						loopTimeout_ = kNumLoopsTimeout;
 					}
 					break;
 				case 2: /* check the status of the MP */
@@ -214,48 +218,49 @@ public:
 					 * timeout. Really this is so that you can unplug your talon in
 					 * the middle of an MP and react to it.
 					 */
-					if (_status.isUnderrun == false) {
-						_loopTimeout = kNumLoopsTimeout;
+					if (status_.isUnderrun == false) {
+						loopTimeout_ = kNumLoopsTimeout;
 					}
 					/*
 					 * If we are executing an MP and the MP finished, start loading
 					 * another. We will go into hold state so robot servo's
 					 * position.
 					 */
-					if (_status.activePointValid && _status.activePoint.isLastPoint) {
+					if (status_.activePointValid && status_.activePoint.isLastPoint) {
 						/*
 						 * because we set the last point's isLast to true, we will
 						 * get here when the MP is done
 						 */
-						_setValue = CANTalon::SetValueMotionProfileHold;
-						_state = 0;
-						_loopTimeout = -1;
+						setValue_ = CANTalon::SetValueMotionProfileHold;
+						state_ = 0;
+						loopTimeout_ = -1;
 					}
 					break;
 			}
 		}
 		/* printfs and/or logging */
-		instrumentation::Process(_status);
+		instrumentation::Process(status_);
 	}
 
 	/** Start filling the MPs to all of the involved Talons. */
 	void startFilling()
 	{
+		// TODO use profile_
+//		LiftOne_MotionProfile *test = new LiftOne_MotionProfile;
+//		/* since this example only has one talon, just update that one */
+//		startFilling(test->kLeftMotionProfile, trajLength_);
+		MotionProfile *test = new LiftOne_MotionProfile;
 		/* since this example only has one talon, just update that one */
-		if (_isLeft) {
-			startFilling(kLeftMotionProfile, kLeftMotionProfileSz);
-		} else {
-			startFilling(kRightMotionProfile, kRightMotionProfileSz);
-		}
+		startFilling(test->GetLeftMotionProfile(), trajLength_);
 	}
 
-	void startFilling(const double profile[][3], int totalCnt)
+	void startFilling(double profile[][3], int totalCnt)
 	{
 		/* create an empty point */
 		CANTalon::TrajectoryPoint point;
 
 		/* did we get an underrun condition since last time we checked ? */
-		if(_status.hasUnderrun){
+		if(status_.hasUnderrun){
 			/* better log it so we know about it */
 			instrumentation::OnUnderrun();
 			/*
@@ -263,14 +268,14 @@ public:
 			 * "is underrun", because the former is cleared by the application.
 			 * That way, we never miss logging it.
 			 */
-			_talon.ClearMotionProfileHasUnderrun();
+			talon_.ClearMotionProfileHasUnderrun();
 		}
 
 		/*
 		 * just in case we are interrupting another MP and there is still buffer
 		 * points in memory, clear it.
 		 */
-		_talon.ClearMotionProfileTrajectories();
+		talon_.ClearMotionProfileTrajectories();
 
 		/* This is fast since it's just into our TOP buffer */
 		for(int i=0;i<totalCnt;++i){
@@ -301,7 +306,7 @@ public:
 											 * set this to true on the last point
 											 */
 
-			_talon.PushMotionProfileTrajectory(point);
+			talon_.PushMotionProfileTrajectory(point);
 		}
 	}
 
@@ -309,10 +314,9 @@ public:
 	 * Called by application to signal Talon to start the buffered MP (when it's
 	 * able to).
 	 */
-	void start(bool isLeft) {
+	void start() {
 		hasStarted = true;
-		_bStart = true;
-		_isLeft = isLeft;
+		bStart_ = true;
 	}
 
 	/**
@@ -322,7 +326,7 @@ public:
 	 *         current motion profile trajectory point.
 	 */
 	CANTalon::SetValueMotionProfile getSetValue() {
-		return _setValue;
+		return setValue_;
 	}
 };
 #endif // MotionProfileExample__h_

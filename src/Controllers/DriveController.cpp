@@ -2,53 +2,14 @@
 #include "WPILib.h"
 
 DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl) {
-//	robot_ = robot;
+	robot_ = robot;
 	humanControl_ = humanControl;
 
-	// TODO move all Talons to RobotModel
-	leftMaster_ = new CANTalon(LEFT_DRIVE_MASTER_ID);
-	leftSlave_ = new CANTalon(LEFT_DRIVE_SLAVE_ID);
-	rightMaster_ = new CANTalon(RIGHT_DRIVE_MASTER_ID);
-	rightSlave_ = new CANTalon(RIGHT_DRIVE_SLAVE_ID);
+	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.1, 1.38329);
+	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.1, 1.30254);
 
-	// Set encoders for Talons
-	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-	leftMaster_->ConfigEncoderCodesPerRev(256);
-	leftMaster_->SetPosition(0);
-	leftMaster_->SetSensorDirection(false);				 // TODO check
-	//rightMaster_->SetInverted(false);					 // TODO check
-	//rightMaster_->SetClosedLoopOutputDirection(false); // TODO check
-
-	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-	rightMaster_->ConfigEncoderCodesPerRev(256);
-	rightMaster_->SetPosition(0);
-	rightMaster_->SetSensorDirection(true); 			// TODO check
-	rightMaster_->SetInverted(true);					// TODO check
-	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
-
-	// Set left and right slaves
-	leftSlave_->SetControlMode(CANTalon::kFollower);
-	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
-	rightSlave_->SetControlMode(CANTalon::kFollower);
-	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
-
-//	// Set PID constants for left	// TODO
-//	leftMaster_->SetF(0.0);
-//	leftMaster_->SetP(0.1);
-//	leftMaster_->SetI(0.0);
-//	leftMaster_->SetD(0.0);
-//
-//	// Set PID constants for right
-//	rightMaster_->SetF(0.0);
-//	rightMaster_->SetP(0.1);
-//	rightMaster_->SetI(0.0);
-//	rightMaster_->SetD(0.0);
-
-	leftMaster_->SetPID(0.7, 0.02, 0.1, 1.38329);
-	rightMaster_->SetPID(0.7, 0.02, 0.1, 1.30254);
-
-	leftExample_ = new MotionProfileExample(*leftMaster_);
-	rightExample_ = new MotionProfileExample(*rightMaster_);
+//	leftExample_ = new MotionProfileExample(*leftMaster_);
+//	rightExample_ = new MotionProfileExample(*rightMaster_);
 
 	isDone_ = false;
 
@@ -57,23 +18,23 @@ DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl) 
 }
 
 void DriveController::Reset() {
-	leftExample_->hasStarted = false;
-	rightExample_->hasStarted = false;
+//	leftExample_->hasStarted = false;
+//	rightExample_->hasStarted = false;
 
-	leftMaster_->ClearMotionProfileTrajectories();
-	leftMaster_->SetControlMode(CANTalon::kPercentVbus);
-	leftMaster_->Set( 0 );
+//	leftMaster_->ClearMotionProfileTrajectories();
+//	leftMaster_->SetControlMode(CANTalon::kPercentVbus);
+//	leftMaster_->Set( 0 );
 	/* clear our buffer and put everything into a known state */
-	leftExample_->reset();
+//	leftExample_->reset();
 
-	leftMaster_->SetPosition(0);
-
-	rightMaster_->SetControlMode(CANTalon::kPercentVbus);
-	rightMaster_->Set( 0 );
-	/* clear our buffer and put everything into a known state */
-	rightExample_->reset();
-
-	rightMaster_->SetPosition(0);
+//	leftMaster_->SetPosition(0);
+//
+//	rightMaster_->SetControlMode(CANTalon::kPercentVbus);
+//	rightMaster_->Set( 0 );
+//	/* clear our buffer and put everything into a known state */
+//	rightExample_->reset();
+//
+//	rightMaster_->SetPosition(0);
 }
 
 void DriveController::Update(double currTimeSec, double deltaTimeSec) {
@@ -84,8 +45,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			nextState_ = kTeleopDrive;
 			break;
 		case (kTeleopDrive) :
-			leftMaster_->SetControlMode(CANTalon::kPercentVbus);
-			rightMaster_->SetControlMode(CANTalon::kPercentVbus);
+			robot_->SetPercentVDrive();
 
 			// Getting joystick values
 			double leftJoyY, rightJoyY, rightJoyX;
@@ -115,28 +75,28 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 }
 
 void DriveController::PrintDriveValues() {
-	SmartDashboard::PutNumber("Left encoder", leftMaster_->GetEncPosition());
-	SmartDashboard::PutNumber("Right encoder", rightMaster_->GetEncPosition());
+	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 	SmartDashboard::PutNumber("Drive direction", DriveDirection());
 	SmartDashboard::PutNumber("Get state", GetDriveState());
 
-    SmartDashboard::PutNumber("Left error", leftMaster_->GetClosedLoopError());
-    SmartDashboard::PutNumber("Right error", leftMaster_->GetClosedLoopError());
+//    SmartDashboard::PutNumber("Left error", leftMaster_->GetClosedLoopError());
+//    SmartDashboard::PutNumber("Right error", leftMaster_->GetClosedLoopError());
 }
-
+/*
 void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int trajectoryLength) {
 
 	leftExample_->control();
 	rightExample_->control();
 
-	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
-	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
+//	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
+//	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
 
 	CANTalon::SetValueMotionProfile leftSetOutput = leftExample_->getSetValue();
 	CANTalon::SetValueMotionProfile rightSetOutput = rightExample_->getSetValue();
 
-	leftMaster_->Set(leftSetOutput);
-	rightMaster_->Set(rightSetOutput);
+//	leftMaster_->Set(leftSetOutput);
+//	rightMaster_->Set(rightSetOutput);
 
 	if (!leftExample_->hasStarted && !rightExample_->hasStarted) {	// may not need
 		leftExample_->start(true);
@@ -228,9 +188,10 @@ void DriveController::UpdateMotionProfile() {
 //		isDone_ = true;
 //	}
 }
-
+*/
 void DriveController::ArcadeDrive(double myX, double myY) {
 	PrintDriveValues();
+
 	double thrustValue = myY * DriveDirection();
 	double rotateValue = myX;
 	double leftOutput = 0.0;
@@ -265,8 +226,11 @@ void DriveController::ArcadeDrive(double myX, double myY) {
 		rightOutput = 0.0;
 	}
 
-	leftMaster_->Set(leftOutput);
-	rightMaster_->Set(rightOutput);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
+	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
+
+	SmartDashboard::PutNumber("Left motor output", leftOutput );
+	SmartDashboard::PutNumber("Right motor output", rightOutput);
 }
 
 void DriveController::TankDrive(double left, double right) {
@@ -276,13 +240,13 @@ void DriveController::TankDrive(double left, double right) {
 
 	// 	TODO ask about sensitivity of the joysticks
 
-	leftMaster_->Set(leftOutput);
-	rightMaster_->Set(rightOutput);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
+	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
 }
 
 void DriveController::QuickTurn(double myRight) {
-	leftMaster_->Set(myRight);
-	rightMaster_->Set(-myRight);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, myRight);
+	robot_->SetDriveValues(RobotModel::kRightWheels, -myRight);
 }
 
 int DriveController::DriveDirection() {

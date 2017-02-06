@@ -1,42 +1,69 @@
 #include <Auto/Commands/PathCommand.h>
+#include "CANTalon.h"
 
-PathCommand::PathCommand(DriveController *driveController, Waypoint *points, int pointLength) {
-	driveController_ = driveController;
-	points_ = points;	// Takes ownership of memory
-	pointLength_ = pointLength;
+PathCommand::PathCommand(RobotModel *robot, Path path) {
+	robot_ = robot;
+	path_ = path;
+	lengthOfLeftMotionProfile_ = 0;
+	lengthOfRightMotionProfile_ = 0;
+
+	leftMotionProfileExecutor_ = NULL;
+	rightMotionProfileExecutor_ = NULL;
+	isDone_ = false;
 }
 
-int length;
-
 void PathCommand::Init() {
-	TrajectoryCandidate trajectoryCandidate;
-	pathfinder_prepare(points_, pointLength_, FIT_HERMITE_CUBIC, PATHFINDER_SAMPLES_HIGH, 0.01, 11.0, 10.0, 60.0, &trajectoryCandidate);	//TODO verify arguments
-	length = trajectoryCandidate.length;
-	Segment *trajectory = (Segment*)malloc(length * sizeof(Segment));	// Array of segments (the trajectory points) to store the trajectory in
-	int result = pathfinder_generate(&trajectoryCandidate, trajectory);	// Generates the trajectory
-	if (result < 0) {	// An error occurred
-	    printf("Uh-Oh! Trajectory could not be generated!\n");
+	MotionProfile *motionProfile;
+	switch(path_) {
+		case(kLiftOne) :
+			motionProfile = new LiftOne_MotionProfile();
+			break;
+		case(kLiftTwo) :
+			motionProfile = new LiftTwo_MotionProfile();
+			break;
+		case(kLiftThree) :
+			motionProfile = new LiftThree_MotionProfile();
+			break;
+		default :
+			break;
 	}
-	leftTrajectory_ = (Segment*)malloc(sizeof(Segment) * length);
-	rightTrajectory_ = (Segment*)malloc(sizeof(Segment) * length);
 
-	double wheelbase_width = 0.6;			// TODO CHANGE THIS
-	pathfinder_modify_tank(trajectory, length, leftTrajectory_, rightTrajectory_, wheelbase_width);
-	free(trajectory);
+	lengthOfLeftMotionProfile_ = motionProfile->GetLengthOfLeftMotionProfile();
+	lengthOfRightMotionProfile_ = motionProfile->GetLengthOfRightMotionProfile();
+
+	leftMotionProfileExecutor_ = new MotionProfileExecutor(*robot_->leftMaster_, motionProfile->GetLeftMotionProfile(), lengthOfLeftMotionProfile_);
+	rightMotionProfileExecutor_ = new MotionProfileExecutor(*robot_->rightMaster_, motionProfile->GetRightMotionProfile(), lengthOfRightMotionProfile_);
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
-	//driveController_->Update(currTimeSec, deltaTimeSec);
-	driveController_->SetupTrajectory(leftTrajectory_, rightTrajectory_, length);
-//	driveController_->UpdateMotionProfile();
+
+	leftMotionProfileExecutor_->control();
+	rightMotionProfileExecutor_->control();
+
+	robot_->SetMotionProfile();
+
+	CANTalon::SetValueMotionProfile leftSetOutput = leftMotionProfileExecutor_->getSetValue();
+	CANTalon::SetValueMotionProfile rightSetOutput = rightMotionProfileExecutor_->getSetValue();
+
+	robot_->SetDriveValues(RobotModel::kLeftWheels, leftSetOutput);
+	robot_->SetDriveValues(RobotModel::kRightWheels, rightSetOutput);
+
+	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
+//	SmartDashboard::PutNumber("Left error", _leftMaster.GetClosedLoopError());
+//	SmartDashboard::PutNumber("Right error", _rightMaster.GetClosedLoopError());
+//	SmartDashboard::PutNumber("Left speed", _leftMaster.GetSpeed());
+//	SmartDashboard::PutNumber("Right speed", _rightMaster.GetSpeed());
+
+	if (!leftMotionProfileExecutor_->hasStarted && !rightMotionProfileExecutor_->hasStarted) {
+		leftMotionProfileExecutor_->start();
+		rightMotionProfileExecutor_->start();
+	}
 }
 
 bool PathCommand::IsDone() {
-	return driveController_->IsDone();
+	return isDone_;		// TODO
 }
 
 PathCommand::~PathCommand() {
-	free(leftTrajectory_);
-	free(rightTrajectory_);
-	free(points_);
 }
