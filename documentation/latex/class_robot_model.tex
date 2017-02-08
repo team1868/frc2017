@@ -1,0 +1,80 @@
+\hypertarget{class_robot_model}{}\section{Robot\+Model Class Reference}
+\label{class_robot_model}\index{Robot\+Model@{Robot\+Model}}
+Inheritance diagram for Robot\+Model\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_robot_model}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_robot_model_a35905ffde364a186d02ec199857ce170}\label{class_robot_model_a35905ffde364a186d02ec199857ce170}} 
+enum {\bfseries Wheels} \{ {\bfseries k\+Left\+Wheels}, 
+{\bfseries k\+Right\+Wheels}, 
+{\bfseries k\+All\+Wheels}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_robot_model_a12fcf976a7f338c4d7dcba8b2765bbca}\label{class_robot_model_a12fcf976a7f338c4d7dcba8b2765bbca}} 
+void {\bfseries Reset\+Timer} ()
+\item 
+\mbox{\Hypertarget{class_robot_model_a53211a6f086c2934f29696097e33c13c}\label{class_robot_model_a53211a6f086c2934f29696097e33c13c}} 
+double {\bfseries Get\+Time} ()
+\item 
+\mbox{\Hypertarget{class_robot_model_a5c46e71b1ecd43497fa6a552edee2850}\label{class_robot_model_a5c46e71b1ecd43497fa6a552edee2850}} 
+void {\bfseries Set\+Talon\+P\+I\+D\+Config} (Wheels wheel, double p\+Fac, double i\+Fac, double d\+Fac, double f\+Fac)
+\item 
+\mbox{\Hypertarget{class_robot_model_a9e82ace9c9249288fd82b58a6ec1288e}\label{class_robot_model_a9e82ace9c9249288fd82b58a6ec1288e}} 
+void {\bfseries Set\+Motion\+Profile} ()
+\item 
+\mbox{\Hypertarget{class_robot_model_a00aec98c4ed4de1e7f48c2482fdad2a1}\label{class_robot_model_a00aec98c4ed4de1e7f48c2482fdad2a1}} 
+void {\bfseries Set\+Percent\+V\+Drive} ()
+\item 
+\mbox{\Hypertarget{class_robot_model_a98f996b588768ca75ca0cf2dddcd217c}\label{class_robot_model_a98f996b588768ca75ca0cf2dddcd217c}} 
+void {\bfseries Set\+Drive\+Values} (Wheels wheel, double value)
+\item 
+\mbox{\Hypertarget{class_robot_model_ac34a7071a6f8e1cccc5b16acd966d512}\label{class_robot_model_ac34a7071a6f8e1cccc5b16acd966d512}} 
+void {\bfseries Clear\+Motion\+Profile\+Trajectories} ()
+\item 
+\mbox{\Hypertarget{class_robot_model_a79245b48351252c90a9ff994e9b40ebb}\label{class_robot_model_a79245b48351252c90a9ff994e9b40ebb}} 
+double {\bfseries Get\+Drive\+Encoder\+Value} (Wheels wheel)
+\item 
+\mbox{\Hypertarget{class_robot_model_a48702daa83b141eb0dd1dc6f0fd75c35}\label{class_robot_model_a48702daa83b141eb0dd1dc6f0fd75c35}} 
+double {\bfseries Get\+Navx\+Yaw} ()
+\item 
+\mbox{\Hypertarget{class_robot_model_a49cf4f33221954e0efbfc14dae477595}\label{class_robot_model_a49cf4f33221954e0efbfc14dae477595}} 
+void {\bfseries Zero\+Navx\+Yaw} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_robot_model_a4b24c35077efb8134a6c8c39dbec0a94}\label{class_robot_model_a4b24c35077efb8134a6c8c39dbec0a94}} 
+C\+A\+N\+Talon $\ast$ {\bfseries left\+Master\+\_\+}
+\item 
+\mbox{\Hypertarget{class_robot_model_a2dba54867affd957c357da252767cb12}\label{class_robot_model_a2dba54867affd957c357da252767cb12}} 
+C\+A\+N\+Talon $\ast$ {\bfseries right\+Master\+\_\+}
+\item 
+\mbox{\Hypertarget{class_robot_model_ab8412b3ded9c56ff0dc064c6bd717236}\label{class_robot_model_ab8412b3ded9c56ff0dc064c6bd717236}} 
+C\+A\+N\+Talon $\ast$ {\bfseries left\+Slave\+\_\+}
+\item 
+\mbox{\Hypertarget{class_robot_model_abfeab5e7111c28a26b070e811c1a5fd2}\label{class_robot_model_abfeab5e7111c28a26b070e811c1a5fd2}} 
+C\+A\+N\+Talon $\ast$ {\bfseries right\+Slave\+\_\+}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_robot_model_a31809e8f8fddca2bf39ed07a2a6e9450}\label{class_robot_model_a31809e8f8fddca2bf39ed07a2a6e9450}} 
+Timer $\ast$ {\bfseries timer\+\_\+}
+\item 
+\mbox{\Hypertarget{class_robot_model_a06263c46912cfbab7480fe2395b63533}\label{class_robot_model_a06263c46912cfbab7480fe2395b63533}} 
+A\+H\+RS $\ast$ {\bfseries navx\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/Robot\+Model.\+h\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/Robot\+Model.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,185 @@
+\hypertarget{class_motion_profile_executor}{}\section{Motion\+Profile\+Executor Class Reference}
+\label{class_motion_profile_executor}\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+
+
+{\ttfamily \#include $<$Motion\+Profile\+Executor.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_motion_profile_executor_a6599521948ebfd609d9b4c53539f597f}{Periodic\+Task} ()
+\item 
+\mbox{\Hypertarget{class_motion_profile_executor_aa552856d9f744a9a38add555eac3669b}\label{class_motion_profile_executor_aa552856d9f744a9a38add555eac3669b}} 
+{\bfseries Motion\+Profile\+Executor} (C\+A\+N\+Talon \&talon, double profile\mbox{[}$\,$\mbox{]}\mbox{[}3\mbox{]}, int traj\+Length)
+\item 
+void \hyperlink{class_motion_profile_executor_a3e94905fe37d30840822bd819978b79d}{reset} ()
+\item 
+void \hyperlink{class_motion_profile_executor_a60a8d4ab5b168b31e75619b2a3683a78}{control} ()
+\item 
+void \hyperlink{class_motion_profile_executor_a16ef527ec6fea68ae7ac06785ddb3b7c}{start\+Filling} ()
+\item 
+\mbox{\Hypertarget{class_motion_profile_executor_a1a77e57ff634e1189fe3fe2249bbff3b}\label{class_motion_profile_executor_a1a77e57ff634e1189fe3fe2249bbff3b}} 
+void {\bfseries start\+Filling} (double $\ast$$\ast$profile, int total\+Cnt)
+\item 
+void \hyperlink{class_motion_profile_executor_a49d7debb97c9c722ee8fc2f6d43d21ca}{start} ()
+\item 
+C\+A\+N\+Talon\+::\+Set\+Value\+Motion\+Profile \hyperlink{class_motion_profile_executor_aad1297807d386b66246ca4154e136485}{get\+Set\+Value} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+C\+A\+N\+Talon\+::\+Motion\+Profile\+Status \hyperlink{class_motion_profile_executor_ab99b425d2adf9904079634fd61e10b96}{status\+\_\+}
+\item 
+C\+A\+N\+Talon \& \hyperlink{class_motion_profile_executor_af9d5579de49093673fac4e35819e7e0f}{talon\+\_\+}
+\item 
+int \hyperlink{class_motion_profile_executor_af971a9eb8807ea12c7d70befe44d2122}{state\+\_\+} = 0
+\item 
+int \hyperlink{class_motion_profile_executor_aba6cb888640b9bb7c169e1bf33de92b3}{loop\+Timeout\+\_\+} = -\/1
+\item 
+bool \hyperlink{class_motion_profile_executor_a60632854bbae77815fbafa3b8c1450e7}{b\+Start\+\_\+} = false
+\item 
+\mbox{\Hypertarget{class_motion_profile_executor_aef583c74fa3c313e758b5f3c1b48ae53}\label{class_motion_profile_executor_aef583c74fa3c313e758b5f3c1b48ae53}} 
+bool {\bfseries is\+Left\+\_\+} = false
+\item 
+\mbox{\Hypertarget{class_motion_profile_executor_ade8df55aeb5c88635782f7e2ccf473ca}\label{class_motion_profile_executor_ade8df55aeb5c88635782f7e2ccf473ca}} 
+bool {\bfseries has\+Started\+\_\+} = false
+\item 
+\mbox{\Hypertarget{class_motion_profile_executor_ae973dbde77522dae4166e039fb3f646e}\label{class_motion_profile_executor_ae973dbde77522dae4166e039fb3f646e}} 
+bool {\bfseries is\+Done\+\_\+} = false
+\item 
+\mbox{\Hypertarget{class_motion_profile_executor_a46c706826d1b78146e340947696e5232}\label{class_motion_profile_executor_a46c706826d1b78146e340947696e5232}} 
+double $\ast$$\ast$ {\bfseries profile\+\_\+}
+\item 
+\mbox{\Hypertarget{class_motion_profile_executor_a05e5a41867c021b9ff7c9f7c72ad5d46}\label{class_motion_profile_executor_a05e5a41867c021b9ff7c9f7c72ad5d46}} 
+int {\bfseries traj\+Length\+\_\+}
+\item 
+C\+A\+N\+Talon\+::\+Set\+Value\+Motion\+Profile \hyperlink{class_motion_profile_executor_a34d9e17b3cdf0ad0a117cc2cc995e85f}{set\+Value\+\_\+} = C\+A\+N\+Talon\+::\+Set\+Value\+Motion\+Profile\+Disable
+\item 
+Notifier \hyperlink{class_motion_profile_executor_a01ac4918310bd4207fa361ee66124602}{notifer\+\_\+}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const int \hyperlink{class_motion_profile_executor_ab2cd2c282d2c57e61847f3b0baaf6663}{k\+Min\+Points\+In\+Talon} = 5
+\item 
+static const int \hyperlink{class_motion_profile_executor_a125cf2e048a603624b5d74691a9805ff}{k\+Num\+Loops\+Timeout} = 10
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Example logic for firing and managing motion profiles. This example sends M\+Ps, waits for them to finish Although this code uses a C\+A\+N\+Talon, nowhere in this module do we change\+Mode() or call set() to change the output. This is done in Robot.\+java to demonstrate how to change control modes on the fly.
+
+The only routines we call on Talon are....
+
+change\+Motion\+Control\+Frame\+Period
+
+get\+Motion\+Profile\+Status clear\+Motion\+Profile\+Has\+Underrun to get status and potentially clear the error flag.
+
+push\+Motion\+Profile\+Trajectory clear\+Motion\+Profile\+Trajectories process\+Motion\+Profile\+Buffer, to push/clear, and process the trajectory points.
+
+get\+Control\+Mode, to check if we are in Motion Profile Control mode.
+
+Example of advanced features not demonstrated here... \mbox{[}1\mbox{]} Calling push\+Motion\+Profile\+Trajectory() continuously while the Talon executes the motion profile, thereby keeping it going indefinitely. \mbox{[}2\mbox{]} Instead of setting the sensor position to zero at the start of each MP, the program could offset the MP\textquotesingle{}s position based on current position. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_motion_profile_executor_a60a8d4ab5b168b31e75619b2a3683a78}\label{class_motion_profile_executor_a60a8d4ab5b168b31e75619b2a3683a78}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!control@{control}}
+\index{control@{control}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{control()}{control()}}
+{\footnotesize\ttfamily void Motion\+Profile\+Executor\+::control (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Called every loop. \mbox{\Hypertarget{class_motion_profile_executor_aad1297807d386b66246ca4154e136485}\label{class_motion_profile_executor_aad1297807d386b66246ca4154e136485}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!get\+Set\+Value@{get\+Set\+Value}}
+\index{get\+Set\+Value@{get\+Set\+Value}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{get\+Set\+Value()}{getSetValue()}}
+{\footnotesize\ttfamily C\+A\+N\+Talon\+::\+Set\+Value\+Motion\+Profile Motion\+Profile\+Executor\+::get\+Set\+Value (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+the output value to pass to Talon\textquotesingle{}s set() routine. 0 for disable motion-\/profile output, 1 for enable motion-\/profile, 2 for hold current motion profile trajectory point. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_motion_profile_executor_a6599521948ebfd609d9b4c53539f597f}\label{class_motion_profile_executor_a6599521948ebfd609d9b4c53539f597f}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!Periodic\+Task@{Periodic\+Task}}
+\index{Periodic\+Task@{Periodic\+Task}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{Periodic\+Task()}{PeriodicTask()}}
+{\footnotesize\ttfamily void Motion\+Profile\+Executor\+::\+Periodic\+Task (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Lets create a periodic task to funnel our trajectory points into our talon. It doesn\textquotesingle{}t need to be very accurate, just needs to keep pace with the motion profiler executer. Now if you\textquotesingle{}re trajectory points are slow, there is no need to do this, just call \+\_\+talon.\+process\+Motion\+Profile\+Buffer() in your teleop loop. Generally speaking you want to call it at least twice as fast as the duration of your trajectory points. So if they are firing every 20ms, you should call every 10ms. \mbox{\Hypertarget{class_motion_profile_executor_a3e94905fe37d30840822bd819978b79d}\label{class_motion_profile_executor_a3e94905fe37d30840822bd819978b79d}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!reset@{reset}}
+\index{reset@{reset}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void Motion\+Profile\+Executor\+::reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Called to clear Motion profile buffer and reset state info during disabled and when Talon is not in MP control mode. \mbox{\Hypertarget{class_motion_profile_executor_a49d7debb97c9c722ee8fc2f6d43d21ca}\label{class_motion_profile_executor_a49d7debb97c9c722ee8fc2f6d43d21ca}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!start@{start}}
+\index{start@{start}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily void Motion\+Profile\+Executor\+::start (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Called by application to signal Talon to start the buffered MP (when it\textquotesingle{}s able to). \mbox{\Hypertarget{class_motion_profile_executor_a16ef527ec6fea68ae7ac06785ddb3b7c}\label{class_motion_profile_executor_a16ef527ec6fea68ae7ac06785ddb3b7c}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!start\+Filling@{start\+Filling}}
+\index{start\+Filling@{start\+Filling}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{start\+Filling()}{startFilling()}}
+{\footnotesize\ttfamily void Motion\+Profile\+Executor\+::start\+Filling (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Start filling the M\+Ps to all of the involved Talons. 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_motion_profile_executor_a60632854bbae77815fbafa3b8c1450e7}\label{class_motion_profile_executor_a60632854bbae77815fbafa3b8c1450e7}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!b\+Start\+\_\+@{b\+Start\+\_\+}}
+\index{b\+Start\+\_\+@{b\+Start\+\_\+}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{b\+Start\+\_\+}{bStart\_}}
+{\footnotesize\ttfamily bool Motion\+Profile\+Executor\+::b\+Start\+\_\+ = false}
+
+If \hyperlink{class_motion_profile_executor_a49d7debb97c9c722ee8fc2f6d43d21ca}{start()} gets called, this flag is set and in the \hyperlink{class_motion_profile_executor_a60a8d4ab5b168b31e75619b2a3683a78}{control()} we will service it. \mbox{\Hypertarget{class_motion_profile_executor_ab2cd2c282d2c57e61847f3b0baaf6663}\label{class_motion_profile_executor_ab2cd2c282d2c57e61847f3b0baaf6663}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!k\+Min\+Points\+In\+Talon@{k\+Min\+Points\+In\+Talon}}
+\index{k\+Min\+Points\+In\+Talon@{k\+Min\+Points\+In\+Talon}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{k\+Min\+Points\+In\+Talon}{kMinPointsInTalon}}
+{\footnotesize\ttfamily const int Motion\+Profile\+Executor\+::k\+Min\+Points\+In\+Talon = 5\hspace{0.3cm}{\ttfamily [static]}}
+
+How many trajectory points do we wait for before firing the motion profile. \mbox{\Hypertarget{class_motion_profile_executor_a125cf2e048a603624b5d74691a9805ff}\label{class_motion_profile_executor_a125cf2e048a603624b5d74691a9805ff}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!k\+Num\+Loops\+Timeout@{k\+Num\+Loops\+Timeout}}
+\index{k\+Num\+Loops\+Timeout@{k\+Num\+Loops\+Timeout}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{k\+Num\+Loops\+Timeout}{kNumLoopsTimeout}}
+{\footnotesize\ttfamily const int Motion\+Profile\+Executor\+::k\+Num\+Loops\+Timeout = 10\hspace{0.3cm}{\ttfamily [static]}}
+
+Just a state timeout to make sure we don\textquotesingle{}t get stuck anywhere. Each loop is about 20ms. \mbox{\Hypertarget{class_motion_profile_executor_aba6cb888640b9bb7c169e1bf33de92b3}\label{class_motion_profile_executor_aba6cb888640b9bb7c169e1bf33de92b3}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!loop\+Timeout\+\_\+@{loop\+Timeout\+\_\+}}
+\index{loop\+Timeout\+\_\+@{loop\+Timeout\+\_\+}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{loop\+Timeout\+\_\+}{loopTimeout\_}}
+{\footnotesize\ttfamily int Motion\+Profile\+Executor\+::loop\+Timeout\+\_\+ = -\/1}
+
+Any time you have a state machine that waits for external events, its a good idea to add a timeout. Set to -\/1 to disable. Set to nonzero to count down to \textquotesingle{}0\textquotesingle{} which will print an error message. Counting loops is not a very accurate method of tracking timeout, but this is just conservative timeout. Getting time-\/stamps would certainly work too, this is just simple (no need to worry about timer overflows). \mbox{\Hypertarget{class_motion_profile_executor_a01ac4918310bd4207fa361ee66124602}\label{class_motion_profile_executor_a01ac4918310bd4207fa361ee66124602}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!notifer\+\_\+@{notifer\+\_\+}}
+\index{notifer\+\_\+@{notifer\+\_\+}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{notifer\+\_\+}{notifer\_}}
+{\footnotesize\ttfamily Notifier Motion\+Profile\+Executor\+::notifer\+\_\+}
+
+Lets create a periodic task to funnel our trajectory points into our talon. It doesn\textquotesingle{}t need to be very accurate, just needs to keep pace with the motion profiler executer. \mbox{\Hypertarget{class_motion_profile_executor_a34d9e17b3cdf0ad0a117cc2cc995e85f}\label{class_motion_profile_executor_a34d9e17b3cdf0ad0a117cc2cc995e85f}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!set\+Value\+\_\+@{set\+Value\+\_\+}}
+\index{set\+Value\+\_\+@{set\+Value\+\_\+}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{set\+Value\+\_\+}{setValue\_}}
+{\footnotesize\ttfamily C\+A\+N\+Talon\+::\+Set\+Value\+Motion\+Profile Motion\+Profile\+Executor\+::set\+Value\+\_\+ = C\+A\+N\+Talon\+::\+Set\+Value\+Motion\+Profile\+Disable}
+
+Since the C\+A\+N\+Talon.\+set() routine is mode specific, deduce what we want the set value to be and let the calling module apply it whenever we decide to switch to MP mode. \mbox{\Hypertarget{class_motion_profile_executor_af971a9eb8807ea12c7d70befe44d2122}\label{class_motion_profile_executor_af971a9eb8807ea12c7d70befe44d2122}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!state\+\_\+@{state\+\_\+}}
+\index{state\+\_\+@{state\+\_\+}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{state\+\_\+}{state\_}}
+{\footnotesize\ttfamily int Motion\+Profile\+Executor\+::state\+\_\+ = 0}
+
+State machine to make sure we let enough of the motion profile stream to talon before we fire it. \mbox{\Hypertarget{class_motion_profile_executor_ab99b425d2adf9904079634fd61e10b96}\label{class_motion_profile_executor_ab99b425d2adf9904079634fd61e10b96}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!status\+\_\+@{status\+\_\+}}
+\index{status\+\_\+@{status\+\_\+}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{status\+\_\+}{status\_}}
+{\footnotesize\ttfamily C\+A\+N\+Talon\+::\+Motion\+Profile\+Status Motion\+Profile\+Executor\+::status\+\_\+}
+
+The status of the motion profile executer and buffer inside the Talon. Instead of creating a new one every time we call get\+Motion\+Profile\+Status, keep one copy. \mbox{\Hypertarget{class_motion_profile_executor_af9d5579de49093673fac4e35819e7e0f}\label{class_motion_profile_executor_af9d5579de49093673fac4e35819e7e0f}} 
+\index{Motion\+Profile\+Executor@{Motion\+Profile\+Executor}!talon\+\_\+@{talon\+\_\+}}
+\index{talon\+\_\+@{talon\+\_\+}!Motion\+Profile\+Executor@{Motion\+Profile\+Executor}}
+\subsubsection{\texorpdfstring{talon\+\_\+}{talon\_}}
+{\footnotesize\ttfamily C\+A\+N\+Talon\& Motion\+Profile\+Executor\+::talon\+\_\+}
+
+reference to the talon we plan on manipulating. We will not change\+Mode() or call set(), just get motion profile status and make decisions based on motion profile. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Auto/\+Motion\+Profiling/Motion\+Profile\+Executor.\+h\end{DoxyCompactItemize}

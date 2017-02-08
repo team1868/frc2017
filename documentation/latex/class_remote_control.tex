@@ -1,0 +1,47 @@
+\hypertarget{class_remote_control}{}\section{Remote\+Control Class Reference}
+\label{class_remote_control}\index{Remote\+Control@{Remote\+Control}}
+Inheritance diagram for Remote\+Control\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_remote_control}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_remote_control_ad7f2809f8e524bd001ffd11b08ce178f}\label{class_remote_control_ad7f2809f8e524bd001ffd11b08ce178f}} 
+enum {\bfseries Joysticks} \{ {\bfseries k\+Right\+Joy}, 
+{\bfseries k\+Left\+Joy}
+ \}
+\item 
+\mbox{\Hypertarget{class_remote_control_a3442e12f9e38389adcf2cc5bf9bd5650}\label{class_remote_control_a3442e12f9e38389adcf2cc5bf9bd5650}} 
+enum {\bfseries Axes} \{ {\bfseries kX}, 
+{\bfseries kY}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_remote_control_a7dbf96cb324ba35eed5d321b20a684cc}\label{class_remote_control_a7dbf96cb324ba35eed5d321b20a684cc}} 
+virtual void {\bfseries Read\+Controls} ()=0
+\item 
+\mbox{\Hypertarget{class_remote_control_a8ab237f494be1e03acf73c7f1a074dc4}\label{class_remote_control_a8ab237f494be1e03acf73c7f1a074dc4}} 
+virtual double {\bfseries Get\+Joystick\+Value} (Joysticks j, Axes a)=0
+\item 
+\mbox{\Hypertarget{class_remote_control_ac4a415757aa25c0aaa51c079beb8b5ec}\label{class_remote_control_ac4a415757aa25c0aaa51c079beb8b5ec}} 
+virtual bool {\bfseries Get\+Reverse\+Drive\+Desired} ()=0
+\item 
+\mbox{\Hypertarget{class_remote_control_a6bc6abea1db8060576faf0bfd764cd9c}\label{class_remote_control_a6bc6abea1db8060576faf0bfd764cd9c}} 
+virtual bool {\bfseries Get\+Gear\+Shift\+Desired} ()=0
+\item 
+\mbox{\Hypertarget{class_remote_control_a2899dfb8cf4f9530d11de7962293f2bf}\label{class_remote_control_a2899dfb8cf4f9530d11de7962293f2bf}} 
+virtual bool {\bfseries Get\+Arcade\+Drive\+Desired} ()=0
+\item 
+\mbox{\Hypertarget{class_remote_control_a20ad515a8b9c6f842844d3081ce29e1c}\label{class_remote_control_a20ad515a8b9c6f842844d3081ce29e1c}} 
+virtual bool {\bfseries Get\+Quick\+Turn\+Desired} ()=0
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Driver\+Station/Remote\+Control.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,77 @@
+\hypertarget{class_drive_controller}{}\section{Drive\+Controller Class Reference}
+\label{class_drive_controller}\index{Drive\+Controller@{Drive\+Controller}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_drive_controller_abb183068492c689edb76fe802a4a35ad}\label{class_drive_controller_abb183068492c689edb76fe802a4a35ad}} 
+enum {\bfseries Drive\+State} \{ {\bfseries k\+Initialize}, 
+{\bfseries k\+Teleop\+Drive}, 
+{\bfseries k\+Motion\+Profile}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_drive_controller_a166bb5ed50199d8482ebbc0e244742a1}\label{class_drive_controller_a166bb5ed50199d8482ebbc0e244742a1}} 
+{\bfseries Drive\+Controller} (\hyperlink{class_robot_model}{Robot\+Model} $\ast$robot, \hyperlink{class_control_board}{Control\+Board} $\ast$human\+Control)
+\item 
+\mbox{\Hypertarget{class_drive_controller_afb1d02465d9feb19335db06c6d686552}\label{class_drive_controller_afb1d02465d9feb19335db06c6d686552}} 
+void {\bfseries Reset} ()
+\item 
+\mbox{\Hypertarget{class_drive_controller_af4ca4d578446f17730c960a3650fb140}\label{class_drive_controller_af4ca4d578446f17730c960a3650fb140}} 
+void {\bfseries Setup\+Trajectory} (Segment $\ast$left\+Trajectory, Segment $\ast$right\+Trajectory, int trajectory\+Length)
+\item 
+\mbox{\Hypertarget{class_drive_controller_a80935e19c13c8f9212054af0183e53ad}\label{class_drive_controller_a80935e19c13c8f9212054af0183e53ad}} 
+void {\bfseries Update\+Motion\+Profile} ()
+\item 
+\mbox{\Hypertarget{class_drive_controller_aefc9e8cbe2948d2e72987e0a8a2cbf80}\label{class_drive_controller_aefc9e8cbe2948d2e72987e0a8a2cbf80}} 
+void {\bfseries Update} (double curr\+Time\+Sec, double delta\+Time\+Sec)
+\item 
+\mbox{\Hypertarget{class_drive_controller_ae07d828e9b1738bd0baf6dca46e5bd5c}\label{class_drive_controller_ae07d828e9b1738bd0baf6dca46e5bd5c}} 
+bool {\bfseries Is\+Done} ()
+\item 
+\mbox{\Hypertarget{class_drive_controller_abbcf50b6d01eda0d1a45131dfeb97db8}\label{class_drive_controller_abbcf50b6d01eda0d1a45131dfeb97db8}} 
+void {\bfseries Print\+Drive\+Values} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_drive_controller_a59d4b701fd83e101a3aaf9726fc626dd}\label{class_drive_controller_a59d4b701fd83e101a3aaf9726fc626dd}} 
+void {\bfseries Arcade\+Drive} (double myX, double myY)
+\item 
+\mbox{\Hypertarget{class_drive_controller_a66ebb563f42372e249c8de422d74312b}\label{class_drive_controller_a66ebb563f42372e249c8de422d74312b}} 
+void {\bfseries Tank\+Drive} (double my\+Left, double my\+Right)
+\item 
+\mbox{\Hypertarget{class_drive_controller_a3e9f778228ea2812b372fbb43fdf5a08}\label{class_drive_controller_a3e9f778228ea2812b372fbb43fdf5a08}} 
+void {\bfseries Quick\+Turn} (double my\+Right)
+\item 
+\mbox{\Hypertarget{class_drive_controller_aeecbfd3643cadb19cc30af0f22c41c98}\label{class_drive_controller_aeecbfd3643cadb19cc30af0f22c41c98}} 
+int {\bfseries Drive\+Direction} ()
+\item 
+\mbox{\Hypertarget{class_drive_controller_a001ab748cefcfdb9d4aa10b3cf699d53}\label{class_drive_controller_a001ab748cefcfdb9d4aa10b3cf699d53}} 
+int {\bfseries Get\+Drive\+State} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_drive_controller_abc5ee587234574826c58a259902fa86f}\label{class_drive_controller_abc5ee587234574826c58a259902fa86f}} 
+\hyperlink{class_robot_model}{Robot\+Model} $\ast$ {\bfseries robot\+\_\+}
+\item 
+\mbox{\Hypertarget{class_drive_controller_af9b33cc9fd301b54d3cdb31223d8216a}\label{class_drive_controller_af9b33cc9fd301b54d3cdb31223d8216a}} 
+\hyperlink{class_control_board}{Control\+Board} $\ast$ {\bfseries human\+Control\+\_\+}
+\item 
+\mbox{\Hypertarget{class_drive_controller_ad71cbf0f66adf918dba524662867775f}\label{class_drive_controller_ad71cbf0f66adf918dba524662867775f}} 
+bool {\bfseries is\+Done\+\_\+}
+\item 
+\mbox{\Hypertarget{class_drive_controller_ac8e6cfbda24abc7c033e6ec9c2f75f13}\label{class_drive_controller_ac8e6cfbda24abc7c033e6ec9c2f75f13}} 
+uint32\+\_\+t {\bfseries curr\+State\+\_\+}
+\item 
+\mbox{\Hypertarget{class_drive_controller_abc8e83a004bdf2edd3b76aeb7d5b66d2}\label{class_drive_controller_abc8e83a004bdf2edd3b76aeb7d5b66d2}} 
+uint32\+\_\+t {\bfseries next\+State\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Controllers/Drive\+Controller.\+h\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Controllers/Drive\+Controller.\+cpp\end{DoxyCompactItemize}

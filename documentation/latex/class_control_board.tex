@@ -1,0 +1,93 @@
+\hypertarget{class_control_board}{}\section{Control\+Board Class Reference}
+\label{class_control_board}\index{Control\+Board@{Control\+Board}}
+Inheritance diagram for Control\+Board\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_control_board}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_control_board_abc38ec1feb7a7c38adfe7ced04fc5a79}\label{class_control_board_abc38ec1feb7a7c38adfe7ced04fc5a79}} 
+void {\bfseries Read\+Controls} ()
+\item 
+\mbox{\Hypertarget{class_control_board_a82d4f6abff67ad0ba60b263d65fcc924}\label{class_control_board_a82d4f6abff67ad0ba60b263d65fcc924}} 
+double {\bfseries Get\+Joystick\+Value} (Joysticks j, Axes a)
+\item 
+\mbox{\Hypertarget{class_control_board_a53f6a067fdec6785017465dba9ee2be6}\label{class_control_board_a53f6a067fdec6785017465dba9ee2be6}} 
+bool {\bfseries Get\+Reverse\+Drive\+Desired} ()
+\item 
+\mbox{\Hypertarget{class_control_board_a49f9d98f58c8f8eb8030910c27b187ed}\label{class_control_board_a49f9d98f58c8f8eb8030910c27b187ed}} 
+bool {\bfseries Get\+Gear\+Shift\+Desired} ()
+\item 
+\mbox{\Hypertarget{class_control_board_ab32a6888112f807dff75acbb641a3517}\label{class_control_board_ab32a6888112f807dff75acbb641a3517}} 
+bool {\bfseries Get\+Arcade\+Drive\+Desired} ()
+\item 
+\mbox{\Hypertarget{class_control_board_ac43151ba49812cc42028c957506a4cc4}\label{class_control_board_ac43151ba49812cc42028c957506a4cc4}} 
+bool {\bfseries Get\+Quick\+Turn\+Desired} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_control_board_a119aafaac10209d3a0ed71a3ecbf0a8a}\label{class_control_board_a119aafaac10209d3a0ed71a3ecbf0a8a}} 
+void {\bfseries Read\+All\+Buttons} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_control_board_aa416e9616eb5e9650274fe609deef35a}\label{class_control_board_aa416e9616eb5e9650274fe609deef35a}} 
+double {\bfseries left\+Joy\+X\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a62d7b23bd7d3a4d1362d13b67ed706b1}\label{class_control_board_a62d7b23bd7d3a4d1362d13b67ed706b1}} 
+double {\bfseries left\+Joy\+Y\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a4c2f86c6e0dac63ed07a8a8e0ff08f96}\label{class_control_board_a4c2f86c6e0dac63ed07a8a8e0ff08f96}} 
+double {\bfseries right\+Joy\+X\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_aae31045f2a49fdd74bf149529dd3ad4d}\label{class_control_board_aae31045f2a49fdd74bf149529dd3ad4d}} 
+double {\bfseries right\+Joy\+Y\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a9801f6d198aba04809ceae4226d37e31}\label{class_control_board_a9801f6d198aba04809ceae4226d37e31}} 
+bool {\bfseries reverse\+Drive\+Desired\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_ad7999d7ba82292494c4672ea512e3b9e}\label{class_control_board_ad7999d7ba82292494c4672ea512e3b9e}} 
+bool {\bfseries gear\+Shift\+Desired\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a78bd6b9dda2e0035527b16f35a09c5ae}\label{class_control_board_a78bd6b9dda2e0035527b16f35a09c5ae}} 
+bool {\bfseries arcade\+Drive\+Desired\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a59b412d2fab63ecd421419bec6710d5d}\label{class_control_board_a59b412d2fab63ecd421419bec6710d5d}} 
+bool {\bfseries quick\+Turn\+Desired\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a3d1d2b17bf6a2290271d6fba94fb20e2}\label{class_control_board_a3d1d2b17bf6a2290271d6fba94fb20e2}} 
+Joystick $\ast$ {\bfseries left\+Joy\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a9f99e67fc5be70b7a242b489d106e6e4}\label{class_control_board_a9f99e67fc5be70b7a242b489d106e6e4}} 
+Joystick $\ast$ {\bfseries right\+Joy\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a32d6c4eeaf66d97bd1c407bbaccebb0b}\label{class_control_board_a32d6c4eeaf66d97bd1c407bbaccebb0b}} 
+Joystick $\ast$ {\bfseries operator\+Joy\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a862917fc3f42591da7f743cb5a474f69}\label{class_control_board_a862917fc3f42591da7f743cb5a474f69}} 
+Joystick $\ast$ {\bfseries operator\+Joy\+B\+\_\+}
+\item 
+\mbox{\Hypertarget{class_control_board_a2bc303faf6f560ee5bc50740d531087f}\label{class_control_board_a2bc303faf6f560ee5bc50740d531087f}} 
+\hyperlink{class_button_reader}{Button\+Reader} $\ast$ {\bfseries drive\+Direction\+Button}
+\item 
+\mbox{\Hypertarget{class_control_board_a169abc98da7af2228d32e6af40b59618}\label{class_control_board_a169abc98da7af2228d32e6af40b59618}} 
+\hyperlink{class_button_reader}{Button\+Reader} $\ast$ {\bfseries gear\+Shift\+Button}
+\item 
+\mbox{\Hypertarget{class_control_board_a85921de97d4183cfb321f6dfb3aa09a6}\label{class_control_board_a85921de97d4183cfb321f6dfb3aa09a6}} 
+\hyperlink{class_button_reader}{Button\+Reader} $\ast$ {\bfseries arcade\+Drive\+Button}
+\item 
+\mbox{\Hypertarget{class_control_board_a7f00556cbd9514ab50e79fd202187b27}\label{class_control_board_a7f00556cbd9514ab50e79fd202187b27}} 
+\hyperlink{class_button_reader}{Button\+Reader} $\ast$ {\bfseries quick\+Turn\+Button}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Driver\+Station/Control\+Board.\+h\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Driver\+Station/Control\+Board.\+cpp\end{DoxyCompactItemize}

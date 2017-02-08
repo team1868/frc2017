@@ -1,0 +1,68 @@
+\hypertarget{class_path_command}{}\section{Path\+Command Class Reference}
+\label{class_path_command}\index{Path\+Command@{Path\+Command}}
+Inheritance diagram for Path\+Command\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_path_command}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_path_command_a16c9817753b2a9c1f171a6da90448424}\label{class_path_command_a16c9817753b2a9c1f171a6da90448424}} 
+enum {\bfseries Path} \{ {\bfseries k\+Lift\+One}, 
+{\bfseries k\+Lift\+Two}, 
+{\bfseries k\+Lift\+Three}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_path_command_af13590c26630833220671975f3d2ffa9}\label{class_path_command_af13590c26630833220671975f3d2ffa9}} 
+{\bfseries Path\+Command} (\hyperlink{class_robot_model}{Robot\+Model} $\ast$robot, Path path)
+\item 
+\mbox{\Hypertarget{class_path_command_af6b08e736ddda29d989fe484e9fd7383}\label{class_path_command_af6b08e736ddda29d989fe484e9fd7383}} 
+void {\bfseries Init} ()
+\item 
+\mbox{\Hypertarget{class_path_command_a64f5ebbbe897a3305bdd9905e7b088f4}\label{class_path_command_a64f5ebbbe897a3305bdd9905e7b088f4}} 
+void {\bfseries Update} (double curr\+Time\+Sec, double delta\+Time\+Sec)
+\item 
+\mbox{\Hypertarget{class_path_command_a29e919cef5f6ba460060c6252d2c2910}\label{class_path_command_a29e919cef5f6ba460060c6252d2c2910}} 
+bool {\bfseries Is\+Done} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_path_command_aa6a8d5bdb0c926243b0f5ccc86ad92ff}\label{class_path_command_aa6a8d5bdb0c926243b0f5ccc86ad92ff}} 
+\hyperlink{class_robot_model}{Robot\+Model} $\ast$ {\bfseries robot\+\_\+}
+\item 
+\mbox{\Hypertarget{class_path_command_a8fbec2fd0e2c338fab60a437c018a7a0}\label{class_path_command_a8fbec2fd0e2c338fab60a437c018a7a0}} 
+Path {\bfseries path\+\_\+}
+\item 
+\mbox{\Hypertarget{class_path_command_a5e0ad49c59397dd781fe49fd010a534e}\label{class_path_command_a5e0ad49c59397dd781fe49fd010a534e}} 
+int {\bfseries length\+Of\+Left\+Motion\+Profile\+\_\+}
+\item 
+\mbox{\Hypertarget{class_path_command_a7e302dc5bdc6863670c6c808227af2ce}\label{class_path_command_a7e302dc5bdc6863670c6c808227af2ce}} 
+int {\bfseries length\+Of\+Right\+Motion\+Profile\+\_\+}
+\item 
+\mbox{\Hypertarget{class_path_command_abc8680e2a7fef01f3f524d492a2414e6}\label{class_path_command_abc8680e2a7fef01f3f524d492a2414e6}} 
+double {\bfseries left\+Motion\+Profile\+\_\+} \mbox{[}$\,$\mbox{]}\mbox{[}3\mbox{]}
+\item 
+\mbox{\Hypertarget{class_path_command_a7baa75d4c65c1a41bbb1db5cf81cae39}\label{class_path_command_a7baa75d4c65c1a41bbb1db5cf81cae39}} 
+double {\bfseries right\+Motion\+Profile\+\_\+} \mbox{[}$\,$\mbox{]}\mbox{[}3\mbox{]}
+\item 
+\mbox{\Hypertarget{class_path_command_a7849e4b9ed084e5906894f0d9d6e2c34}\label{class_path_command_a7849e4b9ed084e5906894f0d9d6e2c34}} 
+\hyperlink{class_motion_profile_executor}{Motion\+Profile\+Executor} $\ast$ {\bfseries left\+Motion\+Profile\+Executor\+\_\+}
+\item 
+\mbox{\Hypertarget{class_path_command_a244b142d11c2a135ae1d0e50ed0b2979}\label{class_path_command_a244b142d11c2a135ae1d0e50ed0b2979}} 
+\hyperlink{class_motion_profile_executor}{Motion\+Profile\+Executor} $\ast$ {\bfseries right\+Motion\+Profile\+Executor\+\_\+}
+\item 
+\mbox{\Hypertarget{class_path_command_a92a777a063e9beecfb3461f54306c78f}\label{class_path_command_a92a777a063e9beecfb3461f54306c78f}} 
+bool {\bfseries is\+Done\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Auto/\+Commands/Path\+Command.\+h\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Auto/\+Commands/Path\+Command.\+cpp\end{DoxyCompactItemize}

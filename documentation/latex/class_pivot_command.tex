@@ -1,0 +1,75 @@
+\hypertarget{class_pivot_command}{}\section{Pivot\+Command Class Reference}
+\label{class_pivot_command}\index{Pivot\+Command@{Pivot\+Command}}
+Inheritance diagram for Pivot\+Command\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_pivot_command}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_pivot_command_aeed6d5f91fade3124c4a66080edad50d}\label{class_pivot_command_aeed6d5f91fade3124c4a66080edad50d}} 
+{\bfseries Pivot\+Command} (\hyperlink{class_robot_model}{Robot\+Model} $\ast$robot, double desired\+Angle, bool is\+Absolute\+Position, \hyperlink{class_navx_p_i_d_source}{Navx\+P\+I\+D\+Source} $\ast$navx\+Source)
+\item 
+\mbox{\Hypertarget{class_pivot_command_a4bc3497678e5fdc84e0ec545f87fcd2a}\label{class_pivot_command_a4bc3497678e5fdc84e0ec545f87fcd2a}} 
+void {\bfseries Init} ()
+\item 
+\mbox{\Hypertarget{class_pivot_command_a728a96471b607920a8e3581b15c2a6ed}\label{class_pivot_command_a728a96471b607920a8e3581b15c2a6ed}} 
+void {\bfseries Reset} ()
+\item 
+\mbox{\Hypertarget{class_pivot_command_ab43066cd70a708f342f53f94558acf98}\label{class_pivot_command_ab43066cd70a708f342f53f94558acf98}} 
+void {\bfseries Update} (double curr\+Time\+Sec, double delta\+Time\+Sec)
+\item 
+\mbox{\Hypertarget{class_pivot_command_acc8ed3e6a76a19a05201131f0bd7ccc5}\label{class_pivot_command_acc8ed3e6a76a19a05201131f0bd7ccc5}} 
+bool {\bfseries Is\+Done} ()
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_pivot_command_a56f0c011b2a744f1ed0a2b5cb301cdb2}\label{class_pivot_command_a56f0c011b2a744f1ed0a2b5cb301cdb2}} 
+double {\bfseries Calculate\+Delta\+Angle} (double desired\+Angle)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_pivot_command_af19ee15f8b4d195bf02fbc697eba1641}\label{class_pivot_command_af19ee15f8b4d195bf02fbc697eba1641}} 
+double {\bfseries p\+Fac\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_a8a4c07edea472ab21522cca70fe531a2}\label{class_pivot_command_a8a4c07edea472ab21522cca70fe531a2}} 
+double {\bfseries i\+Fac\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_a076fe76ca613db3f914408607e91d7bc}\label{class_pivot_command_a076fe76ca613db3f914408607e91d7bc}} 
+double {\bfseries d\+Fac\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_aaf3bb529c25ee4d2ed040fdacb794d1f}\label{class_pivot_command_aaf3bb529c25ee4d2ed040fdacb794d1f}} 
+double {\bfseries desired\+Delta\+Angle\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_aa0fc36f13532c492f5e86b4d5d0be93e}\label{class_pivot_command_aa0fc36f13532c492f5e86b4d5d0be93e}} 
+double {\bfseries init\+Yaw\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_a40b669643047869696913de119de0347}\label{class_pivot_command_a40b669643047869696913de119de0347}} 
+bool {\bfseries is\+Done\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_ad1fd030762a6b95d8c8ccad7375c2dcb}\label{class_pivot_command_ad1fd030762a6b95d8c8ccad7375c2dcb}} 
+\hyperlink{class_robot_model}{Robot\+Model} $\ast$ {\bfseries robot\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_ae2fcdfa0e3be71c8b06a42440dbe3003}\label{class_pivot_command_ae2fcdfa0e3be71c8b06a42440dbe3003}} 
+P\+I\+D\+Controller $\ast$ {\bfseries pivot\+P\+I\+D\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_a5fd31234c07b80cc3ffddb3ce28bc49b}\label{class_pivot_command_a5fd31234c07b80cc3ffddb3ce28bc49b}} 
+\hyperlink{class_navx_p_i_d_source}{Navx\+P\+I\+D\+Source} $\ast$ {\bfseries navx\+Source\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_a590ea9a551076484febed96b6f7d9a64}\label{class_pivot_command_a590ea9a551076484febed96b6f7d9a64}} 
+\hyperlink{class_pivot_p_i_d_talon_output}{Pivot\+P\+I\+D\+Talon\+Output} $\ast$ {\bfseries talon\+Output\+\_\+}
+\item 
+\mbox{\Hypertarget{class_pivot_command_a5ec7f0d7b577e7830251e78a895798b5}\label{class_pivot_command_a5ec7f0d7b577e7830251e78a895798b5}} 
+double {\bfseries pivot\+Command\+Start\+Time\+\_\+}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Auto/\+Commands/Pivot\+Command.\+h\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Auto/\+Commands/Pivot\+Command.\+cpp\end{DoxyCompactItemize}

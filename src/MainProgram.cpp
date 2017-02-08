@@ -6,7 +6,7 @@
 #include "Auto/AutoController.h"
 
 class MainProgram : public IterativeRobot {
-	RobotModel *robot_;
+	RobotModel *robot_; /**< Testing. */
 	ControlBoard *humanControl_;
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;

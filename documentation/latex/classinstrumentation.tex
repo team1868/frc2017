@@ -1,0 +1,41 @@
+\hypertarget{classinstrumentation}{}\section{instrumentation Class Reference}
+\label{classinstrumentation}\index{instrumentation@{instrumentation}}
+
+
+{\ttfamily \#include $<$Instrumentation.\+h$>$}
+
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classinstrumentation_adf9cadbff6a0bb8d6389ff79f445cd16}\label{classinstrumentation_adf9cadbff6a0bb8d6389ff79f445cd16}} 
+static void {\bfseries On\+No\+Progress} ()
+\item 
+\mbox{\Hypertarget{classinstrumentation_ac3ba7e60a4e842298db281a3f73c9b87}\label{classinstrumentation_ac3ba7e60a4e842298db281a3f73c9b87}} 
+static void {\bfseries On\+Underrun} ()
+\item 
+\mbox{\Hypertarget{classinstrumentation_ac2d9046a4665b5fca81f4541433f36c2}\label{classinstrumentation_ac2d9046a4665b5fca81f4541433f36c2}} 
+static const char $\ast$ {\bfseries Str\+Output\+Enable} (unsigned int value)
+\item 
+static void \hyperlink{classinstrumentation_a0e96d2ff2bcd277f57dd1faca76c28b2}{Process} (C\+A\+N\+Talon\+::\+Motion\+Profile\+Status \&status)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Since this example focuses on Motion Control, lets print everything related to MP in a clean format. Expect to see something like......
+
+Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 output\+Enable top\+Buffer\+Rem top\+Buffer\+Cnt btm\+Buffer\+Cnt Is\+Valid Has\+Underrun Is\+Underrun Is\+Last Vel\+Only targ\+Pos targ\+Vel Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 output\+Enable top\+Buffer\+Rem top\+Buffer\+Cnt btm\+Buffer\+Cnt Is\+Valid Has\+Underrun Is\+Underrun Is\+Last Vel\+Only targ\+Pos targ\+Vel Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0 Hold 2048 0 0 1 5.\+0 0.\+0
+
+...where the columns are reprinted occasionally so you know whats up. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classinstrumentation_a0e96d2ff2bcd277f57dd1faca76c28b2}\label{classinstrumentation_a0e96d2ff2bcd277f57dd1faca76c28b2}} 
+\index{instrumentation@{instrumentation}!Process@{Process}}
+\index{Process@{Process}!instrumentation@{instrumentation}}
+\subsubsection{\texorpdfstring{Process()}{Process()}}
+{\footnotesize\ttfamily static void instrumentation\+::\+Process (\begin{DoxyParamCaption}\item[{C\+A\+N\+Talon\+::\+Motion\+Profile\+Status \&}]{status }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Prints and/or logging to watch the MP signals 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/maggiewang/\+Space\+\_\+\+Cookies/spacecookies/frc2017/src/\+Auto/\+Motion\+Profiling/Instrumentation.\+h\end{DoxyCompactItemize}
