@@ -6,7 +6,7 @@ This document contains [framework](#framework), [style](#style), and [check-in](
 ------------------------------------------------------------
 Framework <a name="framework"></a>
 =======
-See the current documentation [here](https://rawgit.com/spacecookies1868/frc2017/master/documentation/html/index.html).
+See the current documentation [here](http://htmlpreview.github.com/spacecookies1868/frc2017/master/documentation/html/index.html).
 
 src
 --------
