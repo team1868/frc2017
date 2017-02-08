@@ -109,7 +109,8 @@ default:
 
 Naming Conventions
 --------
-- Private instance variables: `lowerCamelCase`
+- Instance variables: `lowerCamelCase`
+- Member instance variable: 'lowerCaseCamel_'
 - Macros, consts (like ports): `CAPITAL_LETTERS`
 - Methods and classes: `UpperCamelCase`
 - Enum-list: `kInit`, `kIdle`, etc.
