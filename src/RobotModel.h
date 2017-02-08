@@ -1,14 +1,15 @@
 #ifndef SRC_ROBOTMODEL_H_
 #define SRC_ROBOTMODEL_H_
 
-#include "WPILib.h"
+#include <WPILib.h>
+#include <navx/AHRS.h>
 #include "CANTalon.h"
-#include "AHRS.h"
 #include "Ports2017.h"
 
 class RobotModel {
 public:
 	enum Wheels {kLeftWheels, kRightWheels, kAllWheels};
+
 	RobotModel();
 	~RobotModel();
 	void ResetTimer();
@@ -19,14 +20,13 @@ public:
 	void SetDriveValues(Wheels wheel, double value);
 	void ClearMotionProfileTrajectories();
 	double GetDriveEncoderValue(Wheels wheel);
-	double GetNavXYaw();
-	void ZeroNavXYaw();
+	double GetNavxYaw();
+	void ZeroNavxYaw();
 
-	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	// TO MAKE PRIVATE!!!!!
-
+	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	//TODO move to private
 private:
 	Timer *timer_;
-	AHRS *navX_;
+	AHRS *navx_;
 };
 
 #endif /* SRC_ROBOTMODEL_H_ */
