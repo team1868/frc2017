@@ -7,11 +7,11 @@ class LiftOne_MotionProfile : public MotionProfile {
 public:
 	LiftOne_MotionProfile() {};
 
-	virtual double GetLengthOfLeftMotionProfile() {
+	virtual int GetLengthOfLeftMotionProfile() {
 		return kLeftMotionProfileSz;
 	}
 
-	virtual double GetLengthOfRightMotionProfile() {
+	virtual int GetLengthOfRightMotionProfile() {
 		return kRightMotionProfileSz;
 	}
 

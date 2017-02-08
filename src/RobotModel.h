@@ -1,7 +1,7 @@
 #ifndef SRC_ROBOTMODEL_H_
 #define SRC_ROBOTMODEL_H_
 
-#include <WPILib.h>
+#include "WPILib.h"
 #include <navx/AHRS.h>
 #include "CANTalon.h"
 #include "Ports2017.h"

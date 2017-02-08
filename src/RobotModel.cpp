@@ -16,19 +16,56 @@ RobotModel::RobotModel() {
 	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
 	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
 
-//	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-//	leftMaster_->ConfigEncoderCodesPerRev(360);
-//	leftMaster_->SetPosition(0);
-//	leftMaster_->SetSensorDirection(true);		// TODO check
-	//rightMaster_->SetInverted(false);			// TODO check
-	//rightMaster_->SetClosedLoopOutputDirection(false); // TODO check
+	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
+	leftMaster_->ConfigEncoderCodesPerRev(256);
+	leftMaster_->SetPosition(0);
+	leftMaster_->SetSensorDirection(false);		// TODO check
+	leftMaster_->SetInverted(false);			// TODO check
+	leftMaster_->SetClosedLoopOutputDirection(false); // TODO check
 
-//	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-//	rightMaster_->ConfigEncoderCodesPerRev(360);
-//	rightMaster_->SetPosition(0);
-//	rightMaster_->SetSensorDirection(true); 	// TODO check
+	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
+	rightMaster_->ConfigEncoderCodesPerRev(256);
+	rightMaster_->SetPosition(0);
+	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(true);			// TODO check
 	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
+
+	leftSlave_->SetControlMode(CANTalon::kFollower);
+	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
+	rightSlave_->SetControlMode(CANTalon::kFollower);
+	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
+
+//	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
+//	//_leftMaster.ConfigEncoderCodesPerRev(360);
+////		_leftMaster.ConfigEncoderCodesPerRev(256);
+//	leftMaster_->ConfigEncoderCodesPerRev(256);
+//	leftMaster_->SetPosition(0);
+//	leftMaster_->SetSensorDirection(false); /* keep sensor and motor in phase */
+//
+//	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
+////		_rightMaster.ConfigEncoderCodesPerRev(360);
+//	// 1024
+//	//_rightMaster.ConfigEncoderCodesPerRev(256);
+//	rightMaster_->ConfigEncoderCodesPerRev(256);
+//	rightMaster_->SetPosition(0);
+//	rightMaster_->SetSensorDirection(true); /* keep sensor and motor in phase */
+//	rightMaster_->SetClosedLoopOutputDirection(true);
+//	rightMaster_->SetInverted(true);		// PUT THIS IN TELEOP
+
+//	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
+//	leftMaster_->ConfigEncoderCodesPerRev(256);
+//	leftMaster_->SetPosition(0);
+//	leftMaster_->SetSensorDirection(true);		// TODO check
+//	rightMaster_->SetInverted(false);			// TODO check
+//	rightMaster_->SetClosedLoopOutputDirection(false); // TODO check
+//
+//	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
+//	rightMaster_->ConfigEncoderCodesPerRev(256);
+//	rightMaster_->SetPosition(0);
+//	rightMaster_->SetSensorDirection(true); 	// TODO check
+//
+//	rightMaster_->SetInverted(true);			// TODO check
+//	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
 
 	// Initializing navx
 	navx_ = new AHRS(SPI::kMXP);	// might be wrong but idk

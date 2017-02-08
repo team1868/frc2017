@@ -16,11 +16,11 @@ public:
 	int kRightMotionProfileSz = 0;
 	double kRightMotionProfile[][3];
 
-	virtual double GetLengthOfLeftMotionProfile() {
+	virtual int GetLengthOfLeftMotionProfile() {
 		return kLeftMotionProfileSz;
 	}
 
-	virtual double GetLengthOfRightMotionProfile() {
+	virtual int GetLengthOfRightMotionProfile() {
 		return kRightMotionProfileSz;
 	}
 

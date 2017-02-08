@@ -5,8 +5,8 @@ DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl) 
 	robot_ = robot;
 	humanControl_ = humanControl;
 
-	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.1, 1.38329);
-	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.1, 1.30254);
+//	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.1, 1.38329);
+//	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.1, 1.30254);
 
 //	leftExample_ = new MotionProfileExample(*leftMaster_);
 //	rightExample_ = new MotionProfileExample(*rightMaster_);

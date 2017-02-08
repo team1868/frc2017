@@ -14,15 +14,26 @@
 
 using namespace std;
 
-class AutoCommand {
+class AutoCommand {		// TODO parallel auto commands
 public:
-	AutoCommand() {}
+	AutoCommand() {
+		nextCommand = NULL;
+	}
 	virtual ~AutoCommand() {}
 	virtual void Init() = 0;
 	virtual void Update(double currTimeSec, double deltaTimeSec) = 0;
 	virtual bool IsDone() = 0;
 
-//	virtual AutoCommand* GetNextCommand() = 0;
+	AutoCommand* GetNextCommand() {
+		return nextCommand;
+	}
+
+	void SetNextCommand(AutoCommand* myNextCommand) {
+		nextCommand = myNextCommand;
+	}
+
+private:
+	AutoCommand *nextCommand;
 };
 
 #endif /* AUTOCOMMAND_H */

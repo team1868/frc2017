@@ -64,9 +64,11 @@ public:
 	bool bStart_ = false;
 
 	bool isLeft_ = false;
-	bool hasStarted = false;		// to change
+	bool hasStarted_ = false;		// to change
 
-	double profile_[][3];
+	bool isDone_ = false;
+
+	double **profile_;
 	int trajLength_;
 
 	/**
@@ -120,7 +122,14 @@ public:
 
 		trajLength_ = trajLength;
 
-		memcpy(profile_, profile, sizeof (double*) * trajLength_ * 3);		// THIS DOESN'T WORK BUT FIGURE OUT HOW IT DOES
+		profile_ = (double**)malloc(trajLength_ * sizeof(double*));
+		for (int i = 0; i < trajLength_; i++) {
+			profile_[i] = (double*)malloc(3 * sizeof(double));
+		}
+
+		for (int i = 0; i < trajLength_; i++) {
+			memcpy(profile_[i], profile[i], sizeof(double) * 3);
+		}
 	}
 
 	/**
@@ -234,6 +243,13 @@ public:
 						setValue_ = CANTalon::SetValueMotionProfileHold;
 						state_ = 0;
 						loopTimeout_ = -1;
+
+						for (int i = 0; i < trajLength_; i++) {
+							free(profile_[i]);
+						}
+						free(profile_);
+
+						isDone_ = true;
 					}
 					break;
 			}
@@ -245,16 +261,10 @@ public:
 	/** Start filling the MPs to all of the involved Talons. */
 	void startFilling()
 	{
-		// TODO use profile_
-//		LiftOne_MotionProfile *test = new LiftOne_MotionProfile;
-//		/* since this example only has one talon, just update that one */
-//		startFilling(test->kLeftMotionProfile, trajLength_);
-		MotionProfile *test = new LiftOne_MotionProfile;
-		/* since this example only has one talon, just update that one */
-		startFilling(test->GetLeftMotionProfile(), trajLength_);
+		startFilling(profile_, trajLength_);
 	}
 
-	void startFilling(double profile[][3], int totalCnt)
+	void startFilling(double **profile, int totalCnt)
 	{
 		/* create an empty point */
 		CANTalon::TrajectoryPoint point;
@@ -315,7 +325,7 @@ public:
 	 * able to).
 	 */
 	void start() {
-		hasStarted = true;
+		hasStarted_ = true;
 		bStart_ = true;
 	}
 

@@ -11,8 +11,9 @@ class MainProgram : public IterativeRobot {
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
+//	NavXPIDSource *navxSource_;
 	LiveWindow *liveWindow_;
-	OneGearMode *liftOneMode;	// move this later
+	OneGearMode *liftMode_;	// move this later
 
 	double currTimeSec_;
 	double lastTimeSec_;
@@ -26,23 +27,27 @@ public:
 		driveController_ = new DriveController(robot_, humanControl_);
 		superstructureController_ = new SuperstructureController();		// TODO
 		//autoController_ = new AutoController(robot_, driveController_, superstructureController_, humanControl_);
-	}
+		autoController_ = new AutoController();
 
+//		navxSource_ = new NavXPIDSource(robot_);
+		Wait(1.0);
+		robot_->ZeroNavxYaw();
+//		Wait(1.0);
+//		navxSource_->ResetAccumulatedYaw();
+	}
 
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-//		autoController_->SetAutonomousMode(liftOneMode);
-//		autoController_->Init();
-//		liftOneMode = new OneGearMode();
-		liftOneMode = new OneGearMode(robot_);
-		liftOneMode->Init();
+		OneGearMode *liftTwoMode = new OneGearMode(robot_);	// TODO make this take in DriveController
+		autoController_->SetAutonomousMode(liftTwoMode);
+		autoController_->Init();
 	}
 
 	void AutonomousPeriodic() {
 		UpdateTimerVariables();
-		if (!liftOneMode->IsDone()) {
-			liftOneMode->Update(currTimeSec_, deltaTimeSec_);
+		if (!autoController_->IsDone()) {
+			autoController_->Update(currTimeSec_, deltaTimeSec_);
 		}
 	}
 
@@ -77,7 +82,7 @@ private:
 	}
 
 	void ResetControllers() {
-//		autoController_->Reset();
+		autoController_->Reset();
 		driveController_->Reset();
 		superstructureController_->Reset();
 	}
