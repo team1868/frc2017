@@ -1,0 +1,3 @@
+[submodule "frc2017-documentation"]
+	path = frc2017-documentation
+	url = https://github.com/spacecookies1868/frc2017-documentation.git
