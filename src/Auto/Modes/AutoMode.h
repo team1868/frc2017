@@ -35,6 +35,9 @@ public:
 			printf("Done with auto mode update\n");
 		}
 	}
+
+	virtual void RefreshIni() = 0;
+
 	/**
 	 * Returns when AutoMode is done
 	 * @return true if there is no current command or current command is NULL

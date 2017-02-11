@@ -6,32 +6,40 @@
 class AutoController {
 public:
 	/**
-	 * Constructor AutoController that does not set automode
+	 * Constructor AutoController that does not set AutoMode
 	 */
 	AutoController();
+
 	/**
-	 * Constructor AutoController that allows automode to be set
+	 * Constructor AutoController that allows AutoMode to be set
 	 * @param autoMode an AutoMode
 	 */
 	AutoController(AutoMode *autoMode);
+
 	virtual ~AutoController() {}
+
 	/**
 	 * SetAutomousMode is a mutator that sets AutoMode
 	 * @param autoMode is an AutoMode
 	 */
 	void SetAutonomousMode(AutoMode *autoMode);
+
 	void StartAutonomous();		// TODO
 	/**
 	 * create a queue for automode and initializes it
 	 */
 	void Init();
+
 	/**
-	 * updates automode
+	 * Updates automode
 	 * @param currTimeSec a double that is the current time in seconds
 	 * @param deltaTimeSec a double that is the change in time
 	 */
 	void Update(double currTimeSec, double deltaTimeSec);
 	void Reset();	// TODO
+
+	void RefreshIni();
+
 	/**
 	 * @return true when AutoMode isDone
 	 */
