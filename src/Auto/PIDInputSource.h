@@ -12,9 +12,24 @@
 
 class NavxPIDSource : public frc::PIDSource {
 public:
+	/**
+	 * Assigns robot and also resets accumulated yaw
+	 * @param robot a RobotModel
+	 */
 	NavxPIDSource(RobotModel *robot);
+	/**
+	 * Calculates and returns AccumulatedYaw
+	 * @return AccumulatedYaw
+	 */
 	double PIDGet();
+	/**
+ 	 * Updates currYaw, calculates deltaYaw, calculates accumulatedYaw.
+ 	 * @return AccumulatedYaw
+	 */
 	double CalculateAccumulatedYaw();
+	/**
+	 * Sets AccumulatedYaw and deltaYaw to zero and updates currYaw and lastYaw
+	 */
 	void ResetAccumulatedYaw();
 	~NavxPIDSource();
 private:

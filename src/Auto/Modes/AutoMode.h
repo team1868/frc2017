@@ -14,6 +14,12 @@ public:
 	virtual void CreateQueue() = 0;
 	virtual void Init() = 0;
 
+	/**
+	 * Updates the current command and prints out if each command is complete and also
+	 * if the automode update is finished
+	 * @param currTimeSec a double current time
+	 * @param deltaTimeSec a double how often to update
+	 */
 	void Update(double currTimeSec, double deltaTimeSec) {
 		if (currentCommand != NULL) {
 			if (currentCommand->IsDone()) {
@@ -29,7 +35,10 @@ public:
 			printf("Done with auto mode update\n");
 		}
 	}
-
+	/**
+	 * Returns when AutoMode is done
+	 * @return true if there is no current command or current command is NULL
+	 */
 	bool IsDone() {
 		return (currentCommand == NULL);
 	}
