@@ -57,9 +57,7 @@ void PivotCommand::RefreshIni() {
 }
 
 void PivotCommand::Init() {
-	pFac_ = robot_->pini->getf("PIVOT PID", "pFac", 0.0);
-	iFac_ = robot_->pini->getf("PIVOT PID", "iFac", 0.0);
-	dFac_ = robot_->pini->getf("PIVOT PID", "dFac", 0.0);
+	robot_->RefreshIni();
 	initYaw_ = navxSource_->PIDGet();
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navxSource_, talonOutput_);
 	pivotPID_->SetSetpoint(initYaw_ + desiredDeltaAngle_);

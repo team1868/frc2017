@@ -14,9 +14,16 @@ extern "C" {
 
 class OneGearMode : public AutoMode {
 public:
+	/**
+	 * Constructs new AlignWithPegCommand
+	 * @param robot a RobotModel
+	 */
 	OneGearMode(RobotModel *robot);
 	virtual ~OneGearMode();
 	void CreateQueue();
+	/**
+	 * Initializes AlignWithPegCommand and sets currentCommand to firstCommand
+	 */
 	void Init(); 	// to put in AutoMode
 	//void Update(double currTimeSec, double deltaTimeSec);
 	void RefreshIni();

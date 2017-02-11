@@ -37,12 +37,33 @@ public:
 	 * @param navxSource a NavxPIDSource
 	 */
 	PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavxPIDSource* navxSource);
+	/**
+	 * Sets PID values to 0, gets PID from navX, sets Setpoint, continuous to false, output range, enables pivotPID
+	 */
 	void Init();
+	/**
+	 * Refresh ini, set initYaw to navx PID, create new PIDController, PivotPID, and enables it
+	 */
 	void Reset();
+	/**
+	 * Sets PID values to 0.0
+	 */
 	void RefreshIni();
+	/**
+	 * If PivotPID not done, checks if PivotPID is on target and if TalonOutput is less than the minimum
+	 * drive output, we set isDone to true and Reset and Disable PivotPID
+	 * Note: times out at 5 seconds from start of PivotCommand
+	 * @param currTimeSec a double is the current time in seconds
+	 * @param deltaTimeSec a double is the update interval in seconds
+	 */
 	void Update(double currTimeSec, double deltaTimeSec);
+	/**
+	 * @return isDone_
+	 */
 	bool IsDone();
-
+	/**
+	 * Destructor
+	 */
 	virtual ~PivotCommand();
 private:
 	/**
@@ -63,6 +84,9 @@ private:
 	PivotPIDTalonOutput *talonOutput_;
 
 	double pivotCommandStartTime_;
+	/**
+	 * Minimum output we would correct for, if less, than it can be considered done
+	 */
 	double minDrivePivotOutput_;
 };
 

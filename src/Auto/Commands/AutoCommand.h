@@ -16,6 +16,9 @@ using namespace std;
 
 class AutoCommand {		// TODO parallel auto commands
 public:
+	/**
+	 * AutoCommand, if extended, allows other commands to implement these methods
+	 */
 	AutoCommand() {
 		nextCommand = NULL;
 	}
