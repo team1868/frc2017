@@ -11,7 +11,6 @@ class MainProgram : public IterativeRobot {
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
-//	NavXPIDSource *navxSource_;
 	LiveWindow *liveWindow_;
 	OneGearMode *liftMode_;	// move this later
 
@@ -33,7 +32,7 @@ public:
 		Wait(1.0);
 		robot_->ZeroNavxYaw();
 //		Wait(1.0);
-//		navxSource_->ResetAccumulatedYaw();
+//		navxSource_->ResetAccumulatedYaw();		// TODO reset accumulated yaw at some point
 	}
 
 	void AutonomousInit() {
