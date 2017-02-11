@@ -30,7 +30,7 @@ double NavxPIDSource::CalculateAccumulatedYaw() {
 		accumulatedYaw_ += deltaYaw_;
 	}
 
-	SmartDashboard::PutNumber("Accumulated Angle", accumulatedYaw_);
+	//SmartDashboard::PutNumber("Accumulated Angle", accumulatedYaw_);
 	return accumulatedYaw_;
 }
 

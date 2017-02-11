@@ -7,7 +7,8 @@ extern "C" {
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Commands/PathCommand.h"
 #include "Auto/Commands/AutoCommand.h"
-#include "Auto/Commands/PivotCommand.h"
+//#include "Auto/Commands/PivotCommand.h"
+#include <Auto/Commands/AlignWithPegCommand.h>
 #include "Auto/PIDInputSource.h"
 #include "RobotModel.h"
 
@@ -18,12 +19,14 @@ public:
 	void CreateQueue();
 	void Init(); 	// to put in AutoMode
 	//void Update(double currTimeSec, double deltaTimeSec);
+	void RefreshIni();
 	bool IsDone();
 private:
 	RobotModel *robot_;
 	AutoCommand *firstCommand_;
-	PathCommand *liftPath_;
-	PivotCommand *pivotCommand_;
+//	PathCommand *liftPath_;
+//	PivotCommand *pivotCommand_;
+	AlignWithPegCommand *alignWithPegCommand_;
 
 	//PathCommand *liftPath2_; 	// TO REPLACE THIS WITH PIVOT COMMAND
 };

@@ -5,6 +5,7 @@
 #include <navx/AHRS.h>
 #include "CANTalon.h"
 #include "Ports2017.h"
+#include "../ext/ini/ini.h"
 
 class RobotModel {
 public:
@@ -22,6 +23,9 @@ public:
 	double GetDriveEncoderValue(Wheels wheel);
 	double GetNavxYaw();
 	void ZeroNavxYaw();
+	void RefreshIni(); //refreshes the ini file
+
+	Ini *pini;
 
 	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	//TODO move to private
 private:

@@ -17,12 +17,15 @@ void PathCommand::Init() {
 	MotionProfile *motionProfile;
 	switch(path_) {
 		case(kLiftOne) :
+			printf("Lift one\n");
 			motionProfile = new LiftOne_MotionProfile();
 			break;
 		case(kLiftTwo) :
+			printf("Lift two\n");
 			motionProfile = new LiftTwo_MotionProfile();
 			break;
 		case(kLiftThree) :
+			printf("Lift three\n");
 			motionProfile = new LiftThree_MotionProfile();
 			break;
 		default :
@@ -62,7 +65,6 @@ void PathCommand::Init() {
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
-
 	leftMotionProfileExecutor_->control();
 	rightMotionProfileExecutor_->control();
 

@@ -12,13 +12,17 @@
 #include "Auto/PIDInputSource.h"
 #include "RobotModel.h"
 
+extern bool global_pivotCommandIsDone;
+
 class PivotPIDTalonOutput : public frc::PIDOutput {
 public:
 	PivotPIDTalonOutput(RobotModel *robot);
 	void PIDWrite(double output);
 	virtual ~PivotPIDTalonOutput();
+	double GetOutput();
 private:
 	RobotModel *robot_;
+	double output_;
 };
 /**
  * A class implementing Pivot PID the WPILibrary PID Controller
@@ -35,6 +39,7 @@ public:
 	PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavxPIDSource* navxSource);
 	void Init();
 	void Reset();
+	void RefreshIni();
 	void Update(double currTimeSec, double deltaTimeSec);
 	bool IsDone();
 
@@ -58,6 +63,7 @@ private:
 	PivotPIDTalonOutput *talonOutput_;
 
 	double pivotCommandStartTime_;
+	double minDrivePivotOutput_;
 };
 
 #endif /* SRC_PIVOTCOMMAND_H_ */

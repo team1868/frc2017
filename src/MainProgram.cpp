@@ -49,6 +49,7 @@ public:
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
 		}
+		SmartDashboard::PutNumber("Navx angle", robot_->GetNavxYaw());
 	}
 
 	void TeleopInit() {
@@ -68,6 +69,10 @@ public:
 		driveController_->PrintDriveValues();
 	}
 
+	void DisabledPeriodic() {
+		SmartDashboard::PutNumber("Navx angle", robot_->GetNavxYaw());
+	}
+
 private:
 	void ResetTimerVariables() {
 		currTimeSec_ = 0.0;
@@ -85,6 +90,9 @@ private:
 		autoController_->Reset();
 		driveController_->Reset();
 		superstructureController_->Reset();
+
+		robot_->RefreshIni();	// TODO move
+		autoController_->RefreshIni();		// TODO put in other method
 	}
 };
 

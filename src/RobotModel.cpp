@@ -1,4 +1,5 @@
 #include "RobotModel.h"
+#include "WPILib.h"
 
 RobotModel::RobotModel() {
 	timer_ = new Timer();
@@ -29,6 +30,10 @@ RobotModel::RobotModel() {
 	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(true);			// TODO check
 	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
+
+	// set brake mode
+	leftMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	rightMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
 
 	leftSlave_->SetControlMode(CANTalon::kFollower);
 	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
@@ -69,7 +74,15 @@ RobotModel::RobotModel() {
 
 	// Initializing navx
 	navx_ = new AHRS(SPI::kMXP);	// might be wrong but idk
+	pini = new Ini("/home/lvuser/robot.ini");
+}
 
+//refreshes the ini file
+void RobotModel::RefreshIni() {
+	printf("in robot model refresh ini\n");
+	delete pini;
+	pini = new Ini("/home/lvuser/robot.ini");
+	printf("at end of robot model refresh ini\n");
 }
 
 void RobotModel::ResetTimer() {

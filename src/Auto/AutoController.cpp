@@ -15,6 +15,7 @@ void AutoController::SetAutonomousMode(AutoMode *myAutoMode) {
 void AutoController::Init() {
 	autoMode->CreateQueue();
 	autoMode->Init();
+	autoMode->RefreshIni();
 }
 
 void AutoController::Update(double currTimeSec, double deltaTimeSec) {
@@ -22,7 +23,12 @@ void AutoController::Update(double currTimeSec, double deltaTimeSec) {
 }
 
 void AutoController::Reset() {
+//	autoMode->CreateQueue();
+//	autoMode->Init();
+}
 
+void AutoController::RefreshIni() {
+//	autoMode->RefreshIni();
 }
 
 bool AutoController::IsDone() {

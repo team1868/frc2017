@@ -19,11 +19,12 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 //	iFac_ = 0.0;
 //	dFac_ = 0.0;
 
-	pFac_ = 0.0075;
-	iFac_ = 0.00008;
-	dFac_ = 0.0021;
+//	pFac_ = 0.03;
+////	iFac_ = 0.00008;
+////	dFac_ = 0.0021;
+//	iFac_ = 0.0;
+//	dFac_ = 0.0;
 
-	printf("p: %f, i: %f, d: %f\n", pFac_, iFac_, dFac_);
 
 	navxSource_ = navxSource;
 	initYaw_ = navxSource_->CalculateAccumulatedYaw();
@@ -39,20 +40,38 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	talonOutput_ = new PivotPIDTalonOutput(robot_);
 
 	pivotCommandStartTime_ = robot_->GetTime();
+
+	RefreshIni();
+}
+
+void PivotCommand::RefreshIni() {
+	//std::cout << robot_->pini->Ini("robot.ini");
+	pFac_ = robot_->pini->getf("PIVOT PID", "pFac", 0.0);
+	iFac_ = robot_->pini->getf("PIVOT PID", "iFac", 0.0);
+	dFac_ = robot_->pini->getf("PIVOT PID", "dFac", 0.0);
+	minDrivePivotOutput_ = robot_->pini->getf("PIVOT PID", "minDrivePivotOutput", 0.0);
+	printf("p: %f, i: %f, d: %f\n", pFac_, iFac_, dFac_);
+	SmartDashboard::PutNumber("P_fac", pFac_);
+	SmartDashboard::PutNumber("I_fac", iFac_);
+	SmartDashboard::PutNumber("D_fac", dFac_);
 }
 
 void PivotCommand::Init() {
+	pFac_ = robot_->pini->getf("PIVOT PID", "pFac", 0.0);
+	iFac_ = robot_->pini->getf("PIVOT PID", "iFac", 0.0);
+	dFac_ = robot_->pini->getf("PIVOT PID", "dFac", 0.0);
 	initYaw_ = navxSource_->PIDGet();
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navxSource_, talonOutput_);
 	pivotPID_->SetSetpoint(initYaw_ + desiredDeltaAngle_);
 	pivotPID_->SetContinuous(false);
 	pivotPID_->SetOutputRange(-0.8, 0.8);	// TODO probably lessen bc too OP
 	//pivotPID_->SetTolerance(.9);	// TODO should check
+	//pivotPID_->SetAbsoluteTolerance(1.0);	// TODO should check
 	pivotPID_->SetAbsoluteTolerance(1.0);	// TODO should check
 	pivotPID_->Enable();
 
 	SmartDashboard::PutNumber("Initial yaw", initYaw_);
-	printf("Desired Delta Angle: %f\n", pivotPID_->GetSetpoint());
+	global_pivotCommandIsDone = false;
 }
 
 void PivotCommand::Reset() {
@@ -75,10 +94,12 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutBoolean("Timed out", timeOut);
 
 	if (!isDone_) {
-		if (pivotPID_->OnTarget() || timeOut) {
+		if ((pivotPID_->OnTarget() && (fabs(talonOutput_->GetOutput()) < minDrivePivotOutput_))) {
+			//	|| timeOut) {
 			pivotPID_->Reset();
 			pivotPID_->Disable();
 			isDone_ = true;
+			global_pivotCommandIsDone = true;
 
 			printf("IS DONE \n");
 			if (timeOut) {
@@ -110,15 +131,25 @@ PivotPIDTalonOutput::PivotPIDTalonOutput(RobotModel *robot){
 //	leftMaster_->SetInverted(false);
 //	rightMaster_->SetInverted(false);
 	robot_ = robot;
+	output_ = 0.0;
 }
 
-void PivotPIDTalonOutput::PIDWrite(double output){
+void PivotPIDTalonOutput::PIDWrite(double myOutput){
+	output_ = myOutput;
 	// one side is already mechanically inverted, so we don't need to negate the output of the wheels
-	robot_->SetDriveValues(RobotModel::kLeftWheels, -output);
-	robot_->SetDriveValues(RobotModel::kRightWheels, output);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, -output_);
+	robot_->SetDriveValues(RobotModel::kRightWheels, output_);
 
-	SmartDashboard::PutNumber("left output", -output);
-	SmartDashboard::PutNumber("right output", output);
+//	printf("in PID write\n");
+//	printf("left output: %f\n", -output);
+//	printf("right output: %f\n", output);
+
+	SmartDashboard::PutNumber("left output", -output_);
+	SmartDashboard::PutNumber("right output", output_);
+}
+
+double PivotPIDTalonOutput::GetOutput() {
+	return output_;
 }
 
 PivotPIDTalonOutput::~PivotPIDTalonOutput(){
