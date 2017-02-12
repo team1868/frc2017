@@ -41,10 +41,10 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 
 	pivotCommandStartTime_ = robot_->GetTime();
 
-	RefreshIni();
+	GetIniValues();
 }
 
-void PivotCommand::RefreshIni() {
+void PivotCommand::GetIniValues() {
 	//std::cout << robot_->pini->Ini("robot.ini");
 	pFac_ = robot_->pini->getf("PIVOT PID", "pFac", 0.0);
 	iFac_ = robot_->pini->getf("PIVOT PID", "iFac", 0.0);

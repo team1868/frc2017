@@ -7,7 +7,6 @@ extern "C" {
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Commands/PathCommand.h"
 #include "Auto/Commands/AutoCommand.h"
-//#include "Auto/Commands/PivotCommand.h"
 #include <Auto/Commands/AlignWithPegCommand.h>
 #include "Auto/PIDInputSource.h"
 #include "RobotModel.h"

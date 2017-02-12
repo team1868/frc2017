@@ -3,6 +3,7 @@
 
 #include "RobotModel.h"
 #include "Auto/Commands/PivotCommand.h"
+#include "Auto/Commands/DriveStraightCommand.h"
 #include <zmq.hpp>
 #include <zhelpers.hpp>
 #include <string>
@@ -44,12 +45,18 @@ private:
 	zmq::socket_t *subscriber_; //(context, ZMQ_REP);
 
 	RobotModel *robot_;
-	PivotCommand *pivotCommand_;
 	NavxPIDSource *navxSource_;
+	TalonEncoderPIDSource *talonEncoderSource_;
+	AnglePIDOutput *angleOutput_;
+	DistancePIDOutput *distanceOutput_;
+
+	PivotCommand *pivotCommand_;
+	DriveStraightCommand *driveStraightCommand_;
 
 	bool isDone_;
 //	bool initializedPivotCommand_ = false;
 	bool pivotCommandIsDone_;
+	bool driveStraightCommandIsDone_;
 
 	double pivotDeltaAngle_;
 };

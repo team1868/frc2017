@@ -21,6 +21,8 @@ public:
 	void SetDriveValues(Wheels wheel, double value);
 	void ClearMotionProfileTrajectories();
 	double GetDriveEncoderValue(Wheels wheel);
+	double GetLeftDistance();
+	double GetRightDistance();
 	double GetNavxYaw();
 	void ZeroNavxYaw();
 	void RefreshIni(); //refreshes the ini file

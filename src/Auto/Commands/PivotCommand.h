@@ -48,7 +48,7 @@ public:
 	/**
 	 * Sets PID values to 0.0
 	 */
-	void RefreshIni();
+	void GetIniValues();
 	/**
 	 * If PivotPID not done, checks if PivotPID is on target and if TalonOutput is less than the minimum
 	 * drive output, we set isDone to true and Reset and Disable PivotPID

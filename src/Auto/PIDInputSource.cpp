@@ -40,3 +40,24 @@ void NavxPIDSource::ResetAccumulatedYaw() {
 	lastYaw_ = currYaw_;
 	deltaYaw_ = 0.0;
 }
+
+TalonEncoderPIDSource::TalonEncoderPIDSource(RobotModel* robot) {
+	robot_ = robot;
+	averageTalonDistance_= 0.0;
+}
+
+double TalonEncoderPIDSource::PIDGet(){
+	double leftDistance = robot_->GetLeftDistance();
+	double rightDistance = robot_->GetRightDistance();
+	averageTalonDistance_= (rightDistance + leftDistance) / 2;
+
+	SmartDashboard::PutNumber("Left Distance", leftDistance);
+	SmartDashboard::PutNumber("Right Distance", rightDistance);
+	SmartDashboard::PutNumber("Average Distance", averageTalonDistance_);
+	return averageTalonDistance_;
+}
+
+TalonEncoderPIDSource::~TalonEncoderPIDSource() {
+
+}
+
