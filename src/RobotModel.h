@@ -25,12 +25,30 @@ public:
 	void ZeroNavxYaw();
 	void RefreshIni(); //refreshes the ini file
 
+	//Superstructure accessors and mutators
+	double GetFeederOutput();
+	void SetFeederOutput(double output);
+	double GetClimberOutput();
+	void SetClimberOutput(double output);
+	Encoder* GetFlywheelEncoder();
+	Encoder* GetIntakeEncoder();
+	Victor* GetFlywheelMotor();
+	Victor* GetIntakeMotor();
+	bool GetGearInRobot();
+	void SetGearInRobot();
+
 	Ini *pini;
 
 	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	//TODO move to private
 private:
 	Timer *timer_;
 	AHRS *navx_;
+
+	Victor *flywheelMotor_, *feederMotor_, *climberMotor_, *intakeMotor_;
+	Encoder *intakeEncoder_, *flywheelEncoder_;
+	DigitalInput *distanceSensor_;
+
+	bool gearInRobot_, distSensorCurr_, distSensorLast_;
 };
 
 #endif /* SRC_ROBOTMODEL_H_ */

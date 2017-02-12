@@ -24,7 +24,7 @@ public:
 		robot_ = new RobotModel();
 		humanControl_ = new ControlBoard();
 		driveController_ = new DriveController(robot_, humanControl_);
-		superstructureController_ = new SuperstructureController();		// TODO
+		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
 		//autoController_ = new AutoController(robot_, driveController_, superstructureController_, humanControl_);
 		autoController_ = new AutoController();
 

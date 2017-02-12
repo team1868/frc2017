@@ -75,6 +75,23 @@ RobotModel::RobotModel() {
 	// Initializing navx
 	navx_ = new AHRS(SPI::kMXP);	// might be wrong but idk
 	pini = new Ini("/home/lvuser/robot.ini");
+
+	flywheelMotor_ = new Victor(FLYWHEEL_MOTOR_PWM_PORT);
+	feederMotor_ = new Victor(FEEDER_MOTOR_PWM_PORT);
+	intakeMotor_ = new Victor(INTAKE_MOTOR_PWM_PORT);
+	climberMotor_ = new Victor(CLIMBER_MOTOR_PWM_PORT);
+
+	intakeEncoder_ = new Encoder(INTAKE_ENCODER_A_PWM_PORT, INTAKE_ENCODER_B_PWM_PORT, true);
+	intakeEncoder_->SetPIDSourceType(PIDSourceType::kRate);
+	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, true);
+	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate); //FIX THIS
+
+	distanceSensor_ = new DigitalInput(DISTANCE_SENSOR_PWM_PORT);
+
+	gearInRobot_ = false;
+	distSensorCurr_ = false;
+	distSensorLast_ = false;
+
 }
 
 //refreshes the ini file
@@ -155,6 +172,57 @@ void RobotModel::ZeroNavxYaw() {
 double RobotModel::GetNavxYaw() {
 	return -navx_->GetYaw();	// so that turning counterclockwise is positive
 }
+
+double RobotModel::GetFeederOutput() {
+	return feederMotor_->Get();
+}
+
+void RobotModel::SetFeederOutput(double output) {
+	feederMotor_->Set(output);
+}
+
+double RobotModel::GetClimberOutput() {
+	return climberMotor_->Get();
+}
+
+void RobotModel::SetClimberOutput(double output) {
+	climberMotor_->Set(output);
+}
+
+Encoder* RobotModel::GetFlywheelEncoder() {
+	return flywheelEncoder_;
+}
+
+Encoder* RobotModel::GetIntakeEncoder() {
+	return intakeEncoder_;
+}
+
+Victor* RobotModel::GetFlywheelMotor() {
+	return flywheelMotor_;
+}
+
+Victor* RobotModel::GetIntakeMotor() {
+	return intakeMotor_;
+}
+
+bool RobotModel::GetGearInRobot() {
+	return gearInRobot_;
+}
+
+void RobotModel::SetGearInRobot() {
+	distSensorLast_ = distSensorCurr_;
+	distSensorCurr_ = distanceSensor_->Get();
+	if (distSensorLast_ && !distSensorCurr_) {
+		gearInRobot_ = !gearInRobot_;
+	}
+	if (gearInRobot_) {
+		printf("Gear is in robot\n");
+	} else {
+		printf("Gear is NOT in robot\n");
+	}
+}
+
+
 
 RobotModel::~RobotModel() {
 }
