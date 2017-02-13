@@ -13,12 +13,19 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot) {
 
 	robot_ = robot;
 
-	pivotCommand_ = NULL;
 	navxSource_ = new NavxPIDSource(robot_);
+	talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
+	angleOutput_ = new AnglePIDOutput();
+	distanceOutput_ = new DistancePIDOutput();
+	pivotCommand_ = NULL;
+
+	driveStraightCommand_ = new DriveStraightCommand(navxSource_, talonEncoderSource_, angleOutput_, distanceOutput_,
+			robot_, 3.0);
 
 	isDone_ = false;
 	//initializedPivotCommand_ = false;
 	pivotCommandIsDone_ = true;
+	driveStraightCommandIsDone_ = false;
 
 	pivotDeltaAngle_ = 0.0;
 }
@@ -29,16 +36,17 @@ void AlignWithPegCommand::RefreshIni() {
 
 void AlignWithPegCommand::Init() {
 	pivotCommandIsDone_ = true;
+	driveStraightCommandIsDone_ = false;
 	pivotDeltaAngle_ = 0.0;
 	isDone_ = false;
+
+	driveStraightCommand_->Init();
 }
 
 void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
+	/*
 	string address = s_recv (*subscriber_);
-	//  Read message contents
 	string contents = s_recv (*subscriber_);
-
-//	cout << contents << endl;
 
 	pivotDeltaAngle_ = stod(contents);
 
@@ -63,10 +71,14 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 		}
 	}
 
-//	this_thread::sleep_for(chrono::milliseconds(20));
+*/
+	if (!driveStraightCommand_->IsDone()) {
+		driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
+	} else {
+		driveStraightCommandIsDone_   = true;
+		isDone_ = true;
+	}
 
-	//SmartDashboard::PutNumber("Yaw", robot_->GetNavxYaw());
-	//SmartDashboard::PutNumber("Accumulated yaw", navxSource_->PIDGet());
 }
 
 bool AlignWithPegCommand::IsDone() {

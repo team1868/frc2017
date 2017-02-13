@@ -3,6 +3,7 @@
 
 #include "RobotModel.h"
 #include "Auto/Commands/PivotCommand.h"
+#include "Auto/Commands/DriveStraightCommand.h"
 #include <zmq.hpp>
 #include <zhelpers.hpp>
 #include <string>
@@ -20,8 +21,20 @@
 
 class AlignWithPegCommand : public AutoCommand {
 public:
+	/**
+	 * Constructor for AlignWithPegCommand
+	 * @param robot a RobotModel
+	 */
 	AlignWithPegCommand(RobotModel *robot);
+	/**
+	 * Sets pivotCommandIsDone_ to true, sets pivotDeltaAngle_ to 0, and isDone_ to false
+	 */
 	void Init();
+	/**
+	 * If angle is less than 1 than set isDone to true, else, prints to SmartDashboard and continues updating
+	 * @param currTimeSec a double that contains time in seconds
+	 * @param deltaTimeSec a double that contains update interval
+	 */
 	void Update(double currTimeSec, double deltaTimeSec);
 	void RefreshIni();
 	bool IsDone();
@@ -32,12 +45,18 @@ private:
 	zmq::socket_t *subscriber_; //(context, ZMQ_REP);
 
 	RobotModel *robot_;
-	PivotCommand *pivotCommand_;
 	NavxPIDSource *navxSource_;
+	TalonEncoderPIDSource *talonEncoderSource_;
+	AnglePIDOutput *angleOutput_;
+	DistancePIDOutput *distanceOutput_;
+
+	PivotCommand *pivotCommand_;
+	DriveStraightCommand *driveStraightCommand_;
 
 	bool isDone_;
 //	bool initializedPivotCommand_ = false;
 	bool pivotCommandIsDone_;
+	bool driveStraightCommandIsDone_;
 
 	double pivotDeltaAngle_;
 };

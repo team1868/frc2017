@@ -7,16 +7,22 @@ extern "C" {
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Commands/PathCommand.h"
 #include "Auto/Commands/AutoCommand.h"
-//#include "Auto/Commands/PivotCommand.h"
 #include <Auto/Commands/AlignWithPegCommand.h>
 #include "Auto/PIDInputSource.h"
 #include "RobotModel.h"
 
 class OneGearMode : public AutoMode {
 public:
+	/**
+	 * Constructs new AlignWithPegCommand
+	 * @param robot a RobotModel
+	 */
 	OneGearMode(RobotModel *robot);
 	virtual ~OneGearMode();
 	void CreateQueue();
+	/**
+	 * Initializes AlignWithPegCommand and sets currentCommand to firstCommand
+	 */
 	void Init(); 	// to put in AutoMode
 	//void Update(double currTimeSec, double deltaTimeSec);
 	void RefreshIni();

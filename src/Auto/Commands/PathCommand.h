@@ -23,6 +23,7 @@ public:
 	 */
 	PathCommand(RobotModel *robot, Path path);
 	~PathCommand();
+
 	void Init();
 	void Update(double currTimeSec, double deltaTimeSec);
 	bool IsDone();

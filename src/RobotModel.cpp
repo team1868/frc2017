@@ -1,6 +1,9 @@
 #include "RobotModel.h"
 #include "WPILib.h"
 
+const double WHEEL_DIAMETER = 6.05 / 12.0; // in feet
+const double ENCODER_COUNT_PER_ROTATION = 256.0;
+
 RobotModel::RobotModel() {
 	timer_ = new Timer();
 	timer_->Start();
@@ -163,6 +166,14 @@ double RobotModel::GetDriveEncoderValue(Wheels wheel) {
 				return 0;
 	}
 	return 0;
+}
+
+double RobotModel::GetLeftDistance() {
+	return GetDriveEncoderValue(kLeftWheels) * (ENCODER_COUNT_PER_ROTATION * 4)/ (WHEEL_DIAMETER * M_PI);
+}
+
+double RobotModel::GetRightDistance() {
+	return GetDriveEncoderValue(kRightWheels) * (ENCODER_COUNT_PER_ROTATION * 4)/ (WHEEL_DIAMETER * M_PI);
 }
 
 void RobotModel::ZeroNavxYaw() {

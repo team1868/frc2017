@@ -9,6 +9,7 @@
 #define SRC_PIDINPUTSOURCE_H_
 
 #include "RobotModel.h"
+#include "WPILib.h"
 
 class NavxPIDSource : public frc::PIDSource {
 public:
@@ -35,6 +36,16 @@ public:
 private:
 	double currYaw_, lastYaw_, deltaYaw_, accumulatedYaw_;
 	RobotModel *robot_;
+};
+
+class TalonEncoderPIDSource : public frc::PIDSource {
+public:
+	TalonEncoderPIDSource(RobotModel *robot);
+	double PIDGet();
+	virtual ~TalonEncoderPIDSource();
+private:
+	RobotModel *robot_;
+	double averageTalonDistance_;
 };
 
 #endif /* SRC_PIDINPUTSOURCE_H_ */
