@@ -23,16 +23,32 @@ RobotModel::RobotModel() {
 	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
 	leftMaster_->ConfigEncoderCodesPerRev(256);
 	leftMaster_->SetPosition(0);
+
+	/* KOP BOT */
 	leftMaster_->SetSensorDirection(false);		// TODO check
 	leftMaster_->SetInverted(false);			// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(false); // TODO check
 
+	/* COMP BOT
+	leftMaster_->SetSensorDirection(false);		// TODO check
+	leftMaster_->SetInverted(true);			// TODO check
+	leftMaster_->SetClosedLoopOutputDirection(true); // TODO check
+	*/
+
 	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
 	rightMaster_->ConfigEncoderCodesPerRev(256);
 	rightMaster_->SetPosition(0);
+
+	/* KOP BOT */
 	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(true);			// TODO check
 	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
+
+	/* COMP BOT
+	rightMaster_->SetSensorDirection(true); 	// TODO check
+	rightMaster_->SetInverted(false);			// TODO check
+	rightMaster_->SetClosedLoopOutputDirection(false);	// TODO check
+	*/
 
 	// set brake mode
 	leftMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
@@ -42,38 +58,6 @@ RobotModel::RobotModel() {
 	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
 	rightSlave_->SetControlMode(CANTalon::kFollower);
 	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
-
-//	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-//	//_leftMaster.ConfigEncoderCodesPerRev(360);
-////		_leftMaster.ConfigEncoderCodesPerRev(256);
-//	leftMaster_->ConfigEncoderCodesPerRev(256);
-//	leftMaster_->SetPosition(0);
-//	leftMaster_->SetSensorDirection(false); /* keep sensor and motor in phase */
-//
-//	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-////		_rightMaster.ConfigEncoderCodesPerRev(360);
-//	// 1024
-//	//_rightMaster.ConfigEncoderCodesPerRev(256);
-//	rightMaster_->ConfigEncoderCodesPerRev(256);
-//	rightMaster_->SetPosition(0);
-//	rightMaster_->SetSensorDirection(true); /* keep sensor and motor in phase */
-//	rightMaster_->SetClosedLoopOutputDirection(true);
-//	rightMaster_->SetInverted(true);		// PUT THIS IN TELEOP
-
-//	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-//	leftMaster_->ConfigEncoderCodesPerRev(256);
-//	leftMaster_->SetPosition(0);
-//	leftMaster_->SetSensorDirection(true);		// TODO check
-//	rightMaster_->SetInverted(false);			// TODO check
-//	rightMaster_->SetClosedLoopOutputDirection(false); // TODO check
-//
-//	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-//	rightMaster_->ConfigEncoderCodesPerRev(256);
-//	rightMaster_->SetPosition(0);
-//	rightMaster_->SetSensorDirection(true); 	// TODO check
-//
-//	rightMaster_->SetInverted(true);			// TODO check
-//	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
 
 	// Initializing navx
 	navx_ = new AHRS(SPI::kMXP);	// might be wrong but idk
@@ -144,7 +128,7 @@ double RobotModel::GetDriveEncoderValue(Wheels wheel) {
 		case(kLeftWheels):
 				return leftMaster_->GetEncPosition();
 		case(kRightWheels):
-				return rightMaster_->GetEncPosition();
+				return -rightMaster_->GetEncPosition();
 		case(kAllWheels):
 				return 0;
 	}
@@ -152,11 +136,11 @@ double RobotModel::GetDriveEncoderValue(Wheels wheel) {
 }
 
 double RobotModel::GetLeftDistance() {
-	return GetDriveEncoderValue(kLeftWheels) * (ENCODER_COUNT_PER_ROTATION * 4)/ (WHEEL_DIAMETER * M_PI);
+	return GetDriveEncoderValue(kLeftWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * 4);
 }
 
 double RobotModel::GetRightDistance() {
-	return GetDriveEncoderValue(kRightWheels) * (ENCODER_COUNT_PER_ROTATION * 4)/ (WHEEL_DIAMETER * M_PI);
+	return GetDriveEncoderValue(kRightWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * 4);
 }
 
 void RobotModel::ZeroNavxYaw() {

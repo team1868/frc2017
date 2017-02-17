@@ -4,6 +4,7 @@
 #include "RobotModel.h"
 #include "Auto/Commands/PivotCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/PIDInputSource.h"
 #include <zmq.hpp>
 #include <zhelpers.hpp>
 #include <string>
@@ -25,7 +26,7 @@ public:
 	 * Constructor for AlignWithPegCommand
 	 * @param robot a RobotModel
 	 */
-	AlignWithPegCommand(RobotModel *robot);
+	AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource);
 	/**
 	 * Sets pivotCommandIsDone_ to true, sets pivotDeltaAngle_ to 0, and isDone_ to false
 	 */
@@ -41,24 +42,33 @@ public:
 	virtual ~AlignWithPegCommand();
 
 private:
-	zmq::context_t *context_; //(1);
-	zmq::socket_t *subscriber_; //(context, ZMQ_REP);
+	zmq::context_t *angleContext_; //(1);
+	zmq::socket_t *angleSubscriber_;
+
+	zmq::context_t *distanceContext_; //(1);
+	zmq::socket_t *distanceSubscriber_;
 
 	RobotModel *robot_;
+
 	NavxPIDSource *navxSource_;
-	TalonEncoderPIDSource *talonEncoderSource_;
+	TalonEncoderPIDSource *talonSource_;
 	AnglePIDOutput *angleOutput_;
 	DistancePIDOutput *distanceOutput_;
 
 	PivotCommand *pivotCommand_;
 	DriveStraightCommand *driveStraightCommand_;
 
-	bool isDone_;
-//	bool initializedPivotCommand_ = false;
-	bool pivotCommandIsDone_;
-	bool driveStraightCommandIsDone_;
+	double desiredPivotDeltaAngle_;
+	double desiredDistance_;
 
-	double pivotDeltaAngle_;
+	enum AlignState {
+		kPivotToAngleInit, kPivotToAngleUpdate, kDriveStraightInit, kDriveStraightUpdate
+	};
+
+	uint32_t currState_;
+	uint32_t nextState_;
+
+	bool isDone_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_ALIGNWITHPEGCOMMAND_H_ */

@@ -27,6 +27,7 @@ public:
 				currentCommand = currentCommand->GetNextCommand();
 				if (currentCommand != NULL) {
 					currentCommand->Init();
+					printf("Initializing current commmand\n");
 				}
 			} else {
 				currentCommand->Update(currTimeSec, deltaTimeSec);

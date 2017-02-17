@@ -11,8 +11,11 @@ class MainProgram : public IterativeRobot {
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
+
+	NavxPIDSource *navxSource_;
+	TalonEncoderPIDSource *talonEncoderSource_;
+
 	LiveWindow *liveWindow_;
-	OneGearMode *liftMode_;	// move this later
 
 	double currTimeSec_;
 	double lastTimeSec_;
@@ -28,6 +31,9 @@ public:
 		//autoController_ = new AutoController(robot_, driveController_, superstructureController_, humanControl_);
 		autoController_ = new AutoController();
 
+		navxSource_ = new NavxPIDSource(robot_);
+		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
+
 //		navxSource_ = new NavXPIDSource(robot_);
 		Wait(1.0);
 		robot_->ZeroNavxYaw();
@@ -38,7 +44,8 @@ public:
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-		OneGearMode *liftTwoMode = new OneGearMode(robot_);	// TODO make this take in DriveController
+		OneGearMode *liftTwoMode = new OneGearMode(robot_, navxSource_, talonEncoderSource_);	// TODO make this take in DriveController
+
 		autoController_->SetAutonomousMode(liftTwoMode);
 		autoController_->Init();
 	}
@@ -70,6 +77,10 @@ public:
 
 	void DisabledPeriodic() {
 		SmartDashboard::PutNumber("Navx angle", robot_->GetNavxYaw());
+		robot_->SetPercentVDrive();
+		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+//		talon_.SetControlMode(CANTalon::kPercentVbus);
+//		talon_.Set( 0 );
 	}
 
 private:

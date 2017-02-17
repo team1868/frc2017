@@ -4,9 +4,6 @@
 #include <Auto/MotionProfiling/MotionProfileExecutor.h>
 #include "WPILib.h"
 #include "Auto/Commands/AutoCommand.h"
-extern "C" {
-#include <pathfinder/pathfinder.h>
-}
 #include "Auto/MotionProfiling/MotionProfile.h"
 #include "Auto/MotionProfiling/LiftOne_MotionProfile.h"
 #include "Auto/MotionProfiling/LiftTwo_MotionProfile.h"

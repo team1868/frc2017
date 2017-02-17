@@ -1,9 +1,6 @@
 #ifndef SRC_CONTROLLERS_DRIVECONTROLLER_H_
 #define SRC_CONTROLLERS_DRIVECONTROLLER_H_
 
-extern "C" {
-#include <pathfinder/pathfinder.h>
-}
 #include "WPILib.h"
 #include "RobotModel.h"
 #include "DriverStation/ControlBoard.h"
@@ -17,7 +14,6 @@ public:
 	 */
 	DriveController(RobotModel* robot, ControlBoard *humanControl);
 	void Reset();
-	void SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int trajectoryLength);	// Gets called in PathCommand::Update(double, double)
 	void UpdateMotionProfile();
 	/**
 	 * Updates joystick and button values from driver, also determines type of drive for robot to use

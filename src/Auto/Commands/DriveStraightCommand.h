@@ -8,6 +8,7 @@
 #ifndef SRC_DRIVESTRAIGHTCOMMAND_H_
 #define SRC_DRIVESTRAIGHTCOMMAND_H_
 
+#include "WPILib.h"
 #include <math.h>
 #include "RobotModel.h"
 #include "Auto/PIDInputSource.h"

@@ -12,8 +12,6 @@
 #include "Auto/PIDInputSource.h"
 #include "RobotModel.h"
 
-extern bool global_pivotCommandIsDone;
-
 class PivotPIDTalonOutput : public frc::PIDOutput {
 public:
 	PivotPIDTalonOutput(RobotModel *robot);

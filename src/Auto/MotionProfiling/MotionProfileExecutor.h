@@ -241,15 +241,24 @@ public:
 						 * get here when the MP is done
 						 */
 						setValue_ = CANTalon::SetValueMotionProfileHold;
-						state_ = 0;
+//						state_ = 0;
+						state_ = 3;
 						loopTimeout_ = -1;
 
 						for (int i = 0; i < trajLength_; i++) {
 							free(profile_[i]);
 						}
 						free(profile_);
-
-						isDone_ = true;
+						printf("IN LAST POINT MOTION PROFILE\n");
+					}
+					break;
+				case 3:
+					if (setValue_ == CANTalon::SetValueMotionProfileHold) {
+						setValue_ = CANTalon::SetValueMotionProfileDisable;
+						isDone_ = true;		// DONE!!
+						talon_.SetControlMode(CANTalon::kPercentVbus);
+						talon_.Set( 0 );
+						/* clear our buffer and put everything into a known state */
 					}
 					break;
 			}

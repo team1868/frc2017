@@ -2,32 +2,41 @@
 
 using namespace std;
 
-bool global_pivotCommandIsDone;
-
-AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot) {
+AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource) {
 	// TODO Auto-generated constructor stub
-	context_ = new zmq::context_t(1);
-	subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
-	subscriber_->connect("tcp://10.18.68.29:5563");
-	subscriber_->setsockopt( ZMQ_SUBSCRIBE, "B", 1);
+	printf("in beginning of alignwithpegcommand\n");
+	angleContext_ = new zmq::context_t(1);
+	distanceContext_ = new zmq::context_t(1);
+////	distanceSubscriber_ = new zmq::socket_t()
+//
+	angleSubscriber_ = new zmq::socket_t(*angleContext_, ZMQ_SUB);
+	angleSubscriber_->connect("tcp://10.18.68.40:5563");	// MAKE SURE RIGHT IP
+
+	distanceSubscriber_ = new zmq::socket_t(*distanceContext_, ZMQ_SUB);
+	distanceSubscriber_->connect("tcp://10.18.68.40:5563");	// MAKE SURE RIGHT IP
+	angleSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "ANGLE", 1);
+	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
 
 	robot_ = robot;
-
-	navxSource_ = new NavxPIDSource(robot_);
-	talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
+	navxSource_ = navxSource;
+	talonSource_ = talonSource;
+//	navxSource_ = NULL;
+//	talonSource_ = NULL;
+//
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
-	pivotCommand_ = NULL;
 
-	driveStraightCommand_ = new DriveStraightCommand(navxSource_, talonEncoderSource_, angleOutput_, distanceOutput_,
-			robot_, 3.0);
+	pivotCommand_ = NULL;
+	driveStraightCommand_ = NULL;
 
 	isDone_ = false;
-	//initializedPivotCommand_ = false;
-	pivotCommandIsDone_ = true;
-	driveStraightCommandIsDone_ = false;
 
-	pivotDeltaAngle_ = 0.0;
+	desiredPivotDeltaAngle_ = 0.0;
+	desiredDistance_ = 0.0;
+
+	currState_ = kPivotToAngleInit;
+	nextState_ = kPivotToAngleInit;
+	printf("in alignWithPegCommand constructor\n");
 }
 
 void AlignWithPegCommand::RefreshIni() {
@@ -35,50 +44,116 @@ void AlignWithPegCommand::RefreshIni() {
 }
 
 void AlignWithPegCommand::Init() {
-	pivotCommandIsDone_ = true;
-	driveStraightCommandIsDone_ = false;
-	pivotDeltaAngle_ = 0.0;
+	desiredPivotDeltaAngle_ = 0.0;
+	desiredDistance_ = 0.0;
 	isDone_ = false;
 
-	driveStraightCommand_->Init();
+	currState_ = kPivotToAngleInit;
+	nextState_ = kPivotToAngleInit;
+
+	angleOutput_ = new AnglePIDOutput();
+	distanceOutput_ = new DistancePIDOutput();
+
+	printf("in alignwithpegcommand init\n");
 }
 
 void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
-	/*
-	string address = s_recv (*subscriber_);
-	string contents = s_recv (*subscriber_);
+	string angleAddress = s_recv (*angleSubscriber_);
+	string angleContents = s_recv (*angleSubscriber_);
 
-	pivotDeltaAngle_ = stod(contents);
+	string distanceAddress = s_recv (*distanceSubscriber_);
+	string distanceContents = s_recv (*distanceSubscriber_);
 
-	if (pivotCommandIsDone_) {
-		if (fabs(pivotDeltaAngle_) < 1.0) {
-			isDone_ = true;
-		} else {
-			SmartDashboard::PutNumber("Initial navx angle", robot_->GetNavxYaw());
-			SmartDashboard::PutNumber("Pivot delta angle", pivotDeltaAngle_);
-			// -pivotDeltaAngle_ because Jetson returns positive angles to the right
-			pivotCommand_ = new PivotCommand(robot_, -pivotDeltaAngle_, false, navxSource_);
-			pivotCommand_->Init();
-			pivotCommandIsDone_ = false;
-		}
-	} else {
-		pivotCommand_->Update(currTimeSec, deltaTimeSec);
-		if (global_pivotCommandIsDone) {
-		//if (pivotCommand_->IsDone()) {
-			pivotCommandIsDone_ = true;
-//			std::terminate();
-			isDone_ = true;	// TAKE OUT LATER
-		}
+//	printf("in update\n");
+
+	switch (currState_) {
+		case (kPivotToAngleInit) :
+			printf("In kPivotToAngleInit\n");
+			// Get angle from Jetson
+			if (angleAddress == "ANGLE") {
+				desiredPivotDeltaAngle_ = stod(angleContents);
+				printf("ANGLE: %f\n", desiredPivotDeltaAngle_);
+			} else {
+				printf("angle address: %s\n", angleAddress.c_str());
+			}
+
+			if (fabs(desiredPivotDeltaAngle_) > 1.0) {		// 1 inch threshold
+				// CHECK -DESIREDPIVOTDELTAANGLE_
+				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navxSource_);
+				pivotCommand_->Init();
+				nextState_ = kPivotToAngleUpdate;
+			} else {
+				nextState_ = kDriveStraightInit;
+			}
+			break;
+
+		case (kPivotToAngleUpdate) :
+			printf("in kPivotToAngleUpdate\n");
+			if (!pivotCommand_->IsDone()) {
+				pivotCommand_->Update(currTimeSec, deltaTimeSec);
+				nextState_ = kPivotToAngleUpdate;
+			} else {
+				nextState_ = kDriveStraightInit;
+			}
+			break;
+
+		case (kDriveStraightInit) :
+			// Get distance from Jetson
+			if (distanceAddress == "DISTANCE") {
+				desiredDistance_ = stod(distanceContents);
+				printf("DISTANCE: %f\n", desiredDistance_);
+			}
+
+			if (fabs(desiredDistance_) > 1.0/12.0) {		// 1 inch threshold
+				// Jetson returns in inches, so /12.0
+				// Subtract 10 inches bc of length of peg
+				driveStraightCommand_ = new DriveStraightCommand(navxSource_, talonSource_, angleOutput_, distanceOutput_,
+						robot_, (desiredDistance_ - 10.0)/12.0);
+				driveStraightCommand_->Init();
+				nextState_ = kDriveStraightUpdate;
+			} else {
+				isDone_ = true;
+			}
+			break;
+
+		case (kDriveStraightUpdate) :
+			if (!driveStraightCommand_->IsDone()) {
+				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
+				nextState_ = kDriveStraightUpdate;
+			} else {
+				isDone_ = true;
+				// no next state
+			}
+			break;
 	}
+	currState_ = nextState_;
 
-*/
-	if (!driveStraightCommand_->IsDone()) {
-		driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
-	} else {
-		driveStraightCommandIsDone_   = true;
-		isDone_ = true;
-	}
+//	// TODO change logic to add distance
+//	if (pivotCommandIsDone_) {		// true in beginning
+//		if (fabs(desiredPivotDeltaAngle_) < 1.0) {		// 1 inch threshold
+//			isDone_ = true;
+//		} else {
+//			SmartDashboard::PutNumber("Initial navx angle", robot_->GetNavxYaw());
+//			SmartDashboard::PutNumber("Pivot delta angle", desiredPivotDeltaAngle_);
+//			// -pivotDeltaAngle_ because Jetson returns positive angles to the right
+//			pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navxSource_);
+//			pivotCommand_->Init();
+//			pivotCommandIsDone_ = false;
+//		}
+//	} else {
+//		pivotCommand_->Update(currTimeSec, deltaTimeSec);
+//		if (pivotCommand_->IsDone()) {
+//			pivotCommandIsDone_ = true;
+//			isDone_ = true;	// TAKE OUT LATER
+//		}
+//	}
 
+//	if (!driveStraightCommand_->IsDone()) {
+//		driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
+//	} else {
+//		driveStraightCommandIsDone_ = true;
+//		isDone_ = true;
+//	}
 }
 
 bool AlignWithPegCommand::IsDone() {

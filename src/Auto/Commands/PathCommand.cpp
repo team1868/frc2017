@@ -10,7 +10,6 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 	leftMotionProfileExecutor_ = NULL;
 	rightMotionProfileExecutor_ = NULL;
 	isDone_ = false;
-
 }
 
 void PathCommand::Init() {
@@ -56,12 +55,14 @@ void PathCommand::Init() {
 
 	leftMotionProfileExecutor_->hasStarted_ = false;
 	rightMotionProfileExecutor_->hasStarted_ = false;
-	robot_->leftMaster_->SetPID(0.7, 0.02, 0.1, 1.40329);
-	robot_->rightMaster_->SetPID(0.7, 0.02, 0.1, 1.31154);
+//	robot_->leftMaster_->SetPID(0.7, 0.02, 0.1, 1.40329);
+//	robot_->rightMaster_->SetPID(0.7, 0.02, 0.1, 1.31154);
+
+	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.2, 1.40329);
+	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.2, 1.31154);
 
 //	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.3, 1.38329);
 //	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.3, 1.30254);
-
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
@@ -92,7 +93,16 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 }
 
 bool PathCommand::IsDone() {
-	return (leftMotionProfileExecutor_->isDone_ && rightMotionProfileExecutor_->isDone_); // TODO use IsDone() function
+	if (leftMotionProfileExecutor_->isDone_ && rightMotionProfileExecutor_->isDone_) { // TODO use IsDone() function
+		robot_->SetPercentVDrive();
+		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+		leftMotionProfileExecutor_->reset();
+		rightMotionProfileExecutor_->reset();
+		printf("PATH COMMAND IS DONE\n");
+		return true;
+	} else {
+		return false;
+	}
 }
 
 PathCommand::~PathCommand() {
