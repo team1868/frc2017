@@ -28,7 +28,7 @@ private:
 
 class DriveStraightCommand {
 public:
-	DriveStraightCommand(NavxPIDSource* navxSource, TalonEncoderPIDSource* talonEncoderSource,
+	DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
 			double desiredDistance);
 	void Init();
@@ -37,7 +37,7 @@ public:
 	void GetIniValues();
 	virtual ~DriveStraightCommand();
 private:
-	NavxPIDSource *navxSource_;
+	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;
 	AnglePIDOutput *anglePIDOutput_;
 	DistancePIDOutput *distancePIDOutput_;

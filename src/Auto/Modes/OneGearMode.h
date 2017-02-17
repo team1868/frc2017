@@ -14,7 +14,7 @@ public:
 	 * Constructs new AlignWithPegCommand
 	 * @param robot a RobotModel
 	 */
-	OneGearMode(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource);
+	OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource);
 	virtual ~OneGearMode();
 	void CreateQueue();
 	/**
@@ -30,7 +30,7 @@ private:
 	PathCommand *liftPath_;
 	AlignWithPegCommand *alignWithPegCommand_;
 
-	NavxPIDSource *navxSource_;
+	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonSource_;
 };
 

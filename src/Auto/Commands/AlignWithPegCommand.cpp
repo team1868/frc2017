@@ -2,7 +2,7 @@
 
 using namespace std;
 
-AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource) {
+AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource) {
 	printf("in beginning of alignwithpegcommand\n");
 	angleContext_ = new zmq::context_t(1);
 	distanceContext_ = new zmq::context_t(1);
@@ -16,7 +16,7 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxS
 	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
 
 	robot_ = robot;
-	navxSource_ = navxSource;
+	navXSource_ = navXSource;
 	talonSource_ = talonSource;
 
 	angleOutput_ = new AnglePIDOutput();
@@ -73,7 +73,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 			if (fabs(desiredPivotDeltaAngle_) > 1.0) {		// 1 inch threshold
 				// CHECK -DESIREDPIVOTDELTAANGLE_
-				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navxSource_);
+				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navXSource_);
 				pivotCommand_->Init();
 				nextState_ = kPivotToAngleUpdate;
 			} else {
@@ -101,7 +101,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 			if (fabs(desiredDistance_) > 1.0/12.0) {		// 1 inch threshold
 				// Jetson returns in inches, so /12.0
 				// Subtract 10 inches bc of length of peg
-				driveStraightCommand_ = new DriveStraightCommand(navxSource_, talonSource_, angleOutput_, distanceOutput_,
+				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
 						robot_, (desiredDistance_ - 10.0)/12.0);
 				driveStraightCommand_->Init();
 				nextState_ = kDriveStraightUpdate;

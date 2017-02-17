@@ -23,8 +23,8 @@ public:
 	double GetDriveEncoderValue(Wheels wheel);
 	double GetLeftDistance();
 	double GetRightDistance();
-	double GetNavxYaw();
-	void ZeroNavxYaw();
+	double GetNavXYaw();
+	void ZeroNavXYaw();
 	void RefreshIni(); //refreshes the ini file
 
 	//Superstructure accessors and mutators
@@ -44,7 +44,7 @@ public:
 	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	//TODO move to private
 private:
 	Timer *timer_;
-	AHRS *navx_;
+	AHRS *navX_;
 
 	Victor *flywheelMotor_, *feederMotor_, *climberMotor_, *intakeMotor_;
 	Encoder *intakeEncoder_, *flywheelEncoder_;

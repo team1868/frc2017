@@ -1,12 +1,12 @@
 #include <Auto/Modes/OneGearMode.h>
 
-OneGearMode::OneGearMode(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource) {
+OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource) {
 	robot_ = robot;
-	navxSource_ = navxSource;
+	navXSource_ = navXSource;
 	talonSource_ = talonSource;
 	firstCommand_ = NULL;
 	liftPath_ = new PathCommand(robot_, PathCommand::kLiftTwo);	// to put this as input to OneGearMode?
-	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navxSource_, talonSource_);
+	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
 	printf("in one gear mode constructor\n");
 }
 

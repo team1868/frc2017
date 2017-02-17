@@ -26,7 +26,7 @@ public:
 	 * Constructor for AlignWithPegCommand
 	 * @param robot a RobotModel
 	 */
-	AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource);
+	AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource);
 
 	/**
 	 * Sets pivotCommandIsDone_ to true, sets pivotDeltaAngle_ to 0, and isDone_ to false
@@ -52,7 +52,7 @@ private:
 
 	RobotModel *robot_;
 
-	NavxPIDSource *navxSource_;
+	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonSource_;
 	AnglePIDOutput *angleOutput_;
 	DistancePIDOutput *distanceOutput_;

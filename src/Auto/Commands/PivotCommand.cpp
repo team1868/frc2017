@@ -7,9 +7,9 @@
 
 #include <Auto/Commands/PivotCommand.h>
 
-PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavxPIDSource* navxSource) {
-	navxSource_ = navxSource;
-	initYaw_ = navxSource_->CalculateAccumulatedYaw();
+PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavXPIDSource* navXSource) {
+	navXSource_ = navXSource;
+	initYaw_ = navXSource_->CalculateAccumulatedYaw();
 
 	if (isAbsolutePosition){
 		desiredDeltaAngle_ = CalculateDeltaAngle(desiredAngle);
@@ -24,7 +24,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	pivotCommandStartTime_ = robot_->GetTime();
 
 	GetIniValues();
-	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navxSource_, talonOutput_);
+	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
 }
 
 void PivotCommand::GetIniValues() {
@@ -36,7 +36,7 @@ void PivotCommand::GetIniValues() {
 }
 
 void PivotCommand::Init() {
-	initYaw_ = navxSource_->PIDGet();
+	initYaw_ = navXSource_->PIDGet();
 	pivotPID_->SetSetpoint(initYaw_ + desiredDeltaAngle_);
 	pivotPID_->SetContinuous(false);
 	pivotPID_->SetOutputRange(-0.8, 0.8);	// TODO probably lessen bc too OP

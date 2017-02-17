@@ -33,16 +33,16 @@ DistancePIDOutput::~DistancePIDOutput() {
 
 }
 
-DriveStraightCommand::DriveStraightCommand(NavxPIDSource* navxSource, TalonEncoderPIDSource* talonEncoderSource,
+DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 		AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
 		double desiredDistance) {
-	navxSource_ = navxSource;
+	navXSource_ = navXSource;
 	talonEncoderSource_ = talonEncoderSource;
 	anglePIDOutput_ = anglePIDOutput;
 	distancePIDOutput_ = distancePIDOutput;
 	robot_ = robot;
 
-	initialAngle_ = navxSource_->PIDGet();
+	initialAngle_ = navXSource_->PIDGet();
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
 
 	// Convert feet to encoder values and adding the difference to the initial to know how far we want to go
@@ -55,7 +55,7 @@ DriveStraightCommand::DriveStraightCommand(NavxPIDSource* navxSource, TalonEncod
 
 	GetIniValues();
 
-	anglePID_ = new PIDController(rPFac_, rIFac_, rDFac_, navxSource_, anglePIDOutput_);
+	anglePID_ = new PIDController(rPFac_, rIFac_, rDFac_, navXSource_, anglePIDOutput_);
 	distancePID_ = new PIDController(dPFac_, dIFac_, dDFac_, talonEncoderSource_, distancePIDOutput_);
 }
 
@@ -66,7 +66,7 @@ void DriveStraightCommand::Init() {
 
 	robot_->SetPercentVDrive();
 
-	initialAngle_ = navxSource_->PIDGet();
+	initialAngle_ = navXSource_->PIDGet();
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
 	desiredTotalAvgDistance_ = initialAvgDistance_ + desiredDistance_;
 

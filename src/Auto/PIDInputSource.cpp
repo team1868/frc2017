@@ -10,19 +10,19 @@
 
 /*---------------------- NAVX PID SOURCE ---------------------- */
 
-NavxPIDSource::NavxPIDSource(RobotModel *robot) {
+NavXPIDSource::NavXPIDSource(RobotModel *robot) {
 	robot_ = robot;
 	ResetAccumulatedYaw();
 }
 
-double NavxPIDSource::PIDGet() {
+double NavXPIDSource::PIDGet() {
 	CalculateAccumulatedYaw();
 	return accumulatedYaw_;
 }
 
-double NavxPIDSource::CalculateAccumulatedYaw() {
+double NavXPIDSource::CalculateAccumulatedYaw() {
 	lastYaw_ = currYaw_;
-	currYaw_ = robot_->GetNavxYaw();
+	currYaw_ = robot_->GetNavXYaw();
 	deltaYaw_ = currYaw_ - lastYaw_;
 
 	if (deltaYaw_ < -180) {			// going clockwise (from 180 to -180)
@@ -37,14 +37,14 @@ double NavxPIDSource::CalculateAccumulatedYaw() {
 	return accumulatedYaw_;
 }
 
-void NavxPIDSource::ResetAccumulatedYaw() {
+void NavXPIDSource::ResetAccumulatedYaw() {
 	accumulatedYaw_ = 0.0;
-	currYaw_ = robot_->GetNavxYaw();
+	currYaw_ = robot_->GetNavXYaw();
 	lastYaw_ = currYaw_;
 	deltaYaw_ = 0.0;
 }
 
-NavxPIDSource::~NavxPIDSource() {
+NavXPIDSource::~NavXPIDSource() {
 
 }
 

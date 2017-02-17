@@ -12,7 +12,7 @@ class MainProgram : public IterativeRobot {
 	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
 
-	NavxPIDSource *navxSource_;
+	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;
 
 	LiveWindow *liveWindow_;
@@ -31,12 +31,11 @@ public:
 		//autoController_ = new AutoController(robot_, driveController_, superstructureController_, humanControl_);
 		autoController_ = new AutoController();
 
-		navxSource_ = new NavxPIDSource(robot_);
+		navXSource_ = new NavXPIDSource(robot_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
-//		navxSource_ = new NavXPIDSource(robot_);
 		Wait(1.0);
-		robot_->ZeroNavxYaw();
+		robot_->ZeroNavXYaw();
 //		Wait(1.0);
 //		navxSource_->ResetAccumulatedYaw();		// TODO reset accumulated yaw at some point
 	}
@@ -44,7 +43,7 @@ public:
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-		OneGearMode *liftTwoMode = new OneGearMode(robot_, navxSource_, talonEncoderSource_);	// TODO make this take in DriveController
+		OneGearMode *liftTwoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
 
 		autoController_->SetAutonomousMode(liftTwoMode);
 		autoController_->Init();
@@ -55,7 +54,7 @@ public:
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
 		}
-		SmartDashboard::PutNumber("Navx angle", robot_->GetNavxYaw());
+		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 	}
 
 	void TeleopInit() {
@@ -76,7 +75,7 @@ public:
 	}
 
 	void DisabledPeriodic() {
-		SmartDashboard::PutNumber("Navx angle", robot_->GetNavxYaw());
+		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		robot_->SetPercentVDrive();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 	}

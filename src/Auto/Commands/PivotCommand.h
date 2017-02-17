@@ -26,15 +26,15 @@ public:
 	 * @param robot a RobotModel
 	 * @param desiredAngle a double that is the angle of the turn
 	 * @param isAbsolutePosition a bool that represents whether the angle is absolute position or delta angle
-	 * @param navxSource a NavxPIDSource
+	 * @param navXSource a NavXPIDSource
 	 */
-	PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavxPIDSource* navxSource);
+	PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavXPIDSource* navXSource);
 	/**
 	 * Sets PID values to 0, gets PID from navX, sets Setpoint, continuous to false, output range, enables pivotPID
 	 */
 	void Init();
 	/**
-	 * Refresh ini, set initYaw to navx PID, create new PIDController, PivotPID, and enables it
+	 * Refresh ini, set initYaw to navX PID, create new PIDController, PivotPID, and enables it
 	 */
 	void Reset();
 	/**
@@ -72,7 +72,7 @@ private:
 
 	RobotModel *robot_;
 	PIDController *pivotPID_;
-	NavxPIDSource *navxSource_;
+	NavXPIDSource *navXSource_;
 	PivotPIDTalonOutput *talonOutput_;
 
 	double pivotCommandStartTime_;

@@ -59,8 +59,8 @@ RobotModel::RobotModel() {
 	rightSlave_->SetControlMode(CANTalon::kFollower);
 	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
 
-	// Initializing navx
-	navx_ = new AHRS(SPI::kMXP);	// might be wrong but idk
+	// Initializing navX
+	navX_ = new AHRS(SPI::kMXP);	// might be wrong but idk
 	pini = new Ini("/home/lvuser/robot.ini");
 
 	flywheelMotor_ = new Victor(FLYWHEEL_MOTOR_PWM_PORT);
@@ -160,12 +160,12 @@ double RobotModel::GetRightDistance() {
 	return GetDriveEncoderValue(kRightWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * 4);
 }
 
-void RobotModel::ZeroNavxYaw() {
-	navx_->ZeroYaw();
+void RobotModel::ZeroNavXYaw() {
+	navX_->ZeroYaw();
 }
 
-double RobotModel::GetNavxYaw() {
-	return -navx_->GetYaw();	// so that turning counterclockwise is positive
+double RobotModel::GetNavXYaw() {
+	return -navX_->GetYaw();	// so that turning counterclockwise is positive
 }
 
 double RobotModel::GetFeederOutput() {
