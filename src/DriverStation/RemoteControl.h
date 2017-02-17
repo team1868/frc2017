@@ -17,6 +17,10 @@ public:
 	virtual bool GetArcadeDriveDesired() = 0;
 	virtual bool GetQuickTurnDesired() = 0;
 
+	virtual bool GetFlywheelDesired() = 0;
+	virtual bool GetIntakeDesired() = 0;
+	virtual bool GetClimberDesired() = 0;
+
 	virtual ~RemoteControl() {}
 };
 

@@ -44,19 +44,24 @@ public:
 	 */
 	bool GetQuickTurnDesired();
 
+	//Superstructure button accessors
+	bool GetFlywheelDesired();
+	bool GetIntakeDesired();
+	bool GetClimberDesired();
+
 	virtual ~ControlBoard();
 
 private:
 	// Desired values for driving and pivoting
 	double leftJoyX_, leftJoyY_, rightJoyX_, rightJoyY_;
 
-	bool reverseDriveDesired_, gearShiftDesired_, arcadeDriveDesired_, quickTurnDesired_;
+	bool reverseDriveDesired_, gearShiftDesired_, arcadeDriveDesired_, quickTurnDesired_, flywheelDesired_, intakeDesired_, climberDesired_;
 
 	// Joysticks
 	Joystick *leftJoy_, *rightJoy_, *operatorJoy_, *operatorJoyB_;
 
 	// Buttons
-	ButtonReader *driveDirectionButton, *gearShiftButton, *arcadeDriveButton, *quickTurnButton;
+	ButtonReader *driveDirectionButton, *gearShiftButton, *arcadeDriveButton, *quickTurnButton, *flywheelSwitch_, *intakeButton_, *climberButton_;
 
 	void ReadAllButtons();
 };
