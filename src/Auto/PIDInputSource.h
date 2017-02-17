@@ -11,6 +11,8 @@
 #include "RobotModel.h"
 #include "WPILib.h"
 
+/*---------------------- NAVX PID SOURCE ---------------------- */
+
 class NavxPIDSource : public frc::PIDSource {
 public:
 	/**
@@ -32,11 +34,13 @@ public:
 	 * Sets AccumulatedYaw and deltaYaw to zero and updates currYaw and lastYaw
 	 */
 	void ResetAccumulatedYaw();
-	~NavxPIDSource();
+	virtual ~NavxPIDSource();
 private:
 	double currYaw_, lastYaw_, deltaYaw_, accumulatedYaw_;
 	RobotModel *robot_;
 };
+
+/*---------------------- TALON ENCODER PID SOURCE ---------------------- */
 
 class TalonEncoderPIDSource : public frc::PIDSource {
 public:

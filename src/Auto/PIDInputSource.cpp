@@ -6,6 +6,9 @@
  */
 
 #include <Auto/PIDInputSource.h>
+#include "WPILib.h"
+
+/*---------------------- NAVX PID SOURCE ---------------------- */
 
 NavxPIDSource::NavxPIDSource(RobotModel *robot) {
 	robot_ = robot;
@@ -41,6 +44,12 @@ void NavxPIDSource::ResetAccumulatedYaw() {
 	deltaYaw_ = 0.0;
 }
 
+NavxPIDSource::~NavxPIDSource() {
+
+}
+
+/*---------------------- TALON ENCODER PID SOURCE ---------------------- */
+
 TalonEncoderPIDSource::TalonEncoderPIDSource(RobotModel* robot) {
 	robot_ = robot;
 	averageTalonDistance_= 0.0;
@@ -60,4 +69,3 @@ double TalonEncoderPIDSource::PIDGet(){
 TalonEncoderPIDSource::~TalonEncoderPIDSource() {
 
 }
-

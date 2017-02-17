@@ -1,10 +1,3 @@
-/*
- * PivotCommand.h
- *
- *  Created on: Feb 2, 2017
- *      Author: Lynn D
- */
-
 #ifndef SRC_PIVOTCOMMAND_H_
 #define SRC_PIVOTCOMMAND_H_
 
@@ -22,6 +15,7 @@ private:
 	RobotModel *robot_;
 	double output_;
 };
+
 /**
  * A class implementing Pivot PID the WPILibrary PID Controller
  */

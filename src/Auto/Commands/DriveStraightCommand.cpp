@@ -1,15 +1,5 @@
-/*
- * DriveStraightCommand.cpp
- *
- *  Created on: Feb 9, 2017
- *      Author: Lynn D
- */
-
 #include <Auto/Commands/DriveStraightCommand.h>
 #include "WPILib.h"
-
-const double WHEEL_DIAMETER = 6.05 / 12.0; // in feet
-const double ENCODER_COUNT_PER_ROTATION = 256.0;
 
 AnglePIDOutput::AnglePIDOutput(){
 	pidOutput_ = 0.0;
@@ -52,22 +42,10 @@ DriveStraightCommand::DriveStraightCommand(NavxPIDSource* navxSource, TalonEncod
 	distancePIDOutput_ = distancePIDOutput;
 	robot_ = robot;
 
-//	//TODO tune these values pls
-//	// PID Gains for rotation
-//	rPFac_ = 0.0001;
-//	rIFac_ = 0.0;
-//	rDFac_ = 0.0;
-//
-//	// PID Gains for distance
-//	dPFac_ = 0.0005;
-//	dIFac_ = 0.0;
-//	dDFac_ = 0.0;
-
 	initialAngle_ = navxSource_->PIDGet();
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
 
 	// Convert feet to encoder values and adding the difference to the initial to know how far we want to go
-	//desiredDistance_ = ; //  * (ENCODER_COUNT_PER_ROTATION * 4)/ (WHEEL_DIAMETER * M_PI);
 	desiredDistance_ = desiredDistance;
 	desiredTotalAvgDistance_ = desiredDistance_ + initialAvgDistance_;
 
@@ -102,8 +80,8 @@ void DriveStraightCommand::Init() {
 	distancePID_->SetOutputRange(-0.8, 0.8);
 
 	// TODO fix this later
-	anglePID_->SetAbsoluteTolerance(1.0);
-	distancePID_->SetAbsoluteTolerance(0.07);
+	anglePID_->SetAbsoluteTolerance(1.0);			// 1 degree
+	distancePID_->SetAbsoluteTolerance(1.0/12.0);	// 1 inch
 
 	anglePID_->Enable();
 	distancePID_->Enable();
@@ -161,19 +139,16 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::GetIniValues() {
-	//std::cout << robot_->pini->Ini("robot.ini");
 	rPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
-//	rPFac_ = 0.001;
 	rIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 	rDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
 
 	dPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dPFac", 0.0);
-	//dPFac_ = 0.1;
 	dIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
 	dDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
 }
 
 DriveStraightCommand::~DriveStraightCommand() {
-	// TODO Auto-generated destructor stub
+
 }
 

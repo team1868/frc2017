@@ -79,8 +79,6 @@ public:
 		SmartDashboard::PutNumber("Navx angle", robot_->GetNavxYaw());
 		robot_->SetPercentVDrive();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
-//		talon_.SetControlMode(CANTalon::kPercentVbus);
-//		talon_.Set( 0 );
 	}
 
 private:

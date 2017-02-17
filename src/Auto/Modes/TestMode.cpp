@@ -1,10 +1,3 @@
-/*
- * TestMode.cpp
- *
- *  Created on: Feb 5, 2017
- *      Author: maggiewang
- */
-
 #include <Auto/Modes/TestMode.h>
 
 TestMode::TestMode() {

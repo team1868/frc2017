@@ -1,10 +1,3 @@
-/*
- * DriveStraightCommand.h
- *
- *  Created on: Feb 9, 2017
- *      Author: Lynn D
- */
-
 #ifndef SRC_DRIVESTRAIGHTCOMMAND_H_
 #define SRC_DRIVESTRAIGHTCOMMAND_H_
 
@@ -37,7 +30,7 @@ class DriveStraightCommand {
 public:
 	DriveStraightCommand(NavxPIDSource* navxSource, TalonEncoderPIDSource* talonEncoderSource,
 			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
-			double desiredDistance);	// Distance is in feet
+			double desiredDistance);
 	void Init();
 	void Update(double currTime, double deltaTime);
 	bool IsDone();
@@ -56,7 +49,7 @@ private:
 	double dPFac_, dIFac_, dDFac_;
 	double initialAngle_;
 	double initialAvgDistance_;
-	double desiredDistance_;	// distance we want to go in feet
+	double desiredDistance_;
 	double desiredTotalAvgDistance_;
 	double leftMotorOutput_, rightMotorOutput_;
 	bool isDone_;

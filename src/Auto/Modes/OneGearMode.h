@@ -28,13 +28,10 @@ private:
 	RobotModel *robot_;
 	AutoCommand *firstCommand_;
 	PathCommand *liftPath_;
-//	PivotCommand *pivotCommand_;
 	AlignWithPegCommand *alignWithPegCommand_;
 
 	NavxPIDSource *navxSource_;
 	TalonEncoderPIDSource *talonSource_;
-
-	//PathCommand *liftPath2_; 	// TO REPLACE THIS WITH PIVOT COMMAND
 };
 
 #endif /* SRC_AUTO_MODES_ONEGEARMODE_H_ */

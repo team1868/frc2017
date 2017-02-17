@@ -25,12 +25,7 @@ void OneGearMode::Init() {
 }
 
 void OneGearMode::RefreshIni() {
-	//autoMode = robot->pini->geti("AUTONOMOUS","AutoMode",0);
-	//hardCodeShoot = robot->pini->getbool("AUTONOMOUS", "HardCodeShoot", true);
-	//secondDefensePos = robot->pini->geti("AUTONOMOUS", "SecondDefense", 0);
-	//useSallyPort = robot->pini->getbool("AUTONOMOUS", "UseSallyPort", true);
 	printf("in one gear mode refresh ini\n");
-	//alignWithPegCommand_->RefreshIni();		// TODO move
 }
 
 bool OneGearMode::IsDone() {

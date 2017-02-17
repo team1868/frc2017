@@ -55,8 +55,6 @@ void PathCommand::Init() {
 
 	leftMotionProfileExecutor_->hasStarted_ = false;
 	rightMotionProfileExecutor_->hasStarted_ = false;
-//	robot_->leftMaster_->SetPID(0.7, 0.02, 0.1, 1.40329);
-//	robot_->rightMaster_->SetPID(0.7, 0.02, 0.1, 1.31154);
 
 	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.2, 1.40329);
 	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.2, 1.31154);

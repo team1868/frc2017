@@ -8,24 +8,6 @@
 #include <Auto/Commands/PivotCommand.h>
 
 PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavxPIDSource* navxSource) {
-//	pFac_ = 0.;
-//	iFac_ = 0.0;
-//	dFac_ = 0.0;
-
-//	pFac_ = 0.75;
-//	iFac_ = 0.001;
-//	dFac_ = 3.7;
-//	pFac_ = 0.2;
-//	iFac_ = 0.0;
-//	dFac_ = 0.0;
-
-//	pFac_ = 0.03;
-////	iFac_ = 0.00008;
-////	dFac_ = 0.0021;
-//	iFac_ = 0.0;
-//	dFac_ = 0.0;
-
-
 	navxSource_ = navxSource;
 	initYaw_ = navxSource_->CalculateAccumulatedYaw();
 
@@ -46,15 +28,11 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 }
 
 void PivotCommand::GetIniValues() {
-	//std::cout << robot_->pini->Ini("robot.ini");
 	pFac_ = robot_->pini->getf("PIVOT PID", "pFac", 0.0);
 	iFac_ = robot_->pini->getf("PIVOT PID", "iFac", 0.0);
 	dFac_ = robot_->pini->getf("PIVOT PID", "dFac", 0.0);
 	minDrivePivotOutput_ = robot_->pini->getf("PIVOT PID", "minDrivePivotOutput", 0.0);
-	printf("p: %f, i: %f, d: %f\n", pFac_, iFac_, dFac_);
-	SmartDashboard::PutNumber("P_fac", pFac_);
-	SmartDashboard::PutNumber("I_fac", iFac_);
-	SmartDashboard::PutNumber("D_fac", dFac_);
+	printf("PIVOT COMMAND p: %f, i: %f, d: %f\n", pFac_, iFac_, dFac_);
 }
 
 void PivotCommand::Init() {
@@ -122,8 +100,6 @@ PivotCommand::~PivotCommand() {
 }
 
 PivotPIDTalonOutput::PivotPIDTalonOutput(RobotModel *robot){
-//	leftMaster_->SetInverted(false);
-//	rightMaster_->SetInverted(false);
 	robot_ = robot;
 	output_ = 0.0;
 }

@@ -3,12 +3,10 @@
 using namespace std;
 
 AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource) {
-	// TODO Auto-generated constructor stub
 	printf("in beginning of alignwithpegcommand\n");
 	angleContext_ = new zmq::context_t(1);
 	distanceContext_ = new zmq::context_t(1);
-////	distanceSubscriber_ = new zmq::socket_t()
-//
+
 	angleSubscriber_ = new zmq::socket_t(*angleContext_, ZMQ_SUB);
 	angleSubscriber_->connect("tcp://10.18.68.40:5563");	// MAKE SURE RIGHT IP
 
@@ -20,9 +18,7 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxS
 	robot_ = robot;
 	navxSource_ = navxSource;
 	talonSource_ = talonSource;
-//	navxSource_ = NULL;
-//	talonSource_ = NULL;
-//
+
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
 
@@ -63,8 +59,6 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	string distanceAddress = s_recv (*distanceSubscriber_);
 	string distanceContents = s_recv (*distanceSubscriber_);
-
-//	printf("in update\n");
 
 	switch (currState_) {
 		case (kPivotToAngleInit) :
@@ -127,39 +121,12 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 	}
 	currState_ = nextState_;
-
-//	// TODO change logic to add distance
-//	if (pivotCommandIsDone_) {		// true in beginning
-//		if (fabs(desiredPivotDeltaAngle_) < 1.0) {		// 1 inch threshold
-//			isDone_ = true;
-//		} else {
-//			SmartDashboard::PutNumber("Initial navx angle", robot_->GetNavxYaw());
-//			SmartDashboard::PutNumber("Pivot delta angle", desiredPivotDeltaAngle_);
-//			// -pivotDeltaAngle_ because Jetson returns positive angles to the right
-//			pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navxSource_);
-//			pivotCommand_->Init();
-//			pivotCommandIsDone_ = false;
-//		}
-//	} else {
-//		pivotCommand_->Update(currTimeSec, deltaTimeSec);
-//		if (pivotCommand_->IsDone()) {
-//			pivotCommandIsDone_ = true;
-//			isDone_ = true;	// TAKE OUT LATER
-//		}
-//	}
-
-//	if (!driveStraightCommand_->IsDone()) {
-//		driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
-//	} else {
-//		driveStraightCommandIsDone_ = true;
-//		isDone_ = true;
-//	}
 }
 
 bool AlignWithPegCommand::IsDone() {
-	return isDone_;		// TODO change
+	return isDone_;
 }
 
 AlignWithPegCommand::~AlignWithPegCommand() {
-	// TODO Auto-generated destructor stub
+
 }

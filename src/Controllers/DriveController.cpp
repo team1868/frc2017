@@ -5,12 +5,6 @@ DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl) 
 	robot_ = robot;
 	humanControl_ = humanControl;
 
-//	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.1, 1.38329);
-//	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.1, 1.30254);
-
-//	leftExample_ = new MotionProfileExample(*leftMaster_);
-//	rightExample_ = new MotionProfileExample(*rightMaster_);
-
 	isDone_ = false;
 
 	currState_ = kInitialize;
@@ -18,23 +12,7 @@ DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl) 
 }
 
 void DriveController::Reset() {
-//	leftExample_->hasStarted = false;
-//	rightExample_->hasStarted = false;
 
-//	leftMaster_->ClearMotionProfileTrajectories();
-//	leftMaster_->SetControlMode(CANTalon::kPercentVbus);
-//	leftMaster_->Set( 0 );
-	/* clear our buffer and put everything into a known state */
-//	leftExample_->reset();
-
-//	leftMaster_->SetPosition(0);
-//
-//	rightMaster_->SetControlMode(CANTalon::kPercentVbus);
-//	rightMaster_->Set( 0 );
-//	/* clear our buffer and put everything into a known state */
-//	rightExample_->reset();
-//
-//	rightMaster_->SetPosition(0);
 }
 
 void DriveController::Update(double currTimeSec, double deltaTimeSec) {
@@ -66,9 +44,6 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 
 			nextState_ = kTeleopDrive;
 			break;
-
-//		case (kMotionProfile) :
-//			UpdateMotionProfile();
 	}
 
 	currState_ = nextState_;
@@ -79,116 +54,8 @@ void DriveController::PrintDriveValues() {
 	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 	SmartDashboard::PutNumber("Drive direction", DriveDirection());
 	SmartDashboard::PutNumber("Get state", GetDriveState());
-
-//    SmartDashboard::PutNumber("Left error", leftMaster_->GetClosedLoopError());
-//    SmartDashboard::PutNumber("Right error", leftMaster_->GetClosedLoopError());
-}
-/*
-void DriveController::SetupTrajectory(Segment *leftTrajectory, Segment *rightTrajectory, int trajectoryLength) {
-
-	leftExample_->control();
-	rightExample_->control();
-
-//	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
-//	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
-
-	CANTalon::SetValueMotionProfile leftSetOutput = leftExample_->getSetValue();
-	CANTalon::SetValueMotionProfile rightSetOutput = rightExample_->getSetValue();
-
-//	leftMaster_->Set(leftSetOutput);
-//	rightMaster_->Set(rightSetOutput);
-
-	if (!leftExample_->hasStarted && !rightExample_->hasStarted) {	// may not need
-		leftExample_->start(true);
-		rightExample_->start(false);
-	}
-
-//	printf("Setup trajectory\n");
-//	// Setting up left motors for motion profiling
-//	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
-//
-//	// Setting up right motors for motion profiling
-//	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
-//
-//	// Setting up trajectories for update		// MAYBE HAVE TO MOVE TO UPDATE
-//	if (!leftExample_->hasStarted && !rightExample_->hasStarted) {	// may not need
-////		leftExample_->start(leftTrajectory, trajectoryLength);
-////		rightExample_->start(rightTrajectory, trajectoryLength);
-//		leftExample_->start(true);
-//		rightExample_->start(false);
-//	}
-//
-//	// TODO doesn't work now
-//
-//	printf("in DriveController UpdateMotionProfile\n");
-//	leftExample_->control();
-//	rightExample_->control();
-//
-//	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
-//	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
-//
-//	CANTalon::SetValueMotionProfile leftSetOutput = leftExample_->getSetValue();
-//	CANTalon::SetValueMotionProfile rightSetOutput = rightExample_->getSetValue();
-//
-//	leftMaster_->Set(leftSetOutput);
-//	rightMaster_->Set(rightSetOutput);
-
-	PrintDriveValues();
 }
 
-void DriveController::UpdateMotionProfile() {
-//	// TODO doesn't work now
-//
-//	printf("in DriveController UpdateMotionProfile\n");
-//	leftExample_->control();
-//	rightExample_->control();
-//
-//	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
-//	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
-//
-//	CANTalon::SetValueMotionProfile leftSetOutput = leftExample_->getSetValue();
-//	CANTalon::SetValueMotionProfile rightSetOutput = rightExample_->getSetValue();
-//
-//	leftMaster_->Set(leftSetOutput);
-//	rightMaster_->Set(rightSetOutput);
-
-//	SmartDashboard::PutNumber("Left encoder", _leftMaster.GetEncPosition());
-//	SmartDashboard::PutNumber("Right encoder", _rightMaster.GetEncPosition());
-//	SmartDashboard::PutNumber("Left error", _leftMaster.GetClosedLoopError());
-//	SmartDashboard::PutNumber("Right error", _rightMaster.GetClosedLoopError());
-//	SmartDashboard::PutNumber("Left speed", _leftMaster.GetSpeed());
-//	SmartDashboard::PutNumber("Right speed", _rightMaster.GetSpeed());
-
-	if (!leftExample_->hasStarted && !rightExample_->hasStarted) {
-//		leftExample_->start(leftTrajectory);		// takes in isLeft
-//		rightExample_->start();
-	}
-
-//	printf("Motion profiling\n");
-//	leftExample_->control();
-//	rightExample_->control();
-//	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
-//	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
-//	CANTalon::SetValueMotionProfile setLeftOutput = leftExample_->getSetValue();
-//	CANTalon::SetValueMotionProfile setRightOutput = rightExample_->getSetValue();
-//	leftMaster_->Set(setLeftOutput);
-//	rightMaster_->Set(setRightOutput);
-
-	PrintDriveValues();
-	//if (!(leftExample_->isDone() && rightExample_->isDone())) {
-//		printf("Setting motion profiling\n");
-//		leftExample_->control();
-//		rightExample_->control();
-//		CANTalon::SetValueMotionProfile setLeftOutput = leftExample_->getSetValue();
-//		CANTalon::SetValueMotionProfile setRightOutput = rightExample_->getSetValue();
-//		leftMaster_->Set(setLeftOutput);
-//		rightMaster_->Set(setRightOutput);
-//	} else {
-//		printf("Done with motion profiling\n");
-//		isDone_ = true;
-//	}
-}
-*/
 void DriveController::ArcadeDrive(double myX, double myY) {
 	PrintDriveValues();
 

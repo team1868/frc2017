@@ -27,10 +27,12 @@ public:
 	 * @param robot a RobotModel
 	 */
 	AlignWithPegCommand(RobotModel *robot, NavxPIDSource *navxSource, TalonEncoderPIDSource *talonSource);
+
 	/**
 	 * Sets pivotCommandIsDone_ to true, sets pivotDeltaAngle_ to 0, and isDone_ to false
 	 */
 	void Init();
+
 	/**
 	 * If angle is less than 1 than set isDone to true, else, prints to SmartDashboard and continues updating
 	 * @param currTimeSec a double that contains time in seconds

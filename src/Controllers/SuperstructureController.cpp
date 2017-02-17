@@ -110,4 +110,3 @@ void SuperstructureController::SetAutoFlywheelDesired(bool desired) {
 SuperstructureController::~SuperstructureController() {
 
 }
-

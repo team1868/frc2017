@@ -1,10 +1,3 @@
-/*
- * HighGoalShootCommand.cpp
- *
- *  Created on: Feb 4, 2017
- *      Author: bili
- */
-
 #include <Auto/Commands/HighGoalShootCommand.h>
 
 HighGoalShootCommand::HighGoalShootCommand(SuperstructureController* mySuperstructure) {

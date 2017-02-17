@@ -8,58 +8,6 @@ Framework <a name="framework"></a>
 =======
 See the current documentation [here](http://htmlpreview.github.com/spacecookies1868/frc2017/master/documentation/html/index.html).
 
-src
---------
-####MainProgram
-- Drives the program. Inherits from the IterativeRobot base class from the WPI Library.
-
-####RobotModel
-- Instantiates everything on the robot (actuators, sensors, etc.)
-
-####ControlBoard
-- Reads driver station button and joystick values
-- Sets them to desired states of drivetrain, superstructure, and autonomous
-
-####Ports
-- Contains the robot and driver station ports
-
-####Logger
-- Logs state (`LogState()`) and action (`LogAction()`). Uses the macro `LOG(myRobot, stateName, state)` for `LogAction()`
-
-src/Autonomous
---------
-####/Commands
-- Contains command classes (`WaitCommand`, `DriveStraightCommand`, etc.)
-
-#####AutonomousCommand
-- Abstract class, contains the `Init()`, `Update()`, `IsDone()` virtual methods
-
-####/Modes
-- Contains our various autonomous modes by putting the commands into a queue
-
-#####BlankMode
-- The robot just sits
-
-src/Vision
---------
-
-src/Controllers
---------
-####Controller
-- Abstract class, contains the `Init()`, `Reset()`, `Update(double currTimeSec, double deltaTimeSec)`, `RefreshIni()` virtual methods
-
-####DriveController
-- Code for driving the robot
-
-####SuperstructureController
-- Code for moving the superstructure
-
-ext
---------
-####ini
-
-####navx
-
 ------------------------------------------------------------
 Style Guidelines <a name="style"></a>
 =======
@@ -112,7 +60,7 @@ default:
 Naming Conventions
 --------
 - Instance variables: `lowerCamelCase`
-- Member instance variable: 'lowerCaseCamel_'
+- Member instance variable: 'lowerCaseCamel_'. Don't forget the underscore!
 - Macros, consts (like ports): `CAPITAL_LETTERS`
 - Methods and classes: `UpperCamelCase`
 - Enum-list: `kInit`, `kIdle`, etc.
@@ -120,6 +68,11 @@ Naming Conventions
 - Abbreviate only when necessary
 - Class names should be nouns. 
 - Accessor methods typically start with `Get`, mutator methods typically start with `Set`.
+
+Unit and Coordinate Conventions
+--------
+All distances are in feet, all angles are in degrees.
++x is forward, +y is left. This means that positive degrees are counterclockwise.
 
 Other
 --------
