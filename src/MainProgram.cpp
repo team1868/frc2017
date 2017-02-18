@@ -9,7 +9,7 @@ class MainProgram : public IterativeRobot {
 	RobotModel *robot_; /**< Testing. */
 	ControlBoard *humanControl_;
 	DriveController *driveController_;
-	SuperstructureController *superstructureController_;
+	//SuperstructureController *superstructureController_;
 	AutoController *autoController_;
 
 	NavXPIDSource *navXSource_;
@@ -27,7 +27,7 @@ public:
 		robot_ = new RobotModel();
 		humanControl_ = new ControlBoard();
 		driveController_ = new DriveController(robot_, humanControl_);
-		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
+		//superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
 		//autoController_ = new AutoController(robot_, driveController_, superstructureController_, humanControl_);
 		autoController_ = new AutoController();
 
@@ -55,6 +55,7 @@ public:
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
 		}
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
+		driveController_->PrintDriveValues();
 	}
 
 	void TeleopInit() {
@@ -71,13 +72,14 @@ public:
 	}
 
 	void TestPeriodic() {
-		driveController_->PrintDriveValues();
 	}
 
 	void DisabledPeriodic() {
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		robot_->SetPercentVDrive();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+		robot_->ClearMotionProfileTrajectories();
+		driveController_->PrintDriveValues();
 	}
 
 private:
@@ -96,7 +98,7 @@ private:
 	void ResetControllers() {
 		autoController_->Reset();
 		driveController_->Reset();
-		superstructureController_->Reset();
+		//superstructureController_->Reset();
 
 		robot_->RefreshIni();	// TODO move
 		autoController_->RefreshIni();		// TODO put in other method

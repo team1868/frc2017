@@ -206,6 +206,11 @@ public:
 						 */
 						state_ = 1;
 						loopTimeout_ = kNumLoopsTimeout;
+						// to take out
+//						talon_.Set( 0 );
+//						talon_.Reset();
+						talon_.ClearIaccum();
+						talon_.ClearError();
 					}
 					break;
 				case 1: /*
@@ -258,7 +263,10 @@ public:
 						isDone_ = true;		// DONE!!
 						talon_.SetControlMode(CANTalon::kPercentVbus);
 						talon_.Set( 0 );
+						talon_.Reset();
+						talon_.ClearIaccum();
 						/* clear our buffer and put everything into a known state */
+						printf("IN CASE 3 MOTION PROFILE\n");
 					}
 					break;
 			}

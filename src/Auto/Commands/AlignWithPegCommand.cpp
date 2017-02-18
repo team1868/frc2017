@@ -62,6 +62,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	switch (currState_) {
 		case (kPivotToAngleInit) :
+			Wait(1.0);
 			printf("In kPivotToAngleInit\n");
 			// Get angle from Jetson
 			if (angleAddress == "ANGLE") {
@@ -71,7 +72,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				printf("angle address: %s\n", angleAddress.c_str());
 			}
 
-			if (fabs(desiredPivotDeltaAngle_) > 1.0) {		// 1 inch threshold
+			if (fabs(desiredPivotDeltaAngle_) > 2.0) {		// 2 degree threshold
 				// CHECK -DESIREDPIVOTDELTAANGLE_
 				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navXSource_);
 				pivotCommand_->Init();
@@ -92,17 +93,18 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 
 		case (kDriveStraightInit) :
+			Wait(1.0);
 			// Get distance from Jetson
 			if (distanceAddress == "DISTANCE") {
-				desiredDistance_ = stod(distanceContents);
+				desiredDistance_ = stod(distanceContents);		// IN INCHES
 				printf("DISTANCE: %f\n", desiredDistance_);
 			}
 
-			if (fabs(desiredDistance_) > 1.0/12.0) {		// 1 inch threshold
+			if (fabs(desiredDistance_) > 2.0/12.0) {		// 2 inch threshold
 				// Jetson returns in inches, so /12.0
 				// Subtract 10 inches bc of length of peg
 				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-						robot_, (desiredDistance_ - 10.0)/12.0);
+						robot_, (desiredDistance_ - 10.0)/12.0);	// converting to feet
 				driveStraightCommand_->Init();
 				nextState_ = kDriveStraightUpdate;
 			} else {

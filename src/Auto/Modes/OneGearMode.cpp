@@ -5,14 +5,15 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	navXSource_ = navXSource;
 	talonSource_ = talonSource;
 	firstCommand_ = NULL;
-	liftPath_ = new PathCommand(robot_, PathCommand::kLiftTwo);	// to put this as input to OneGearMode?
+	//liftPath_ = new PathCommand(robot_, PathCommand::kLiftTwo);	// to put this as input to OneGearMode?
+	liftPath_ = new PathCommand(robot_, PathCommand::kLiftOne);
 	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
 	printf("in one gear mode constructor\n");
 }
 
 void OneGearMode::CreateQueue() {
 	printf("Creating queue\n");
-//	firstCommand_ = alignWithPegCommand_;
+	//firstCommand_ = alignWithPegCommand_;
 //	alignWithPegCommand_->SetNextCommand(liftPath_);
 	firstCommand_ = liftPath_;
 	liftPath_->SetNextCommand(alignWithPegCommand_);
