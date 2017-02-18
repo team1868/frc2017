@@ -3,11 +3,12 @@
 
 #include "WPILib.h"
 #include "RobotModel.h"
+#include "DriverStation/ControlBoard.h"
 #include "DriverStation/RemoteControl.h"
 
 class SuperstructureController {
 public:
-	SuperstructureController(RobotModel* myRobot, RemoteControl* myHumanControl);
+	SuperstructureController(RobotModel* myRobot, ControlBoard* myHumanControl);
 	void Reset();
 	void Update(double currTimeSec, double deltaTimeSec);
 	virtual ~SuperstructureController();
@@ -18,6 +19,8 @@ public:
 	//auto boolean accessor methods
 	bool GetAutoFlywheelDesired();
 
+	void SetOutput();
+
 	enum SuperstructureState {
 			kInit, kIdle, kIntake, kFeederAndFlywheel, kClimber
 	};
@@ -25,14 +28,13 @@ private:
 	RobotModel* robot_;
 	RemoteControl* humanControl_;
 
-	PIDController *intakeController_;
 	PIDController *flywheelController_;
 
 	uint32_t m_stateVal_;
 	uint32_t nextState_;
 
-	double desiredIntakeVelocity_, desiredFlywheelVelocity_, expectedIntakeMotorOutput_, expectedFlywheelMotorOutput_,
-		   feederMotorOutput_, climberMotorOutput_;
+	double desiredFlywheelVelocity_, expectedFlywheelMotorOutput_,
+		   feederMotorOutput_, climberMotorOutput_, intakeMotorOutput_;
 
 	//auto booleans
 	bool autoFlywheelDesired_;
@@ -40,3 +42,4 @@ private:
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */
+

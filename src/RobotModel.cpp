@@ -68,8 +68,6 @@ RobotModel::RobotModel() {
 	intakeMotor_ = new Victor(INTAKE_MOTOR_PWM_PORT);
 	climberMotor_ = new Victor(CLIMBER_MOTOR_PWM_PORT);
 
-	intakeEncoder_ = new Encoder(INTAKE_ENCODER_A_PWM_PORT, INTAKE_ENCODER_B_PWM_PORT, true);
-	intakeEncoder_->SetPIDSourceType(PIDSourceType::kRate);
 	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, true);
 	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate); //FIX THIS
 
@@ -184,27 +182,31 @@ void RobotModel::SetClimberOutput(double output) {
 	climberMotor_->Set(output);
 }
 
-Encoder* RobotModel::GetFlywheelEncoder() {
-	return flywheelEncoder_;
+double RobotModel::GetIntakeOutput() {
+	return intakeMotor_->Get();
 }
 
-Encoder* RobotModel::GetIntakeEncoder() {
-	return intakeEncoder_;
+void RobotModel::SetIntakeOutput(double output) {
+	intakeMotor_->Set(output);
+}
+
+Encoder* RobotModel::GetFlywheelEncoder() {
+	return flywheelEncoder_;
 }
 
 Victor* RobotModel::GetFlywheelMotor() {
 	return flywheelMotor_;
 }
 
-Victor* RobotModel::GetIntakeMotor() {
-	return intakeMotor_;
-}
-
 bool RobotModel::GetGearInRobot() {
 	return gearInRobot_;
 }
 
-void RobotModel::SetGearInRobot() {
+void RobotModel::SetGearInRobot(bool gearInRobot) {
+	gearInRobot_ = gearInRobot;
+}
+
+void RobotModel::GearUpdate() {
 	distSensorLast_ = distSensorCurr_;
 	distSensorCurr_ = distanceSensor_->Get();
 	if (distSensorLast_ && !distSensorCurr_) {
@@ -216,8 +218,6 @@ void RobotModel::SetGearInRobot() {
 		printf("Gear is NOT in robot\n");
 	}
 }
-
-
 
 RobotModel::~RobotModel() {
 }

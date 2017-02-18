@@ -19,8 +19,10 @@ ControlBoard::ControlBoard() {
 	arcadeDriveButton = new ButtonReader(rightJoy_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
-	intakeButton_ = new ButtonReader(operatorJoy_, INTAKE_BUTTON_PORT);
-	climberButton_ = new ButtonReader(operatorJoy_, CLIMBER_BUTTON_PORT);
+	intakeSwitch_ = new ButtonReader(operatorJoy_, INTAKE_SWITCH_PORT);
+	climberSwitch_ = new ButtonReader(operatorJoy_, CLIMBER_SWITCH_PORT);
+	reverseIntakeButton_ = new ButtonReader(operatorJoy_, REVERSE_INTAKE_BUTTON_PORT);
+	reverseFeederButton_ = new ButtonReader(operatorJoy_, REVERSE_FEEDER_BUTTON_PORT);
 
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
@@ -32,6 +34,8 @@ ControlBoard::ControlBoard() {
 	flywheelDesired_ = false;
 	intakeDesired_ = false;
 	climberDesired_ = false;
+	reverseIntakeDesired_ = false;
+	reverseFeederDesired_ = false;
 }
 
 void ControlBoard::ReadControls() {
@@ -49,8 +53,14 @@ void ControlBoard::ReadControls() {
 
 	//Superstructure variables
 	flywheelDesired_ = flywheelSwitch_->IsDown();
-	intakeDesired_ = intakeButton_->IsDown();
-	climberDesired_ = climberButton_->IsDown();
+	intakeDesired_ = intakeSwitch_->IsDown();
+	climberDesired_ = climberSwitch_->IsDown();
+	if (reverseIntakeButton_->WasJustPressed()) {
+		reverseIntakeDesired_ = !reverseIntakeDesired_;
+	}
+	if (reverseFeederButton_->WasJustPressed()) {
+		reverseFeederDesired_ = !reverseFeederDesired_;
+	}
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -81,8 +91,10 @@ void ControlBoard::ReadAllButtons() {
 	arcadeDriveButton->ReadValue();
 	quickTurnButton->ReadValue();
 	flywheelSwitch_->ReadValue();
-	intakeButton_->ReadValue();
-	climberButton_->ReadValue();
+	intakeSwitch_->ReadValue();
+	climberSwitch_->ReadValue();
+	reverseIntakeButton_->ReadValue();
+	reverseFeederButton_->ReadValue();
 }
 
 // Returns true if reverse drive is desired
@@ -115,6 +127,14 @@ bool ControlBoard::GetIntakeDesired() {
 
 bool ControlBoard::GetClimberDesired() {
 	return climberDesired_;
+}
+
+bool ControlBoard::GetReverseFeederDesired() {
+	return reverseFeederDesired_;
+}
+
+bool ControlBoard::GetReverseIntakeDesired() {
+	return reverseIntakeDesired_;
 }
 
 ControlBoard::~ControlBoard() {

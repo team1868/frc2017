@@ -20,6 +20,8 @@ public:
 	virtual bool GetFlywheelDesired() = 0;
 	virtual bool GetIntakeDesired() = 0;
 	virtual bool GetClimberDesired() = 0;
+	virtual bool GetReverseIntakeDesired() = 0;
+	virtual bool GetReverseFeederDesired() = 0;
 
 	virtual ~RemoteControl() {}
 };

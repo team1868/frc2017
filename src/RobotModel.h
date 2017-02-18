@@ -32,12 +32,13 @@ public:
 	void SetFeederOutput(double output);
 	double GetClimberOutput();
 	void SetClimberOutput(double output);
+	double GetIntakeOutput();
+	void SetIntakeOutput(double output);
 	Encoder* GetFlywheelEncoder();
-	Encoder* GetIntakeEncoder();
 	Victor* GetFlywheelMotor();
-	Victor* GetIntakeMotor();
 	bool GetGearInRobot();
-	void SetGearInRobot();
+	void SetGearInRobot(bool gearInRobot);
+	void GearUpdate();
 
 	Ini *pini;
 
@@ -47,7 +48,7 @@ private:
 	AHRS *navX_;
 
 	Victor *flywheelMotor_, *feederMotor_, *climberMotor_, *intakeMotor_;
-	Encoder *intakeEncoder_, *flywheelEncoder_;
+	Encoder *flywheelEncoder_;
 	DigitalInput *distanceSensor_;
 
 	bool gearInRobot_, distSensorCurr_, distSensorLast_;
