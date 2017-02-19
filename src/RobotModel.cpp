@@ -114,7 +114,7 @@ void RobotModel::SetMotionProfile() {
 	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
 }
 
-void RobotModel::SetPercentVDrive() {
+void RobotModel::SetPercentVBusDrive() {
 	leftMaster_->SetControlMode(CANTalon::kPercentVbus);
 	rightMaster_->SetControlMode(CANTalon::kPercentVbus);
 }

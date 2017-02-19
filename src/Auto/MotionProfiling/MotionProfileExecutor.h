@@ -260,13 +260,13 @@ public:
 				case 3:
 					if (setValue_ == CANTalon::SetValueMotionProfileHold) {
 						setValue_ = CANTalon::SetValueMotionProfileDisable;
-						isDone_ = true;		// DONE!!
-						talon_.SetControlMode(CANTalon::kPercentVbus);
-						talon_.Set( 0 );
-						talon_.Reset();
-						talon_.ClearIaccum();
+//						talon_.SetControlMode(CANTalon::kPercentVbus);
+//						talon_.Set( 0 );
+//						talon_.Reset();
+//						talon_.ClearIaccum();
 						/* clear our buffer and put everything into a known state */
 						printf("IN CASE 3 MOTION PROFILE\n");
+						isDone_ = true;		// DONE!!
 					}
 					break;
 			}

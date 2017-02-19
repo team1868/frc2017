@@ -76,7 +76,7 @@ public:
 
 	void DisabledPeriodic() {
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
-		robot_->SetPercentVDrive();
+		robot_->SetPercentVBusDrive();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 		robot_->ClearMotionProfileTrajectories();
 		driveController_->PrintDriveValues();

@@ -71,6 +71,9 @@ private:
 	uint32_t nextState_;
 
 	bool isDone_;
+
+	int numTimesInkPivotToAngleInit;
+	int numTimesInkDriveStraightInit;
 };
 
 #endif /* SRC_AUTO_COMMANDS_ALIGNWITHPEGCOMMAND_H_ */

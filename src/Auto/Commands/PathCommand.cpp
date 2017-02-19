@@ -39,25 +39,35 @@ void PathCommand::Init() {
 	leftMotionProfileExecutor_ = new MotionProfileExecutor(*robot_->leftMaster_, motionProfile->GetLeftMotionProfile(), lengthOfLeftMotionProfile_);
 	rightMotionProfileExecutor_ = new MotionProfileExecutor(*robot_->rightMaster_, motionProfile->GetRightMotionProfile(), lengthOfRightMotionProfile_);
 
-	robot_->leftMaster_->SetControlMode(CANTalon::kPercentVbus);
-	robot_->leftMaster_->Set( 0 );
-	/* clear our buffer and put everything into a known state */
-	leftMotionProfileExecutor_->reset();
+	//ClearMotionProfile();
+//	robot_->leftMaster_->ClearIaccum();
+//	robot_->rightMaster_->ClearIaccum();
+//
+//	robot_->leftMaster_->ClearError();
+//	robot_->rightMaster_->ClearError();
+//
+//	robot_->leftMaster_->ClearStickyFaults();
+//	robot_->rightMaster_->ClearStickyFaults();
 
-	robot_->leftMaster_->SetPosition(0);
-
-	robot_->rightMaster_->SetControlMode(CANTalon::kPercentVbus);
-	robot_->rightMaster_->Set( 0 );
-	/* clear our buffer and put everything into a known state */
-	rightMotionProfileExecutor_->reset();
-
-	robot_->rightMaster_->SetPosition(0);
+//	robot_->leftMaster_->Reset();
+//	robot_->rightMaster_->Reset();
+	///
 
 	leftMotionProfileExecutor_->hasStarted_ = false;
 	rightMotionProfileExecutor_->hasStarted_ = false;
 
-	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.2, 1.40329);
-	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.2, 1.31154);
+	leftMotionProfileExecutor_->isDone_ = false;		// unnecessary
+	rightMotionProfileExecutor_->isDone_ = false;
+
+//	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.2, 1.40329);
+//	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.2, 1.31154);
+	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.0, 0.0, 0.0, 0.0);
+	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.0, 0.0, 0.0, 0.0);
+
+	robot_->leftMaster_->SetPID(0.0, 0.0, 0.0, 0.0);
+	robot_->rightMaster_->SetPID(0.0, 0.0, 0.0, 0.0);
+	robot_->leftSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
+	robot_->rightSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
 
 //	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.3, 1.38329);
 //	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.3, 1.30254);
@@ -92,15 +102,49 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 bool PathCommand::IsDone() {
 	if (leftMotionProfileExecutor_->isDone_ && rightMotionProfileExecutor_->isDone_) { // TODO use IsDone() function
-		robot_->SetPercentVDrive();
+		robot_->SetPercentVBusDrive();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 		leftMotionProfileExecutor_->reset();
 		rightMotionProfileExecutor_->reset();
+
+		robot_->leftMaster_->ClearIaccum();
+		robot_->rightMaster_->ClearIaccum();
+
+		robot_->leftMaster_->ClearError();
+		robot_->rightMaster_->ClearError();
+
+		robot_->leftMaster_->ClearStickyFaults();
+		robot_->rightMaster_->ClearStickyFaults();
+
+		//		ClearMotionProfile();
+//		robot_->ClearMotionProfileTrajectories();
 		printf("PATH COMMAND IS DONE\n");
 		return true;
 	} else {
 		return false;
 	}
+}
+
+void PathCommand::ClearMotionProfile() {
+//	robot_->leftMaster_->SetPosition(0);
+//	robot_->rightMaster_->SetPosition(0);
+//
+//	robot_->SetPercentVBusDrive();
+//	robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
+//	leftMotionProfileExecutor_->reset();
+//	rightMotionProfileExecutor_->reset();
+
+//	robot_->leftMaster_->ClearIaccum();
+//	robot_->rightMaster_->ClearIaccum();
+//
+//	robot_->leftMaster_->ClearError();
+//	robot_->rightMaster_->ClearError();
+
+//	robot_->leftMaster_->ClearStickyFaults();
+//	robot_->rightMaster_->ClearStickyFaults();
+
+//	robot_->leftMaster_->Reset();
+//	robot_->rightMaster_->Reset();
 }
 
 PathCommand::~PathCommand() {
