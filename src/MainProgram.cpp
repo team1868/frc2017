@@ -49,6 +49,7 @@ public:
 	}
 
 	void AutonomousPeriodic() {
+		robot_->SetGearMechOut();
 		UpdateTimerVariables();
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);

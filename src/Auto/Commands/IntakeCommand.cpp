@@ -14,7 +14,6 @@ IntakeCommand::IntakeCommand(SuperstructureController *mySuperstructure, double 
 }
 
 void IntakeCommand::Init() {
-//	superstructure_->SetAutoFlywheelDesired(true);
 	superstructure_->SetAutoTimeITDesired(true);
 	superstructure_->SetAutoIntakeTime(seconds_);
 	isDone_ = false;
@@ -24,7 +23,6 @@ void IntakeCommand::Update(double currTimeSec, double deltaTimeSec) {
 	if (!superstructure_->GetAutoFinishedIntake()) {
 		superstructure_->Update(currTimeSec, deltaTimeSec);
 	} else {
-//		superstructure_->SetAutoFlywheelDesired(false);
 		isDone_ = true;
 		superstructure_->SetAutoTimeITDesired(false);
 		superstructure_->SetAutoFinishedIntake(false);
