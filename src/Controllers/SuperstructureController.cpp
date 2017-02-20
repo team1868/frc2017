@@ -63,6 +63,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			}
 			if (humanControl_->GetIntakeDesired()) {
 				robot_->SetIntakeOutput(intakeMotorOutput_);
+				SmartDashboard::PutNumber("Intake Output:", intakeMotorOutput_);
 				nextState_ = kIntake;
 			} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
 				flywheelController_->Enable();
@@ -79,6 +80,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 	case (kIntake):
 			SmartDashboard::PutString("State", "kIntake");
+			SmartDashboard::PutNumber("Intake Output:", intakeMotorOutput_);
 			if (humanControl_->GetIntakeDesired()) {
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kIntake;
@@ -88,10 +90,14 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			}
 			break;
 	case (kFeederAndFlywheel):
-			SmartDashboard::PutString("State", "kFeederAndFlywheel");;
+			SmartDashboard::PutString("State", "kFeederAndFlywheel");
+//			SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
+			SmartDashboard::PutNumber("Flywheel Output", flywheelController_->Get());
+			SmartDashboard::PutBoolean("flywheel desired: ", humanControl_->GetFlywheelDesired());
 			if (humanControl_->GetFlywheelDesired() || GetAutoFlywheelDesired()) {
 				robot_->SetFeederOutput(feederMotorOutput_);
 				robot_->SetIntakeOutput(intakeMotorOutput_);
+				SmartDashboard::PutNumber("Intake Output:", intakeMotorOutput_);
 				nextState_ = kFeederAndFlywheel;
 			} else {
 				flywheelController_->Disable();
@@ -161,14 +167,14 @@ void SuperstructureController::SetAutoFinishedIntake(bool finished) {
 
 void SuperstructureController::SetOutput() {
 	if (humanControl_->GetReverseIntakeDesired()) {
-		intakeMotorOutput_ = -(abs(intakeMotorOutput_));
+		intakeMotorOutput_ = -(fabs(intakeMotorOutput_));
 	} else {
-		intakeMotorOutput_ = abs(intakeMotorOutput_);
+		intakeMotorOutput_ = fabs(intakeMotorOutput_);
 	}
 	if (humanControl_->GetReverseFeederDesired()) {
-		feederMotorOutput_ = -(abs(feederMotorOutput_));
+		feederMotorOutput_ = -(fabs(feederMotorOutput_));
 	} else {
-		feederMotorOutput_ = abs(feederMotorOutput_);
+		feederMotorOutput_ = fabs(feederMotorOutput_);
 	}
 }
 

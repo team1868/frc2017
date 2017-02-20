@@ -28,7 +28,6 @@ public:
 		humanControl_ = new ControlBoard();
 		driveController_ = new DriveController(robot_, humanControl_);
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
-
 		autoController_ = new AutoController();
 
 		navXSource_ = new NavXPIDSource(robot_);
