@@ -211,6 +211,10 @@ Victor* RobotModel::GetFlywheelMotor() {
 	return flywheelMotor_;
 }
 
+double RobotModel::GetFlywheelMotorOutput() {
+	return flywheelMotor_->Get();
+}
+
 bool RobotModel::GetGearInRobot() {
 	return gearInRobot_;
 }

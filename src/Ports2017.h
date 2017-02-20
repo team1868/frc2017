@@ -35,17 +35,21 @@ static const int RIGHT_DRIVE_MASTER_ID					= 1;
 static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
 #endif
 /* ---------------------- PWM PORTS --------------------- */
-//comp bot
+
+#if COMP_BOT
 static const int FLYWHEEL_MOTOR_PWM_PORT				= 9;
 static const int FEEDER_MOTOR_PWM_PORT					= 6;
 static const int INTAKE_MOTOR_PWM_PORT					= 8;
 static const int CLIMBER_MOTOR_PWM_PORT					= 5;
+#endif
 
-//practice bot
-//static const int FLYWHEEL_MOTOR_PWM_PORT				= 7;
-//static const int FEEDER_MOTOR_PWM_PORT				= 5;
-//static const int INTAKE_MOTOR_PWM_PORT				= 4;
-//static const int CLIMBER_MOTOR_PWM_PORT				= 8;
+#if PRACT_BOT	// might want to check again
+static const int FLYWHEEL_MOTOR_PWM_PORT				= 4;
+static const int FEEDER_MOTOR_PWM_PORT					= 5;
+static const int INTAKE_MOTOR_PWM_PORT					= 7;
+static const int CLIMBER_MOTOR_PWM_PORT					= -2;
+#endif
+
 /*
 static const int FLYWHEEL_MOTOR_PWM_PORT				= 1;
 static const int FEEDER_MOTOR_PWM_PORT					= 5;
@@ -56,17 +60,19 @@ static const int CLIMBER_MOTOR_PWM_PORT					= 4;
 /* --------------------- PDP CHANNELS ------------------- */
 
 /* ------------------ DIGITAL I/O PORTS ----------------- */
-//comp bot
+#if COMP_BOT
 static const int FLYWHEEL_ENCODER_A_PWM_PORT 			= 1;
 static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 2;
 
 static const int DISTANCE_SENSOR_PWM_PORT				= -1;
+#endif
 
-//practice bot
-//static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 8;
-//static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 9;
-//
-//static const int DISTANCE_SENSOR_PWM_PORT				= -1;
+#if PRACT_BOT
+static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 8;
+static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 9;
+
+static const int DISTANCE_SENSOR_PWM_PORT				= -1;
+#endif
 /* ------------------ ANALOG IN PORTS --------------------*/
 
 /* ------------------------ MISC -------------------------*/

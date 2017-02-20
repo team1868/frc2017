@@ -8,10 +8,8 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	m_stateVal_ = kInit;
 	nextState_ = kInit;
 
-	desiredFlywheelVelocity_ = -124.0;
-
-	expectedFlywheelMotorOutput_ = -0.94;
-
+	desiredFlywheelVelocity_ = -125.0;
+	expectedFlywheelMotorOutput_ = -0.96;
 	feederMotorOutput_ = 0.7;
 	climberMotorOutput_ = 0.7;
 	intakeMotorOutput_ = 0.85;
@@ -92,7 +90,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	case (kFeederAndFlywheel):
 			SmartDashboard::PutString("State", "kFeederAndFlywheel");
 //			SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
-			SmartDashboard::PutNumber("Flywheel Output", flywheelController_->Get());
+			SmartDashboard::PutNumber("Flywheel Output", robot_->GetFlywheelMotorOutput());
 			SmartDashboard::PutBoolean("flywheel desired: ", humanControl_->GetFlywheelDesired());
 			if (humanControl_->GetFlywheelDesired() || GetAutoFlywheelDesired()) {
 				robot_->SetFeederOutput(feederMotorOutput_);
