@@ -64,7 +64,7 @@ void DriveStraightCommand::Init() {
 	leftMotorOutput_ = 0.0;
 	rightMotorOutput_ = 0.0;
 
-	robot_->SetPercentVDrive();
+	robot_->SetPercentVBusDrive();
 
 	initialAngle_ = navXSource_->PIDGet();
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
@@ -143,7 +143,7 @@ void DriveStraightCommand::GetIniValues() {
 	rIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 	rDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
 
-	dPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dPFac", 0.0);
+	dPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dPFac", 0.2);
 	dIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
 	dDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
 }

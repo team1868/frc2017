@@ -30,8 +30,12 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 	desiredPivotDeltaAngle_ = 0.0;
 	desiredDistance_ = 0.0;
 
-	currState_ = kPivotToAngleInit;
-	nextState_ = kPivotToAngleInit;
+	numTimesInkPivotToAngleInit = 0;
+
+	currState_ = kDriveStraightInit;
+	nextState_ = kDriveStraightInit;
+
+	numTimesInkDriveStraightInit = 0;
 	printf("in alignWithPegCommand constructor\n");
 }
 
@@ -44,11 +48,17 @@ void AlignWithPegCommand::Init() {
 	desiredDistance_ = 0.0;
 	isDone_ = false;
 
-	currState_ = kPivotToAngleInit;
-	nextState_ = kPivotToAngleInit;
+//	currState_ = kPivotToAngleInit;
+//	nextState_ = kPivotToAngleInit;
+	currState_ = kDriveStraightInit;
+	nextState_ = kDriveStraightInit;
+
 
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
+
+	numTimesInkPivotToAngleInit = 0;
+	numTimesInkDriveStraightInit = 0;
 
 	printf("in alignwithpegcommand init\n");
 }
@@ -62,45 +72,53 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	switch (currState_) {
 		case (kPivotToAngleInit) :
-			Wait(1.0);
-			printf("In kPivotToAngleInit\n");
-			// Get angle from Jetson
-			if (angleAddress == "ANGLE") {
-				desiredPivotDeltaAngle_ = stod(angleContents);
-				printf("ANGLE: %f\n", desiredPivotDeltaAngle_);
-			} else {
-				printf("angle address: %s\n", angleAddress.c_str());
-			}
 
-			if (fabs(desiredPivotDeltaAngle_) > 2.0) {		// 2 degree threshold
-				// CHECK -DESIREDPIVOTDELTAANGLE_
-				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navXSource_);
-				pivotCommand_->Init();
-				nextState_ = kPivotToAngleUpdate;
-			} else {
-				nextState_ = kDriveStraightInit;
-			}
+//			printf("In kPivotToAngleInit\n");
+//			// Get angle from Jetson
+//			if (angleAddress == "ANGLE") {
+//				desiredPivotDeltaAngle_ = stod(angleContents);
+//				printf("ANGLE: %f\n", desiredPivotDeltaAngle_);
+//			} else {
+//				printf("angle address: %s\n", angleAddress.c_str());
+//			}
+//
+//			if (numTimesInkPivotToAngleInit < 3) {
+//				numTimesInkPivotToAngleInit++;
+//				nextState_ = kPivotToAngleInit;
+//			} else if (fabs(desiredPivotDeltaAngle_) > 3.0) {		// 2 degree threshold
+//				// CHECK -DESIREDPIVOTDELTAANGLE_
+//				// negative because jetson returns angle wrong way
+//				printf("ANGLE FOR PIVOT COMMAND: %f\n", -desiredPivotDeltaAngle_);
+//				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navXSource_);
+//				pivotCommand_->Init();
+//				nextState_ = kPivotToAngleUpdate;
+//			} else {
+//				nextState_ = kDriveStraightInit;
+//			}
 			break;
 
 		case (kPivotToAngleUpdate) :
-			printf("in kPivotToAngleUpdate\n");
-			if (!pivotCommand_->IsDone()) {
-				pivotCommand_->Update(currTimeSec, deltaTimeSec);
-				nextState_ = kPivotToAngleUpdate;
-			} else {
-				nextState_ = kDriveStraightInit;
-			}
+//			printf("in kPivotToAngleUpdate\n");
+//			if (!pivotCommand_->IsDone()) {
+//				pivotCommand_->Update(currTimeSec, deltaTimeSec);
+//				nextState_ = kPivotToAngleUpdate;
+//			} else {
+//				nextState_ = kDriveStraightInit;
+//			}
 			break;
 
 		case (kDriveStraightInit) :
-			Wait(1.0);
 			// Get distance from Jetson
 			if (distanceAddress == "DISTANCE") {
 				desiredDistance_ = stod(distanceContents);		// IN INCHES
 				printf("DISTANCE: %f\n", desiredDistance_);
 			}
 
-			if (fabs(desiredDistance_) > 2.0/12.0) {		// 2 inch threshold
+			if (numTimesInkDriveStraightInit < 3) {
+				numTimesInkDriveStraightInit++;
+				nextState_ = kDriveStraightInit;
+			} else if (fabs(desiredDistance_) > 2.0/12.0) {	// 2 in threshold
+				printf("DISTANCE FOR COMMAND: %f\n", desiredDistance_);
 				// Jetson returns in inches, so /12.0
 				// Subtract 10 inches bc of length of peg
 				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,

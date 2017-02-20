@@ -23,7 +23,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			nextState_ = kTeleopDrive;
 			break;
 		case (kTeleopDrive) :
-			robot_->SetPercentVDrive();
+			robot_->SetPercentVBusDrive();
 
 			// Getting joystick values
 			double leftJoyY, rightJoyY, rightJoyX;

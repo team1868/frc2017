@@ -47,4 +47,3 @@ private:
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */
-

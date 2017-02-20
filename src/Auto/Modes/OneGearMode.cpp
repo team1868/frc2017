@@ -6,7 +6,7 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	talonSource_ = talonSource;
 	firstCommand_ = NULL;
 	//liftPath_ = new PathCommand(robot_, PathCommand::kLiftTwo);	// to put this as input to OneGearMode?
-	liftPath_ = new PathCommand(robot_, PathCommand::kLiftOne);
+	liftPath_ = new PathCommand(robot_, PathCommand::kLiftThree);
 	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
 	printf("in one gear mode constructor\n");
 }
@@ -17,6 +17,7 @@ void OneGearMode::CreateQueue() {
 //	alignWithPegCommand_->SetNextCommand(liftPath_);
 	firstCommand_ = liftPath_;
 	liftPath_->SetNextCommand(alignWithPegCommand_);
+//	firstCommand_ = alignWithPegCommand_;
 	currentCommand = firstCommand_;
 }
 

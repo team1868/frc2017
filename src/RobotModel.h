@@ -17,7 +17,7 @@ public:
 	double GetTime();
 	void SetTalonPIDConfig(Wheels wheel, double pFac, double iFac, double dFac, double fFac);
 	void SetMotionProfile();	// Sets the talons to motion profile mode
-	void SetPercentVDrive();	// Sets the talons to percentVbus mode (the usual (-1,1) range outputs)
+	void SetPercentVBusDrive();	// Sets the talons to percentVbus mode (the usual (-1,1) range outputs)
 	void SetDriveValues(Wheels wheel, double value);
 	void ClearMotionProfileTrajectories();
 	double GetDriveEncoderValue(Wheels wheel);

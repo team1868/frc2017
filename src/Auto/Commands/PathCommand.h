@@ -25,6 +25,8 @@ public:
 	void Update(double currTimeSec, double deltaTimeSec);
 	bool IsDone();
 
+	void ClearMotionProfile();
+
 private:
 	RobotModel *robot_;
 	Path path_;
