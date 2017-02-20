@@ -9,7 +9,7 @@ class MainProgram : public IterativeRobot {
 	RobotModel *robot_; /**< Testing. */
 	ControlBoard *humanControl_;
 	DriveController *driveController_;
-	//SuperstructureController *superstructureController_;
+	SuperstructureController *superstructureController_;
 	AutoController *autoController_;
 
 	NavXPIDSource *navXSource_;
@@ -27,8 +27,7 @@ public:
 		robot_ = new RobotModel();
 		humanControl_ = new ControlBoard();
 		driveController_ = new DriveController(robot_, humanControl_);
-		//superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
-		//autoController_ = new AutoController(robot_, driveController_, superstructureController_, humanControl_);
+		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
 		autoController_ = new AutoController();
 
 		navXSource_ = new NavXPIDSource(robot_);
@@ -36,8 +35,8 @@ public:
 
 		Wait(1.0);
 		robot_->ZeroNavXYaw();
-//		Wait(1.0);
-//		navxSource_->ResetAccumulatedYaw();		// TODO reset accumulated yaw at some point
+		Wait(1.0);
+		navXSource_->ResetAccumulatedYaw();		// TODO reset accumulated yaw at some point
 	}
 
 	void AutonomousInit() {
@@ -65,6 +64,7 @@ public:
 	void TeleopPeriodic() {
 		humanControl_->ReadControls();
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
+		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
 	}
 
 	void TestInit() {
