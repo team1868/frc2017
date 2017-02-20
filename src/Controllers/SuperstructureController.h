@@ -13,16 +13,21 @@ public:
 	void Update(double currTimeSec, double deltaTimeSec);
 	virtual ~SuperstructureController();
 
-	//auto boolean mutator methods
+	//auto mutator methods
 	void SetAutoFlywheelDesired(bool desired);
+	void SetAutoTimeITDesired(bool desired);
+	void SetAutoIntakeTime(int seconds);
+	void SetAutoFinishedIntake(bool finished);
 
-	//auto boolean accessor methods
+	//auto accessor methods
 	bool GetAutoFlywheelDesired();
+	bool GetAutoIntakeDesired();
+	bool GetAutoFinishedIntake();
 
 	void SetOutput();
 
 	enum SuperstructureState {
-			kInit, kIdle, kIntake, kFeederAndFlywheel, kClimber
+			kInit, kIdle, kIntake, kFeederAndFlywheel, kClimber, kTimeIntake
 	};
 private:
 	RobotModel* robot_;
@@ -36,9 +41,9 @@ private:
 	double desiredFlywheelVelocity_, expectedFlywheelMotorOutput_,
 		   feederMotorOutput_, climberMotorOutput_, intakeMotorOutput_;
 
-	//auto booleans
-	bool autoFlywheelDesired_;
-
+	//auto variables
+	bool autoFlywheelDesired_, autoTimeITDesired_, autoStartedIntake_, autoFinishedIntake_;
+	double autoIntakeTime_, autoIntakeStartTime_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */

@@ -8,15 +8,15 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	m_stateVal_ = kInit;
 	nextState_ = kInit;
 
-	desiredFlywheelVelocity_ = -125.0;
+	desiredFlywheelVelocity_ = -124.0;
 
-	expectedFlywheelMotorOutput_ = -0.96;
+	expectedFlywheelMotorOutput_ = -0.94;
 
 	feederMotorOutput_ = 0.7;
 	climberMotorOutput_ = 0.7;
 	intakeMotorOutput_ = 0.85;
 
-	flywheelController_ = new PIDController(0.0, 0.0, 0.3, (expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_), robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
+	flywheelController_ = new PIDController(0.0, 0.0, 0.4, (expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_), robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 	flywheelController_->SetSetpoint(desiredFlywheelVelocity_);
 	flywheelController_->SetOutputRange(-1.0, 1.0);
 	flywheelController_->SetAbsoluteTolerance(2.0);
@@ -24,6 +24,12 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 
 
 	autoFlywheelDesired_ = false;
+	autoTimeITDesired_ = false;
+	autoStartedIntake_ = false;
+	autoFinishedIntake_ = false;
+
+	autoIntakeTime_ = 0.0;
+	autoIntakeStartTime_ = 0.0;
 }
 
 void SuperstructureController::Reset() {
@@ -42,7 +48,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	SetOutput();
 	switch(m_stateVal_) {
 	case (kInit):
-			SmartDashboard::PutNumber("State", 1.0);
+			SmartDashboard::PutString("State", "kInit");
 			flywheelController_->Disable();
 			robot_->SetIntakeOutput(0.0);
 			robot_->SetFeederOutput(0.0);
@@ -50,7 +56,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			nextState_ = kIdle;
 			break;
 	case (kIdle):
-			SmartDashboard::PutNumber("State", 2.0);
+			SmartDashboard::PutString("State", "kIdle");
 			nextState_ = kIdle;
 			if (humanControl_->GetGearMechOutDesired()) {
 				robot_->SetGearMechOut();
@@ -60,16 +66,19 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				nextState_ = kIntake;
 			} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
 				flywheelController_->Enable();
+				SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
 				robot_->SetFeederOutput(feederMotorOutput_);
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kFeederAndFlywheel;
 			} else if (humanControl_->GetClimberDesired()) {
 				robot_->SetClimberOutput(climberMotorOutput_);
 				nextState_ = kClimber;
+			} else if (autoTimeITDesired_) {
+				nextState_ = kTimeIntake;
 			}
 			break;
 	case (kIntake):
-			SmartDashboard::PutNumber("State", 3.0);
+			SmartDashboard::PutString("State", "kIntake");
 			if (humanControl_->GetIntakeDesired()) {
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kIntake;
@@ -79,9 +88,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			}
 			break;
 	case (kFeederAndFlywheel):
-			SmartDashboard::PutNumber("State", 4.0);;
+			SmartDashboard::PutString("State", "kFeederAndFlywheel");;
 			if (humanControl_->GetFlywheelDesired() || GetAutoFlywheelDesired()) {
-				SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
 				robot_->SetFeederOutput(feederMotorOutput_);
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kFeederAndFlywheel;
@@ -93,9 +101,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			}
 			break;
 	case (kClimber):
-			SmartDashboard::PutNumber("State", 5.0);
+			SmartDashboard::PutString("State", "kClimber");
 			if (humanControl_->GetClimberDesired()) {
-				SmartDashboard::PutNumber("Climber", climberMotorOutput_);
 				robot_->SetClimberOutput(climberMotorOutput_);
 				nextState_ = kClimber;
 			} else {
@@ -103,6 +110,23 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				nextState_ = kIdle;
 			}
 			break;
+	case (kTimeIntake):
+			SmartDashboard::PutString("State", "kTimeIntake");
+			if (!autoStartedIntake_) {
+				autoIntakeStartTime_ = robot_->GetTime();
+				robot_->SetIntakeOutput(intakeMotorOutput_);
+				autoStartedIntake_ = true;
+				nextState_ = kTimeIntake;
+			} else if (robot_->GetTime() - autoIntakeStartTime_ < autoIntakeTime_) {
+				robot_->SetIntakeOutput(intakeMotorOutput_);
+				nextState_ = kTimeIntake;
+			} else {
+				robot_->SetIntakeOutput(0.0);
+				autoStartedIntake_ = false;
+				autoFinishedIntake_ = true;
+				nextState_ = kIdle;
+			}
+
 	}
 	m_stateVal_ = nextState_;
 }
@@ -111,20 +135,40 @@ bool SuperstructureController::GetAutoFlywheelDesired() {
 	return autoFlywheelDesired_;
 }
 
+bool SuperstructureController::GetAutoIntakeDesired() {
+	return autoTimeITDesired_;
+}
+
+bool SuperstructureController::GetAutoFinishedIntake() {
+	return autoFinishedIntake_;
+}
+
 void SuperstructureController::SetAutoFlywheelDesired(bool desired) {
 	autoFlywheelDesired_ = desired;
 }
 
+void SuperstructureController::SetAutoTimeITDesired(bool desired) {
+	autoTimeITDesired_ = desired;
+}
+
+void SuperstructureController::SetAutoIntakeTime(int seconds) {
+	autoIntakeTime_ = seconds;
+}
+
+void SuperstructureController::SetAutoFinishedIntake(bool finished) {
+	autoFinishedIntake_ = finished;
+}
+
 void SuperstructureController::SetOutput() {
 	if (humanControl_->GetReverseIntakeDesired()) {
-		intakeMotorOutput_ = -0.85;
+		intakeMotorOutput_ = -(abs(intakeMotorOutput_));
 	} else {
-		intakeMotorOutput_ = 0.85;
+		intakeMotorOutput_ = abs(intakeMotorOutput_);
 	}
 	if (humanControl_->GetReverseFeederDesired()) {
-		feederMotorOutput_ = -0.7;
+		feederMotorOutput_ = -(abs(feederMotorOutput_));
 	} else {
-		feederMotorOutput_ = 0.7;
+		feederMotorOutput_ = abs(feederMotorOutput_);
 	}
 }
 
