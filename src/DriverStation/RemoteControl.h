@@ -22,6 +22,7 @@ public:
 	virtual bool GetClimberDesired() = 0;
 	virtual bool GetReverseIntakeDesired() = 0;
 	virtual bool GetReverseFeederDesired() = 0;
+	virtual bool GetGearMechOutDesired() = 0;
 
 	virtual ~RemoteControl() {}
 };

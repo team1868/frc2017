@@ -14,15 +14,16 @@ ControlBoard::ControlBoard() {
 	rightJoyY_ = 0;
 
 	// Buttons
-	driveDirectionButton = new ButtonReader(leftJoy_, DRIVE_DIRECTION_BUTTON_PORT);
-	gearShiftButton = new ButtonReader(operatorJoyB_, HIGH_LOW_GEAR_BUTTON_PORT);
-	arcadeDriveButton = new ButtonReader(rightJoy_, ARCADE_DRIVE_BUTTON_PORT);
-	quickTurnButton = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
+	driveDirectionButton_ = new ButtonReader(leftJoy_, DRIVE_DIRECTION_BUTTON_PORT);
+	gearShiftButton_ = new ButtonReader(operatorJoyB_, HIGH_LOW_GEAR_BUTTON_PORT);
+	arcadeDriveButton_ = new ButtonReader(rightJoy_, ARCADE_DRIVE_BUTTON_PORT);
+	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
 	intakeSwitch_ = new ButtonReader(operatorJoy_, INTAKE_SWITCH_PORT);
 	climberSwitch_ = new ButtonReader(operatorJoy_, CLIMBER_SWITCH_PORT);
 	reverseIntakeButton_ = new ButtonReader(operatorJoy_, REVERSE_INTAKE_BUTTON_PORT);
 	reverseFeederButton_ = new ButtonReader(operatorJoy_, REVERSE_FEEDER_BUTTON_PORT);
+	gearMechOutButton_ = new ButtonReader(operatorJoy_, GEAR_MECH_OUT_BUTTON_PORT);
 
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
@@ -36,6 +37,7 @@ ControlBoard::ControlBoard() {
 	climberDesired_ = false;
 	reverseIntakeDesired_ = false;
 	reverseFeederDesired_ = false;
+	gearMechOutDesired_ = false;
 }
 
 void ControlBoard::ReadControls() {
@@ -46,10 +48,12 @@ void ControlBoard::ReadControls() {
 	rightJoyY_ = rightJoy_->GetY();
 
 	// Drivetrain variables
-	reverseDriveDesired_ = driveDirectionButton->IsDown();
-	gearShiftDesired_ = gearShiftButton->StateJustChanged();
-	arcadeDriveDesired_ = !arcadeDriveButton->IsDown();
-	quickTurnDesired_ = quickTurnButton->IsDown();
+	reverseDriveDesired_ = driveDirectionButton_->IsDown();
+	arcadeDriveDesired_ = !arcadeDriveButton_->IsDown();
+	quickTurnDesired_ = quickTurnButton_->IsDown();
+	if (gearShiftButton_->StateJustChanged()) {
+		gearShiftDesired_ = !gearShiftDesired_;
+	}
 
 	//Superstructure variables
 	flywheelDesired_ = flywheelSwitch_->IsDown();
@@ -61,6 +65,7 @@ void ControlBoard::ReadControls() {
 	if (reverseFeederButton_->WasJustPressed()) {
 		reverseFeederDesired_ = !reverseFeederDesired_;
 	}
+	gearMechOutDesired_ = gearMechOutButton_->WasJustPressed();
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -86,15 +91,16 @@ double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
 }
 
 void ControlBoard::ReadAllButtons() {
-	driveDirectionButton->ReadValue();
-	gearShiftButton->ReadValue();
-	arcadeDriveButton->ReadValue();
-	quickTurnButton->ReadValue();
+	driveDirectionButton_->ReadValue();
+	gearShiftButton_->ReadValue();
+	arcadeDriveButton_->ReadValue();
+	quickTurnButton_->ReadValue();
 	flywheelSwitch_->ReadValue();
 	intakeSwitch_->ReadValue();
 	climberSwitch_->ReadValue();
 	reverseIntakeButton_->ReadValue();
 	reverseFeederButton_->ReadValue();
+	gearMechOutButton_->ReadValue();
 }
 
 // Returns true if reverse drive is desired
@@ -135,6 +141,10 @@ bool ControlBoard::GetReverseFeederDesired() {
 
 bool ControlBoard::GetReverseIntakeDesired() {
 	return reverseIntakeDesired_;
+}
+
+bool ControlBoard::GetGearMechOutDesired() {
+	return gearMechOutDesired_;
 }
 
 ControlBoard::~ControlBoard() {

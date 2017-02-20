@@ -15,14 +15,19 @@ public:
 	~RobotModel();
 	void ResetTimer();
 	double GetTime();
+
+	// Talon accessors and mutators
 	void SetTalonPIDConfig(Wheels wheel, double pFac, double iFac, double dFac, double fFac);
 	void SetMotionProfile();	// Sets the talons to motion profile mode
 	void SetPercentVBusDrive();	// Sets the talons to percentVbus mode (the usual (-1,1) range outputs)
 	void SetDriveValues(Wheels wheel, double value);
+	void SetHighGear();
+	void SetLowGear();
 	void ClearMotionProfileTrajectories();
 	double GetDriveEncoderValue(Wheels wheel);
 	double GetLeftDistance();
 	double GetRightDistance();
+
 	double GetNavXYaw();
 	void ZeroNavXYaw();
 	void RefreshIni(); //refreshes the ini file
@@ -39,6 +44,7 @@ public:
 	bool GetGearInRobot();
 	void SetGearInRobot(bool gearInRobot);
 	void GearUpdate();
+	void SetGearMechOut();
 
 	Ini *pini;
 
@@ -48,6 +54,8 @@ private:
 	AHRS *navX_;
 
 	Victor *flywheelMotor_, *feederMotor_, *climberMotor_, *intakeMotor_;
+	DoubleSolenoid *gearShiftSolenoid_;
+	Solenoid *gearMechSolenoid_;
 	Encoder *flywheelEncoder_;
 	DigitalInput *distanceSensor_;
 

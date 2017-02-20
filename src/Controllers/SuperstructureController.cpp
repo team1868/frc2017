@@ -52,6 +52,9 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	case (kIdle):
 			SmartDashboard::PutNumber("State", 2.0);
 			nextState_ = kIdle;
+			if (humanControl_->GetGearMechOutDesired()) {
+				robot_->SetGearMechOut();
+			}
 			if (humanControl_->GetIntakeDesired()) {
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kIntake;

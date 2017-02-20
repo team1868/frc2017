@@ -46,7 +46,7 @@ RobotModel::RobotModel() {
 
 	/* COMP BOT
 	rightMaster_->SetSensorDirection(true); 	// TODO check
-	rightMaster_->SetInverted(false);			// TODO check
+	rightMaster_->SetInverted(false);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(false);	// TODO check
 	*/
 
@@ -59,6 +59,8 @@ RobotModel::RobotModel() {
 	rightSlave_->SetControlMode(CANTalon::kFollower);
 	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
 
+	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_SOLENOID_PORT_FORWARD, GEAR_SHIFT_SOLENOID_PORT_REVERSE);
+
 	// Initializing navX
 	navX_ = new AHRS(SPI::kMXP);	// might be wrong but idk
 	pini = new Ini("/home/lvuser/robot.ini");
@@ -70,6 +72,8 @@ RobotModel::RobotModel() {
 
 	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, true);
 	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate); //FIX THIS
+
+	gearMechSolenoid_ = new Solenoid(PNEUMATICS_CONTROL_MODULE_ID, GEAR_MECHANISM_SOLENOID_PORT);
 
 	distanceSensor_ = new DigitalInput(DISTANCE_SENSOR_PWM_PORT);
 
@@ -133,6 +137,15 @@ void RobotModel::SetDriveValues(Wheels wheels, double value) {
 				break;
 	}
 }
+
+void RobotModel::SetHighGear() {
+	gearShiftSolenoid_->Set(DoubleSolenoid::kForward);
+}
+
+void RobotModel::SetLowGear() {
+	gearShiftSolenoid_->Set(DoubleSolenoid::kReverse);
+}
+
 void RobotModel::ClearMotionProfileTrajectories() {
 	leftMaster_->ClearMotionProfileTrajectories();
 	rightMaster_->ClearMotionProfileTrajectories();
@@ -217,6 +230,10 @@ void RobotModel::GearUpdate() {
 	} else {
 		printf("Gear is NOT in robot\n");
 	}
+}
+
+void RobotModel::SetGearMechOut() {
+	gearMechSolenoid_->Set(true);
 }
 
 RobotModel::~RobotModel() {
