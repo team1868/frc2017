@@ -8,11 +8,13 @@
 #include "Auto/MotionProfiling/LiftOne_MotionProfile.h"
 #include "Auto/MotionProfiling/LiftTwo_MotionProfile.h"
 #include "Auto/MotionProfiling/LiftThree_MotionProfile.h"
+#include "Auto/MotionProfiling/HighGoalAfterLeftLift_MotionProfile.h"
+#include "Auto/MotionProfiling/HighGoalAfterRightLift_MotionProfile.h"
 #include "RobotModel.h"
 
 class PathCommand : public AutoCommand {
 public:
-	enum Path { kLiftOne, kLiftTwo, kLiftThree };
+	enum Path { kLiftOne, kLiftTwo, kLiftThree, kHighGoalAfterLeftLift, kHighGoalAfterRightLift };
 	/**
 	 * Constructor that generates a PathCommand
 	 * @param robot a RobotModel

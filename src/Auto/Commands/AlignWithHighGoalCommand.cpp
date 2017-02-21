@@ -1,17 +1,17 @@
-#include <Auto/Commands/AlignWithPegCommand.h>
+#include <Auto/Commands/AlignWithHighGoalCommand.h>
 
 using namespace std;
 
-AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource) {
-	printf("in beginning of alignwithpegcommand\n");
+AlignWithHighGoalCommand::AlignWithHighGoalCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource) {
+	printf("in beginning of alignwithhighgoalcommand\n");
 	angleContext_ = new zmq::context_t(1);
 	distanceContext_ = new zmq::context_t(1);
 
 	angleSubscriber_ = new zmq::socket_t(*angleContext_, ZMQ_SUB);
-	angleSubscriber_->connect("tcp://10.18.68.40:5563");	// MAKE SURE RIGHT IP
+	angleSubscriber_->connect("tcp://10.18.68.40:5564");	// MAKE SURE RIGHT IP
 
 	distanceSubscriber_ = new zmq::socket_t(*distanceContext_, ZMQ_SUB);
-	distanceSubscriber_->connect("tcp://10.18.68.40:5563");	// MAKE SURE RIGHT IP
+	distanceSubscriber_->connect("tcp://10.18.68.40:5564");	// MAKE SURE RIGHT IP
 	angleSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "ANGLE", 1);
 	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
 
@@ -39,11 +39,11 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 	printf("in alignWithPegCommand constructor\n");
 }
 
-void AlignWithPegCommand::RefreshIni() {
+void AlignWithHighGoalCommand::RefreshIni() {
 	//pivotCommand_->RefreshIni();
 }
 
-void AlignWithPegCommand::Init() {
+void AlignWithHighGoalCommand::Init() {
 	desiredPivotDeltaAngle_ = 0.0;
 	desiredDistance_ = 0.0;
 	isDone_ = false;
@@ -52,7 +52,6 @@ void AlignWithPegCommand::Init() {
 //	nextState_ = kPivotToAngleInit;
 	currState_ = kDriveStraightInit;
 	nextState_ = kDriveStraightInit;
-
 
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
@@ -63,7 +62,7 @@ void AlignWithPegCommand::Init() {
 	printf("in alignwithpegcommand init\n");
 }
 
-void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
+void AlignWithHighGoalCommand::Update(double currTimeSec, double deltaTimeSec) {
 	string angleAddress = s_recv (*angleSubscriber_);
 	string angleContents = s_recv (*angleSubscriber_);
 
@@ -121,9 +120,8 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				printf("DISTANCE FOR COMMAND: %f\n", desiredDistance_);
 				// Jetson returns in inches, so /12.0
 				// Subtract 10 inches bc of length of peg
-				// negative because technically driving backwards
 				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-						robot_, -(desiredDistance_ - 10.0)/12.0);	// converting to feet
+						robot_, (desiredDistance_ - 10.0)/12.0);	// converting to feet
 				driveStraightCommand_->Init();
 				nextState_ = kDriveStraightUpdate;
 			} else {
@@ -144,10 +142,10 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 	currState_ = nextState_;
 }
 
-bool AlignWithPegCommand::IsDone() {
+bool AlignWithHighGoalCommand::IsDone() {
 	return isDone_;
 }
 
-AlignWithPegCommand::~AlignWithPegCommand() {
+AlignWithHighGoalCommand::~AlignWithHighGoalCommand() {
 
 }

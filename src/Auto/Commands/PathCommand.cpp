@@ -27,6 +27,15 @@ void PathCommand::Init() {
 			printf("Lift three\n");
 			motionProfile = new LiftThree_MotionProfile();
 			break;
+		case(kHighGoalAfterLeftLift) :
+			printf("High goal after left lift\n");
+//			motionProfile = new HighGoalAfterLeftLift_MotionProfile();
+		// TO DO
+			break;
+		case(kHighGoalAfterRightLift) :
+			printf("High goal after right lift\n");
+			motionProfile = new HighGoalAfterRightLift_MotionProfile();
+			break;
 		default :
 			motionProfile = NULL;
 			printf("MOTION PROFILE IS NULL\n");

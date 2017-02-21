@@ -10,18 +10,10 @@
 
 class OneGearMode : public AutoMode {
 public:
-	/**
-	 * Constructs new AlignWithPegCommand
-	 * @param robot a RobotModel
-	 */
 	OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource);
 	virtual ~OneGearMode();
 	void CreateQueue();
-	/**
-	 * Initializes AlignWithPegCommand and sets currentCommand to firstCommand
-	 */
 	void Init(); 	// to put in AutoMode
-	//void Update(double currTimeSec, double deltaTimeSec);
 	void RefreshIni();
 	bool IsDone();
 private:
