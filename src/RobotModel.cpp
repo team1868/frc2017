@@ -24,31 +24,33 @@ RobotModel::RobotModel() {
 	leftMaster_->ConfigEncoderCodesPerRev(256);
 	leftMaster_->SetPosition(0);
 
-	/* KOP BOT */
+	#if KOP_BOT
 	leftMaster_->SetSensorDirection(false);		// TODO check
 	leftMaster_->SetInverted(false);			// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(false); // TODO check
+	#endif
 
-	/* COMP BOT
+	#if COMP_BOT
 	leftMaster_->SetSensorDirection(false);		// TODO check
 	leftMaster_->SetInverted(true);			// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(true); // TODO check
-	*/
+	#endif
 
 	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
 	rightMaster_->ConfigEncoderCodesPerRev(256);
 	rightMaster_->SetPosition(0);
 
-	/* KOP BOT */
+	#if KOP_BOT
 	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(true);			// TODO check
 	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
+	#endif
 
-	/* COMP BOT
+	#if COMP_BOT
 	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(false);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(false);	// TODO check
-	*/
+	#endif
 
 	// set brake mode
 	leftMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
@@ -209,6 +211,10 @@ Encoder* RobotModel::GetFlywheelEncoder() {
 
 Victor* RobotModel::GetFlywheelMotor() {
 	return flywheelMotor_;
+}
+
+double RobotModel::GetFlywheelMotorOutput() {
+	return flywheelMotor_->Get();
 }
 
 bool RobotModel::GetGearInRobot() {

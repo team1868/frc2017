@@ -1,4 +1,5 @@
 #include <Auto/Modes/OneGearMode.h>
+#include <Auto/Modes/TestMode.h>
 #include <WPILib.h>
 #include "RobotModel.h"
 #include "Controllers/DriveController.h"
@@ -43,15 +44,17 @@ public:
 		ResetTimerVariables();
 		ResetControllers();
 		OneGearMode *liftTwoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
-
 		autoController_->SetAutonomousMode(liftTwoMode);
 		autoController_->Init();
 	}
 
 	void AutonomousPeriodic() {
+		robot_->SetGearMechOut();
 		UpdateTimerVariables();
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
+		} else {
+			SmartDashboard::PutString("Auto Mode", "Done");
 		}
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
@@ -59,6 +62,7 @@ public:
 
 	void TeleopInit() {
 		ResetControllers();
+		robot_->SetHighGear();
 	}
 
 	void TeleopPeriodic() {
