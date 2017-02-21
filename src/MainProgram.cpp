@@ -63,6 +63,7 @@ public:
 	void TeleopInit() {
 		ResetControllers();
 		robot_->SetHighGear();
+		robot_->SetPercentVBusDrive();
 	}
 
 	void TeleopPeriodic() {

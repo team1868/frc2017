@@ -39,7 +39,9 @@ private:
 	uint32_t nextState_;
 
 	double desiredFlywheelVelocity_, expectedFlywheelMotorOutput_,
-		   feederMotorOutput_, climberMotorOutput_, intakeMotorOutput_;
+		   feederMotorOutput_, climberMotorOutput_, intakeMotorOutput_, flywheelStartTime_;
+
+	bool flywheelStarted_;
 
 	//auto variables
 	bool autoFlywheelDesired_, autoTimeITDesired_, autoStartedIntake_, autoFinishedIntake_;
