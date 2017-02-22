@@ -9,7 +9,7 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	nextState_ = kInit;
 
 	desiredFlywheelVelocity_ = 125;
-	expectedFlywheelMotorOutput_ = 0.    ;
+	expectedFlywheelMotorOutput_ = 0.84;
 	feederMotorOutput_ = -0.85;
 	climberMotorOutput_ = 0.85;
 	intakeMotorOutput_ = 0.7;
