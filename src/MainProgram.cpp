@@ -27,7 +27,7 @@ public:
 		ResetTimerVariables();
 		robot_ = new RobotModel();
 		humanControl_ = new ControlBoard();
-		driveController_ = new DriveController(robot_, humanControl_);
+		driveController_ = new DriveController(robot_, humanControl_, navXSource_);
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
 		autoController_ = new AutoController();
 
@@ -77,6 +77,7 @@ public:
 	}
 
 	void TestPeriodic() {
+		printf("Flywheel encoders %d\n", robot_->GetFlywheelEncoder()->Get());
 	}
 
 	void DisabledPeriodic() {

@@ -1,11 +1,25 @@
 #include "Controllers/DriveController.h"
 #include "WPILib.h"
 
-DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl) {
+DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl, NavXPIDSource *navX) {
 	robot_ = robot;
 	humanControl_ = humanControl;
+	navX_ = navX;
+	anglePIDOutput_ = new AnglePIDOutput();
 
+	pFac_ = 0.01;
+	iFac_ = 0.0;
+	dFac_ = 0.0;
+
+	driveStraight_ = new PIDController(pFac_, iFac_, dFac_, navX_, anglePIDOutput_);
 	isDone_ = false;
+	isDriveStraightStarted_ = false;
+	desiredAngle_ = robot_->GetNavXYaw();
+	angleOutput_ = 0.0;
+
+	driveStraight_->SetOutputRange(-1.0, 1.0);
+	driveStraight_->SetContinuous(false);
+	driveStraight_->SetAbsoluteTolerance(2);
 
 	currState_ = kInitialize;
 	nextState_ = kInitialize;
@@ -16,6 +30,9 @@ void DriveController::Reset() {
 }
 
 void DriveController::Update(double currTimeSec, double deltaTimeSec) {
+	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
+
 	PrintDriveValues();
 
 	switch (currState_) {
@@ -56,8 +73,6 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 }
 
 void DriveController::PrintDriveValues() {
-	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
-	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 	SmartDashboard::PutNumber("Drive direction", DriveDirection());
 	SmartDashboard::PutNumber("Get state", GetDriveState());
 }
@@ -78,9 +93,28 @@ void DriveController::ArcadeDrive(double myX, double myY) {
 	leftOutput = thrustValue;
 	rightOutput = thrustValue;
 
-	if (fabs(rotateValue) > 0.1) {	 // TODO possibly add PID loop to keep it straight
+	if (fabs(rotateValue) > 0.1) {	 // If we want turn
+		driveStraight_->Disable();
+		isDriveStraightStarted_ = false;
+
 		leftOutput += rotateValue;
 		rightOutput -= rotateValue;
+
+	} else { // If we want straight
+/*		if (!isDriveStraightStarted_) {
+			desiredAngle_ = robot_->GetNavXYaw();
+			driveStraight_->SetSetpoint(desiredAngle_);
+			driveStraight_->Enable();
+
+			angleOutput_ = anglePIDOutput_->GetPIDOutput();
+		} else {
+			printf("Driving Straight \n");
+			angleOutput_ = anglePIDOutput_->GetPIDOutput();
+		}
+
+		leftOutput += angleOutput_;
+		rightOutput -= angleOutput_;
+		SmartDashboard::PutNumber("Angle Error", driveStraight_->GetError());*/
 	}
 
 	// Finding the max output

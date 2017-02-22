@@ -8,14 +8,15 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	m_stateVal_ = kInit;
 	nextState_ = kInit;
 
-	desiredFlywheelVelocity_ = -125.0;
-	expectedFlywheelMotorOutput_ = -0.96;
-	feederMotorOutput_ = 0.85;
+	desiredFlywheelVelocity_ = 125;
+	expectedFlywheelMotorOutput_ = 0.    ;
+	feederMotorOutput_ = -0.85;
 	climberMotorOutput_ = 0.85;
 	intakeMotorOutput_ = 0.7;
 	flywheelStartTime_ = 0.0;
 
-	flywheelController_ = new PIDController(0.0, 0.0, 0.4, (expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_), robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
+	flywheelController_ = new PIDController(0.0, 0.0, 0.2, (expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_), robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
+//	flywheelController_ = new PIDController(0.0, 0.0, 0.2, 0.8, robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 	flywheelController_->SetSetpoint(desiredFlywheelVelocity_);
 	flywheelController_->SetOutputRange(-1.0, 1.0);
 	flywheelController_->SetAbsoluteTolerance(2.0);
@@ -92,7 +93,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 //			SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
 			SmartDashboard::PutNumber("Flywheel Output", robot_->GetFlywheelMotorOutput());
 //			SmartDashboard::PutNumber("Flywheel Error", flywheelController_->GetError());
-//			SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
+			SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
 //			SmartDashboard::PutBoolean("flywheel desired: ", humanControl_->GetFlywheelDesired());
 			printf("Flywheel Velocity: %f\n", robot_->GetFlywheelEncoder()->GetRate());
 			printf("Flywheel Output: %f\n", robot_->GetFlywheelMotorOutput());
@@ -178,6 +179,7 @@ void SuperstructureController::SetAutoFinishedIntake(bool finished) {
 }
 
 void SuperstructureController::SetOutput() {
+	/*
 	if (humanControl_->GetReverseIntakeDesired()) {
 		intakeMotorOutput_ = -(fabs(intakeMotorOutput_));
 	} else {
@@ -187,7 +189,7 @@ void SuperstructureController::SetOutput() {
 		feederMotorOutput_ = -(fabs(feederMotorOutput_));
 	} else {
 		feederMotorOutput_ = fabs(feederMotorOutput_);
-	}
+	}*/
 }
 
 SuperstructureController::~SuperstructureController() {
