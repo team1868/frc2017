@@ -8,17 +8,21 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	m_stateVal_ = kInit;
 	nextState_ = kInit;
 
-	desiredFlywheelVelocity_ = -125.0;
-	expectedFlywheelMotorOutput_ = -0.96;
-	feederMotorOutput_ = 0.7;
+	desiredFlywheelVelocity_ = 125;
+	expectedFlywheelMotorOutput_ = 0.84;
+	feederMotorOutput_ = -0.85;
 	climberMotorOutput_ = 0.85;
 	intakeMotorOutput_ = 0.7;
+	flywheelStartTime_ = 0.0;
 
-	flywheelController_ = new PIDController(0.0, 0.0, 0.4, (expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_), robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
+	flywheelController_ = new PIDController(0.0, 0.0, 0.2, (expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_), robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
+//	flywheelController_ = new PIDController(0.0, 0.0, 0.2, 0.8, robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 	flywheelController_->SetSetpoint(desiredFlywheelVelocity_);
 	flywheelController_->SetOutputRange(-1.0, 1.0);
 	flywheelController_->SetAbsoluteTolerance(2.0);
 	flywheelController_->SetContinuous(false);
+
+	flywheelStarted_ = false;
 
 	autoFlywheelDesired_ = false;
 	autoTimeITDesired_ = false;
@@ -66,8 +70,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
 				flywheelController_->Enable();
 				SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
-				robot_->SetFeederOutput(feederMotorOutput_);
-				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kFeederAndFlywheel;
 			} else if (humanControl_->GetClimberDesired()) {
 				robot_->SetClimberOutput(climberMotorOutput_);
@@ -91,18 +93,30 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			SmartDashboard::PutString("State", "kFeederAndFlywheel");
 //			SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
 			SmartDashboard::PutNumber("Flywheel Output", robot_->GetFlywheelMotorOutput());
-			SmartDashboard::PutNumber("Flywheel Error", flywheelController_->GetError());
+//			SmartDashboard::PutNumber("Flywheel Error", flywheelController_->GetError());
 			SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
-			SmartDashboard::PutBoolean("flywheel desired: ", humanControl_->GetFlywheelDesired());
-			if (humanControl_->GetFlywheelDesired() || GetAutoFlywheelDesired()) {
+//			SmartDashboard::PutBoolean("flywheel desired: ", humanControl_->GetFlywheelDesired());
+			printf("Flywheel Velocity: %f\n", robot_->GetFlywheelEncoder()->GetRate());
+			printf("Flywheel Output: %f\n", robot_->GetFlywheelMotorOutput());
+			if (!flywheelStarted_) {
+				printf("1.0\n");
+				flywheelStartTime_ = robot_->GetTime();
+				flywheelStarted_ = true;
+				nextState_ = kFeederAndFlywheel;
+			} else if (robot_->GetTime() - flywheelStartTime_ < 2.0) {
+				printf("2.0\n");
+				nextState_ = kFeederAndFlywheel;
+			} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
+				printf("3.0\n");
 				robot_->SetFeederOutput(feederMotorOutput_);
 				robot_->SetIntakeOutput(intakeMotorOutput_);
-				SmartDashboard::PutNumber("Intake Output:", intakeMotorOutput_);
 				nextState_ = kFeederAndFlywheel;
 			} else {
-				flywheelController_->Disable();
+				printf("4.0\n");
 				robot_->SetFeederOutput(0.0);
 				robot_->SetIntakeOutput(0.0);
+				flywheelController_->Disable();
+				flywheelStarted_ = false;
 				nextState_ = kIdle;
 			}
 			break;
@@ -166,6 +180,7 @@ void SuperstructureController::SetAutoFinishedIntake(bool finished) {
 }
 
 void SuperstructureController::SetOutput() {
+	/*
 	if (humanControl_->GetReverseIntakeDesired()) {
 		intakeMotorOutput_ = -(fabs(intakeMotorOutput_));
 	} else {
@@ -175,7 +190,7 @@ void SuperstructureController::SetOutput() {
 		feederMotorOutput_ = -(fabs(feederMotorOutput_));
 	} else {
 		feederMotorOutput_ = fabs(feederMotorOutput_);
-	}
+	}*/
 }
 
 SuperstructureController::~SuperstructureController() {

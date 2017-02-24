@@ -46,8 +46,8 @@ static const int RIGHT_DRIVE_SLAVE_ID 					= 1;
 /* ---------------------- PWM PORTS --------------------- */
 
 #if COMP_BOT
-static const int FLYWHEEL_MOTOR_PWM_PORT				= 9;
-static const int FEEDER_MOTOR_PWM_PORT					= 6;
+static const int FLYWHEEL_MOTOR_PWM_PORT				= 6;
+static const int FEEDER_MOTOR_PWM_PORT					= 9;
 static const int INTAKE_MOTOR_PWM_PORT					= 8;
 static const int CLIMBER_MOTOR_PWM_PORT					= 5;
 #endif
@@ -92,7 +92,7 @@ static const int DISTANCE_SENSOR_PWM_PORT				= -1;
 /* ------------------ ANALOG IN PORTS --------------------*/
 
 /* ------------------------ MISC -------------------------*/
-static const int PNEUMATICS_CONTROL_MODULE_ID			= 1;
+static const int PNEUMATICS_CONTROL_MODULE_ID			= 0;
 
 /* ------------------- SOLENOID PORTS ------------------- */
 static const int GEAR_SHIFT_SOLENOID_PORT_FORWARD		= 0;

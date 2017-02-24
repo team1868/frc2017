@@ -74,6 +74,7 @@ RobotModel::RobotModel() {
 
 	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, true);
 	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate); //FIX THIS
+	flywheelEncoder_->SetDistancePerPulse(0.00882038953);
 
 	gearMechSolenoid_ = new Solenoid(PNEUMATICS_CONTROL_MODULE_ID, GEAR_MECHANISM_SOLENOID_PORT);
 

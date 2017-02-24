@@ -4,6 +4,8 @@
 #include "WPILib.h"
 #include "RobotModel.h"
 #include "DriverStation/ControlBoard.h"
+#include "Auto/PIDInputSource.h"
+#include "Auto/PIDOutputSource.h"
 
 class DriveController {
 public:
@@ -12,7 +14,7 @@ public:
 	 * @param robot a RobotModel
 	 * @param humanControl a ControlBoard
 	 */
-	DriveController(RobotModel* robot, ControlBoard *humanControl);
+	DriveController(RobotModel* robot, ControlBoard *humanControl, NavXPIDSource *navX);
 	void Reset();
 	void UpdateMotionProfile();
 	/**
@@ -65,9 +67,17 @@ private:
 	int GetDriveState();
 
 	RobotModel *robot_;
-	ControlBoard* humanControl_;
+	ControlBoard *humanControl_;
+	PIDController *driveStraight_;
+	NavXPIDSource *navX_;
+	AnglePIDOutput *anglePIDOutput_;
+
 	//MotionProfileExample *leftExample_, *rightExample_;
 	bool isDone_;
+	bool isDriveStraightStarted_;
+	double desiredAngle_;
+	double angleOutput_;
+	double pFac_, iFac_, dFac_;
 
 	uint32_t currState_;
 	uint32_t nextState_;
