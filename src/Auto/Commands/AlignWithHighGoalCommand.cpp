@@ -121,7 +121,7 @@ void AlignWithHighGoalCommand::Update(double currTimeSec, double deltaTimeSec) {
 				// Jetson returns in inches, so /12.0
 				// Subtract 10 inches bc of length of peg
 				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-						robot_, (desiredDistance_ - 10.0)/12.0);	// converting to feet
+						robot_, (desiredDistance_ - 28.0)/12.0);	// converting to feet
 				driveStraightCommand_->Init();
 				nextState_ = kDriveStraightUpdate;
 			} else {

@@ -30,7 +30,6 @@ void PathCommand::Init() {
 		case(kHighGoalAfterLeftLift) :
 			printf("High goal after left lift\n");
 //			motionProfile = new HighGoalAfterLeftLift_MotionProfile();
-		// TO DO
 			break;
 		case(kHighGoalAfterRightLift) :
 			printf("High goal after right lift\n");
@@ -68,25 +67,39 @@ void PathCommand::Init() {
 	leftMotionProfileExecutor_->isDone_ = false;		// unnecessary
 	rightMotionProfileExecutor_->isDone_ = false;
 
-//	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.2, 1.40329);
-//	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.2, 1.31154);
-	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.0, 0.0, 0.0, 0.0);
-	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.0, 0.0, 0.0, 0.0);
+//	robot_->leftMaster_->SetPID(0.0, 0.0, 0.0, 0.0);
+//	robot_->rightMaster_->SetPID(0.0, 0.0, 0.0, 0.0);
+//	robot_->leftSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
+//	robot_->rightSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
 
-	robot_->leftMaster_->SetPID(0.0, 0.0, 0.0, 0.0);
-	robot_->rightMaster_->SetPID(0.0, 0.0, 0.0, 0.0);
-	robot_->leftSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
-	robot_->rightSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
+	robot_->leftMaster_->SetPID(0.6, 0.0, 0.3, 1.25);
+	robot_->rightMaster_->SetPID(0.6, 0.0, 0.3, 1.5);
+	robot_->leftSlave_->SetPID(0.6, 0.0, 0.3, 1.25);
+	robot_->rightSlave_->SetPID(0.6, 0.0, 0.3, 1.5);
+//	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.0, 0.2, 1.40329);
+//	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.0, 0.2, 1.31154);
+//	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.6, 0.0, 0.3, 1.25);
+//	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.6, 0.0, 0.3, 1.5);
+
+//	leftMotionProfileExecutor_->start();
+//	rightMotionProfileExecutor_->start();
+//	SmartDashboard::PutBoolean("Left MP Started", leftMotionProfileExecutor_->hasStarted_);;
+//	printf("motion profiling started\n");
+//	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.0, 0.0, 0.0, 0.0);
+//	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.0, 0.0, 0.0, 0.0);
+//
 
 //	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.02, 0.3, 1.38329);
 //	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.02, 0.3, 1.30254);
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
+	robot_->SetMotionProfile();
 	leftMotionProfileExecutor_->control();
 	rightMotionProfileExecutor_->control();
 
-	robot_->SetMotionProfile();
+	SmartDashboard::PutNumber("Left master state", robot_->leftMaster_->GetControlMode());
+	SmartDashboard::PutNumber("Right master state", robot_->rightMaster_->GetControlMode());
 
 	CANTalon::SetValueMotionProfile leftSetOutput = leftMotionProfileExecutor_->getSetValue();
 	CANTalon::SetValueMotionProfile rightSetOutput = rightMotionProfileExecutor_->getSetValue();
@@ -94,18 +107,20 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	robot_->SetDriveValues(RobotModel::kLeftWheels, leftSetOutput);
 	robot_->SetDriveValues(RobotModel::kRightWheels, rightSetOutput);
 
-	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
-	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
-	SmartDashboard::PutNumber("Left error", robot_->leftMaster_->GetClosedLoopError());
-	SmartDashboard::PutNumber("Right error", robot_->rightMaster_->GetClosedLoopError());
-	double leftSpeed = robot_->leftMaster_->GetSpeed();
-	double rightSpeed = robot_->rightMaster_->GetSpeed();
-	SmartDashboard::PutNumber("Left speed", leftSpeed);
-	SmartDashboard::PutNumber("Right speed", rightSpeed);
+//	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+//	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
+//	SmartDashboard::PutNumber("Left error", robot_->leftMaster_->GetClosedLoopError());
+//	SmartDashboard::PutNumber("Right error", robot_->rightMaster_->GetClosedLoopError());
+//	double leftSpeed = robot_->leftMaster_->GetSpeed();
+//	double rightSpeed = robot_->rightMaster_->GetSpeed();
+//	SmartDashboard::PutNumber("Left speed", leftSpeed);
+//	SmartDashboard::PutNumber("Right speed", rightSpeed);
 
 	if (!leftMotionProfileExecutor_->hasStarted_ && !rightMotionProfileExecutor_->hasStarted_) {
 		leftMotionProfileExecutor_->start();
 		rightMotionProfileExecutor_->start();
+		SmartDashboard::PutBoolean("Left MP Started", leftMotionProfileExecutor_->hasStarted_);
+		printf("motion profiling started\n");
 	}
 }
 
@@ -126,7 +141,7 @@ bool PathCommand::IsDone() {
 		robot_->rightMaster_->ClearStickyFaults();
 
 		//		ClearMotionProfile();
-//		robot_->ClearMotionProfileTrajectories();
+		robot_->ClearMotionProfileTrajectories();
 		printf("PATH COMMAND IS DONE\n");
 		return true;
 	} else {

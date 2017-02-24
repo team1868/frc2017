@@ -139,13 +139,19 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::GetIniValues() {
-	rPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
-	rIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
-	rDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
+//	rPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
+//	rIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
+//	rDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
+	rPFac_ = 0.0;
+	rIFac_ = 0.0;
+	rDFac_ = 0.0;
 
-	dPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dPFac", 0.2);
-	dIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
-	dDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
+//	dPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dPFac", 0.2);
+//	dIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
+//	dDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
+	dPFac_ = 0.2;
+	dIFac_ = 0.0;
+	dDFac_ = 0.0;
 }
 
 DriveStraightCommand::~DriveStraightCommand() {

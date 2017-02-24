@@ -1,4 +1,5 @@
 #include <Auto/Modes/OneGearMode.h>
+#include "Auto/Modes/OneGearHighShootMode.h"
 #include <Auto/Modes/TestMode.h>
 #include <WPILib.h>
 #include "RobotModel.h"
@@ -43,8 +44,8 @@ public:
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-		OneGearMode *liftTwoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
-		autoController_->SetAutonomousMode(liftTwoMode);
+		OneGearHighShootMode *oneGearHighShootMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_);
+		autoController_->SetAutonomousMode(oneGearHighShootMode);
 		autoController_->Init();
 	}
 

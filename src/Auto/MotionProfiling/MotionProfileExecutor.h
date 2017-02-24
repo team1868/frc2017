@@ -196,19 +196,18 @@ public:
 			 */
 			switch (state_) {
 				case 0: /* wait for application to tell us to start an MP */
+
 					if (bStart_) {
 						bStart_ = false;
 
 						setValue_ = CANTalon::SetValueMotionProfileDisable;
 						startFilling();
 						/*
-						 * MP is being sent to CAN bus, wait a small amount of time
+						 * MP is` being sent to CAN bus, wait a small amount of time
 						 */
 						state_ = 1;
 						loopTimeout_ = kNumLoopsTimeout;
-						// to take out
-//						talon_.Set( 0 );
-//						talon_.Reset();
+
 						talon_.ClearIaccum();
 						talon_.ClearError();
 					}
@@ -219,6 +218,7 @@ public:
 						 */
 					/* do we have a minimum numberof points in Talon */
 					if (status_.btmBufferCnt > kMinPointsInTalon) {
+						//SmartDashboard::PutString("HELLO CONTROL", "BUFFER > MINPOINTS");
 						/* start (once) the motion profile */
 						setValue_ = CANTalon::SetValueMotionProfileEnable;
 						/* MP will start once the control frame gets scheduled */
@@ -258,6 +258,7 @@ public:
 					}
 					break;
 				case 3:
+					SmartDashboard::PutNumber("HI CONTROL", 3);
 					if (setValue_ == CANTalon::SetValueMotionProfileHold) {
 						setValue_ = CANTalon::SetValueMotionProfileDisable;
 //						talon_.SetControlMode(CANTalon::kPercentVbus);
@@ -283,6 +284,7 @@ public:
 
 	void startFilling(double **profile, int totalCnt)
 	{
+		SmartDashboard::PutString("Filling", "hi");
 		/* create an empty point */
 		CANTalon::TrajectoryPoint point;
 
@@ -314,10 +316,14 @@ public:
 			point.velocity = profile[i][1];
 
 			point.timeDurMs = (int) profile[i][2];
-//			point.profileSlotSelect = 1; /*
-//											 * which set of gains would you like to
-//											 * use?
-//											 */
+
+			SmartDashboard::PutNumber("MP Position", point.position);
+			SmartDashboard::PutNumber("MP Velocity", point.velocity);
+			SmartDashboard::PutNumber("MP Time Dur MS", point.timeDurMs);
+			point.profileSlotSelect = 0; /*
+											 * which set of gains would you like to
+											 * use?
+											 */
 			point.velocityOnly = false; /*
 										 * set true to not do any position
 										 * servo, just velocity feedforward

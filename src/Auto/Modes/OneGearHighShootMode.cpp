@@ -22,11 +22,14 @@ OneGearHighShootMode::OneGearHighShootMode(RobotModel *robot, SuperstructureCont
 void OneGearHighShootMode::CreateQueue() {
 	printf("Creating queue\n");
 	firstCommand_ = liftPath_;
-	liftPath_->SetNextCommand(alignWithPegCommand_);
-	alignWithPegCommand_->SetNextCommand(gearCommand_);
-	gearCommand_->SetNextCommand(highGoalPath_);
+	liftPath_->SetNextCommand(highGoalPath_);
 	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
 	alignWithHighGoalCommand_->SetNextCommand(highGoalShootCommand_);
+//	liftPath_->SetNextCommand(alignWithPegCommand_);
+//	alignWithPegCommand_->SetNextCommand(gearCommand_);
+//	gearCommand_->SetNextCommand(highGoalPath_);
+//	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
+//	alignWithHighGoalCommand_->SetNextCommand(highGoalShootCommand_);
 
 	currentCommand = firstCommand_;
 }
@@ -37,7 +40,6 @@ void OneGearHighShootMode::Init() {
 }
 
 void OneGearHighShootMode::RefreshIni() {
-	printf("in one gear mode refresh ini\n");
 }
 
 bool OneGearHighShootMode::IsDone() {

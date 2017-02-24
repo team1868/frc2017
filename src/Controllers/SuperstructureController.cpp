@@ -20,7 +20,6 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	flywheelController_->SetAbsoluteTolerance(2.0);
 	flywheelController_->SetContinuous(false);
 
-
 	autoFlywheelDesired_ = false;
 	autoTimeITDesired_ = false;
 	autoStartedIntake_ = false;
@@ -41,6 +40,7 @@ void SuperstructureController::Reset() {
 
 	autoFlywheelDesired_ = false;
 }
+
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	robot_->GearUpdate();
 	SetOutput();

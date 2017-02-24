@@ -18,6 +18,11 @@ static const int LEFT_DRIVE_MASTER_ID					= 3;
 static const int LEFT_DRIVE_SLAVE_ID 		 			= 4;
 static const int RIGHT_DRIVE_MASTER_ID					= 1;
 static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
+
+//static const int LEFT_DRIVE_MASTER_ID					= 3;
+//static const int LEFT_DRIVE_SLAVE_ID 		 			= 2;
+//static const int RIGHT_DRIVE_MASTER_ID					= 4;
+//static const int RIGHT_DRIVE_SLAVE_ID 					= 1;
 #endif
 
 // Check the ids
@@ -30,9 +35,13 @@ static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
 
 #if KOP_BOT
 static const int LEFT_DRIVE_MASTER_ID					= 3;
-static const int LEFT_DRIVE_SLAVE_ID 		 			= 4;
-static const int RIGHT_DRIVE_MASTER_ID					= 1;
-static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
+static const int LEFT_DRIVE_SLAVE_ID 		 			= 2;
+static const int RIGHT_DRIVE_MASTER_ID					= 4;
+static const int RIGHT_DRIVE_SLAVE_ID 					= 1;
+//static const int LEFT_DRIVE_MASTER_ID					= -1;
+//static const int LEFT_DRIVE_SLAVE_ID 		 			= -1;
+//static const int RIGHT_DRIVE_MASTER_ID					= 4;
+//static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
 #endif
 /* ---------------------- PWM PORTS --------------------- */
 
@@ -50,12 +59,12 @@ static const int INTAKE_MOTOR_PWM_PORT					= 7;
 static const int CLIMBER_MOTOR_PWM_PORT					= -2;
 #endif
 
-/*
-static const int FLYWHEEL_MOTOR_PWM_PORT				= 1;
-static const int FEEDER_MOTOR_PWM_PORT					= 5;
-static const int INTAKE_MOTOR_PWM_PORT					= 7;
-static const int CLIMBER_MOTOR_PWM_PORT					= 4;
-*/
+#if KOP_BOT
+static const int FLYWHEEL_MOTOR_PWM_PORT				= -1;
+static const int FEEDER_MOTOR_PWM_PORT					= -1;
+static const int INTAKE_MOTOR_PWM_PORT					= -1;
+static const int CLIMBER_MOTOR_PWM_PORT					= -1;
+#endif
 
 /* --------------------- PDP CHANNELS ------------------- */
 
@@ -70,6 +79,13 @@ static const int DISTANCE_SENSOR_PWM_PORT				= -1;
 #if PRACT_BOT
 static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 8;
 static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 9;
+
+static const int DISTANCE_SENSOR_PWM_PORT				= -1;
+#endif
+
+#if KOP_BOT
+static const int FLYWHEEL_ENCODER_A_PWM_PORT			= -1;
+static const int FLYWHEEL_ENCODER_B_PWM_PORT			= -1;
 
 static const int DISTANCE_SENSOR_PWM_PORT				= -1;
 #endif
