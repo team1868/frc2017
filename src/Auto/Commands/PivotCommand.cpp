@@ -40,8 +40,6 @@ void PivotCommand::Init() {
 	pivotPID_->SetSetpoint(initYaw_ + desiredDeltaAngle_);
 	pivotPID_->SetContinuous(false);
 	pivotPID_->SetOutputRange(-0.8, 0.8);	// TODO probably lessen bc too OP
-	//pivotPID_->SetTolerance(.9);	// TODO should check
-	//pivotPID_->SetAbsoluteTolerance(1.0);	// TODO should check
 	pivotPID_->SetAbsoluteTolerance(1.0);	// TODO should check
 	pivotPID_->Enable();
 
@@ -64,12 +62,12 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Delta setpoint", pivotPID_->GetDeltaSetpoint());
 	SmartDashboard::PutBoolean("Is done", isDone_);
 
-	bool timeOut = (robot_->GetTime() - pivotCommandStartTime_ > 5.0);
+	bool timeOut = (robot_->GetTime() - pivotCommandStartTime_ > 3.0);		// TODO test
 
 	SmartDashboard::PutBoolean("Timed out", timeOut);
 
-	if (pivotPID_->OnTarget()) {		// && (fabs(talonOutput_->GetOutput()) < minDrivePivotOutput_)
-		//	|| timeOut) {
+	if (pivotPID_->OnTarget() 		// && (fabs(talonOutput_->GetOutput()) < minDrivePivotOutput_)
+		|| timeOut) {
 		pivotPID_->Reset();
 		pivotPID_->Disable();
 		isDone_ = true;

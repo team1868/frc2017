@@ -12,11 +12,12 @@ public:
 	DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
 			double desiredDistance);
+	virtual ~DriveStraightCommand();
 	void Init();
 	void Update(double currTime, double deltaTime);
 	bool IsDone();
 	void GetIniValues();
-	virtual ~DriveStraightCommand();
+
 private:
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;

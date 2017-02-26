@@ -6,12 +6,14 @@ OneGearHighShootMode::OneGearHighShootMode(RobotModel *robot, SuperstructureCont
 
 	navXSource_ = navXSource;
 	talonSource_ = talonSource;
+
 	firstCommand_ = NULL;
 
 	// IF SWITCH SIDES, LIFT ONE		// TODO ADD AS INPUT
 	liftPath_ = new PathCommand(robot_, PathCommand::kLiftThree);
 	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
 	gearCommand_ = new GearCommand(robot_);
+
 	// IF SWITCH SIDES, KHIGHGOALAFTERRIGHTLIFT
 	highGoalPath_ = new PathCommand(robot_, PathCommand::kHighGoalAfterRightLift);
 	highGoalShootCommand_ = new HighGoalShootCommand(superstructure_);
@@ -22,14 +24,10 @@ OneGearHighShootMode::OneGearHighShootMode(RobotModel *robot, SuperstructureCont
 void OneGearHighShootMode::CreateQueue() {
 	printf("Creating queue\n");
 	firstCommand_ = liftPath_;
-	liftPath_->SetNextCommand(highGoalPath_);
+	liftPath_->SetNextCommand(gearCommand_);
+	gearCommand_->SetNextCommand(highGoalPath_);
 	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
 	alignWithHighGoalCommand_->SetNextCommand(highGoalShootCommand_);
-//	liftPath_->SetNextCommand(alignWithPegCommand_);
-//	alignWithPegCommand_->SetNextCommand(gearCommand_);
-//	gearCommand_->SetNextCommand(highGoalPath_);
-//	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
-//	alignWithHighGoalCommand_->SetNextCommand(highGoalShootCommand_);
 
 	currentCommand = firstCommand_;
 }

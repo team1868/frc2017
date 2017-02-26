@@ -72,6 +72,7 @@ void PathCommand::Init() {
 //	robot_->leftSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
 //	robot_->rightSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
 
+	// TODO set slot
 	robot_->leftMaster_->SetPID(0.6, 0.0, 0.3, 1.25);
 	robot_->rightMaster_->SetPID(0.6, 0.0, 0.3, 1.5);
 	robot_->leftSlave_->SetPID(0.6, 0.0, 0.3, 1.25);
@@ -94,7 +95,7 @@ void PathCommand::Init() {
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
-	robot_->SetMotionProfile();
+	robot_->SetMotionProfileMode();
 	leftMotionProfileExecutor_->control();
 	rightMotionProfileExecutor_->control();
 
@@ -126,7 +127,7 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 bool PathCommand::IsDone() {
 	if (leftMotionProfileExecutor_->isDone_ && rightMotionProfileExecutor_->isDone_) { // TODO use IsDone() function
-		robot_->SetPercentVBusDrive();
+//		robot_->SetPercentVBusDrive();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 		leftMotionProfileExecutor_->reset();
 		rightMotionProfileExecutor_->reset();

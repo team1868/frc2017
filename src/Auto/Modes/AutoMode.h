@@ -12,6 +12,7 @@ public:
 	virtual ~AutoMode() {};
 
 	virtual void CreateQueue() = 0;
+
 	virtual void Init() = 0;
 
 	/**

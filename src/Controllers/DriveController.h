@@ -15,25 +15,28 @@ public:
 	 * @param humanControl a ControlBoard
 	 */
 	DriveController(RobotModel* robot, ControlBoard *humanControl, NavXPIDSource *navX);
+	~DriveController();
+
 	void Reset();
+
 	void UpdateMotionProfile();
+
 	/**
 	 * Updates joystick and button values from driver, also determines type of drive for robot to use
-	 * @param currTimeSec a double current time in seconds
-	 * @param deltaTimeSec a double
+	 * @param currTimeSec
+	 * @param deltaTimeSec (which is currTimeSec - lastTimeSec)
 	 */
 	void Update(double currTimeSec, double deltaTimeSec);
+
 	/**
-	 * @return whether or not isDone is true, gets called in PathCommand
+	 * IS NEVER DONE
 	 */
-	bool IsDone();											// Gets called in PathCommand::IsDone()
+	bool IsDone();
 
 	void PrintDriveValues();
 
-	~DriveController();
-
 	enum DriveState {
-		kInitialize, kTeleopDrive, kMotionProfile
+		kInitialize, kTeleopDrive
 	};
 
 private:
@@ -46,21 +49,25 @@ private:
 	 * @param myY a double thrust value (forwards/backwards)
 	 */
 	void ArcadeDrive(double myX, double myY);
+
 	/**
 	 * Senses how much each joystick is pushed and uses values to turn wheels
 	 * @param Left a double how much left joystick is pushed
 	 * @param Right a double how much right joystick is pushed
 	 */
 	void TankDrive(double Left, double Right);
+
 	/**
 	 * Allows robot to turn quickly, at sharp angle
 	 * @param myRight a double allows robot to turn right or left
 	 */
 	void QuickTurn(double myRight);
+
 	/**
 	 * Indicates direction of drive (forwards or backwards)
 	 */
 	int DriveDirection();
+
 	/**
 	 * Gets current state of drive
 	 */
@@ -68,19 +75,21 @@ private:
 
 	RobotModel *robot_;
 	ControlBoard *humanControl_;
-	PIDController *driveStraight_;
-	NavXPIDSource *navX_;
+
+	bool isDone_;
+
+	uint32_t currState_;
+	uint32_t nextState_;
+
+	// For DriveStraightPID in teleop
+	PIDController *driveStraightPIDController_;
+	NavXPIDSource *navXSource_;
 	AnglePIDOutput *anglePIDOutput_;
 
-	//MotionProfileExample *leftExample_, *rightExample_;
-	bool isDone_;
 	bool isDriveStraightStarted_;
 	double desiredAngle_;
 	double angleOutput_;
 	double pFac_, iFac_, dFac_;
-
-	uint32_t currState_;
-	uint32_t nextState_;
 };
 
 #endif /* SRC_CONTROLLERS_DRIVECONTROLLER_H_ */

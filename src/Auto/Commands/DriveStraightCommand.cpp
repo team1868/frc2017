@@ -4,18 +4,20 @@
 DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 		AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
 		double desiredDistance) {
+	robot_ = robot;
+
 	navXSource_ = navXSource;
 	talonEncoderSource_ = talonEncoderSource;
+
 	anglePIDOutput_ = anglePIDOutput;
 	distancePIDOutput_ = distancePIDOutput;
-	robot_ = robot;
 
 	initialAngle_ = navXSource_->PIDGet();
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
 
 	// Convert feet to encoder values and adding the difference to the initial to know how far we want to go
 	desiredDistance_ = desiredDistance;
-	desiredTotalAvgDistance_ = desiredDistance_ + initialAvgDistance_;
+	desiredTotalAvgDistance_ = initialAvgDistance_ + desiredDistance_;
 
 	leftMotorOutput_ = 0.0;
 	rightMotorOutput_ = 0.0;
@@ -28,11 +30,12 @@ DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncod
 }
 
 void DriveStraightCommand::Init() {
+	robot_->SetPercentVBusDriveMode();
+
 	isDone_= false;
+
 	leftMotorOutput_ = 0.0;
 	rightMotorOutput_ = 0.0;
-
-	robot_->SetPercentVBusDrive();
 
 	initialAngle_ = navXSource_->PIDGet();
 	initialAvgDistance_ = talonEncoderSource_->PIDGet();
@@ -77,13 +80,14 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
 
-		// Might want to check
+		// TODO might want to check
 		rightMotorOutput_ = dOutput - rOutput;
 		leftMotorOutput_ = dOutput + rOutput;
 
 //		rightMotorOutput_ = dOutput;
 //		leftMotorOutput_ = dOutput;
 
+		// TODO put this maxOutput back in
 		// Getting the max value of the outputs and scale the down
 		double maxOutput = fmax(fabs(rightMotorOutput_), fabs(leftMotorOutput_));
 		SmartDashboard::PutNumber("Max output", maxOutput);
@@ -98,6 +102,7 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		SmartDashboard::PutNumber("Desired Total Feet", desiredTotalAvgDistance_);
 		SmartDashboard::PutNumber("Desired Difference Feet", desiredDistance_);
 	}
+
 	robot_->SetDriveValues(RobotModel::kLeftWheels, leftMotorOutput_);
 	robot_->SetDriveValues(RobotModel::kRightWheels, rightMotorOutput_);
 }
@@ -107,6 +112,8 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::GetIniValues() {
+	// TODO read from ini
+
 //	rPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
 //	rIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 //	rDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);

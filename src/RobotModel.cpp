@@ -1,8 +1,18 @@
 #include "RobotModel.h"
 #include "WPILib.h"
 
-const double WHEEL_DIAMETER = 6.05 / 12.0; // in feet
+#if COMP_BOT
+const double WHEEL_DIAMETER = 3.5 / 12.0; 			// In feet
+#endif
+
+#if KOP_BOT
+const double WHEEL_DIAMETER = 6.05 / 12.0;			// In feet
+#endif
+
 const double ENCODER_COUNT_PER_ROTATION = 256.0;
+const int EDGES_PER_ENCODER_COUNT = 4;
+
+const double FLYWHEEL_DIAMETER = 2.875 / 12.0;		// In feet
 
 RobotModel::RobotModel() {
 	timer_ = new Timer();
@@ -14,57 +24,55 @@ RobotModel::RobotModel() {
 	leftSlave_ = new CANTalon(LEFT_DRIVE_SLAVE_ID);
 	rightSlave_ = new CANTalon(RIGHT_DRIVE_SLAVE_ID);
 
-	rightSlave_ ->SetControlMode(CANTalon::kFollower);
-	leftSlave_ ->SetControlMode(CANTalon::kFollower);
+	rightSlave_->SetControlMode(CANTalon::kFollower);
+	leftSlave_->SetControlMode(CANTalon::kFollower);
 
 	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
 	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
 
 	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-	leftMaster_->ConfigEncoderCodesPerRev(256);
+	leftMaster_->ConfigEncoderCodesPerRev(ENCODER_COUNT_PER_ROTATION);
 	leftMaster_->SetPosition(0);
 
+	// TODO add practice bot
 	#if KOP_BOT
 	leftMaster_->SetSensorDirection(false);		// TODO check
 	leftMaster_->SetInverted(false);			// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(false); // TODO check
-	#endif
-
-	#if COMP_BOT
-	leftMaster_->SetSensorDirection(false);		// TODO check
-	leftMaster_->SetInverted(true);			// TODO check
+	#elif COMP_BOT
+	leftMaster_->SetSensorDirection(false);			// TODO check
+	leftMaster_->SetInverted(true);					// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(true); // TODO check
+	#else
+	#error "DID NOT SET KOP COMP PRACTICE BOT"
 	#endif
 
 	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-	rightMaster_->ConfigEncoderCodesPerRev(256);
+	rightMaster_->ConfigEncoderCodesPerRev(ENCODER_COUNT_PER_ROTATION);
 	rightMaster_->SetPosition(0);
 
 	#if KOP_BOT
 	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(true);			// TODO check
 	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
-	#endif
-
-	#if COMP_BOT
+	#elif COMP_BOT
 	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(false);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(false);	// TODO check
+	#else
+	#error "DID NOT SET KOP COMP PRACTICE BOT"
 	#endif
 
-	// set brake mode
+	// Set brake mode
 	leftMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
 	rightMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
-
-	leftSlave_->SetControlMode(CANTalon::kFollower);
-	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
-	rightSlave_->SetControlMode(CANTalon::kFollower);
-	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
 
 	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_SOLENOID_PORT_FORWARD, GEAR_SHIFT_SOLENOID_PORT_REVERSE);
 
 	// Initializing navX
-	navX_ = new AHRS(SPI::kMXP);	// might be wrong but idk
+	navX_ = new AHRS(SPI::kMXP);	// may change to micro navX
+	Wait(1.0);						// Need to wait for navX to initialize
+
 	pini = new Ini("/home/lvuser/robot.ini");
 
 	flywheelMotor_ = new Victor(FLYWHEEL_MOTOR_PWM_PORT);
@@ -73,8 +81,8 @@ RobotModel::RobotModel() {
 	climberMotor_ = new Victor(CLIMBER_MOTOR_PWM_PORT);
 
 	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, true);
-	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate); //FIX THIS
-	flywheelEncoder_->SetDistancePerPulse(0.00882038953);
+	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate);
+	flywheelEncoder_->SetDistancePerPulse(FLYWHEEL_DIAMETER * M_PI / (ENCODER_COUNT_PER_ROTATION * EDGES_PER_ENCODER_COUNT));	// TODO tune velocity PID
 
 	gearMechSolenoid_ = new Solenoid(PNEUMATICS_CONTROL_MODULE_ID, GEAR_MECHANISM_SOLENOID_PORT);
 
@@ -83,15 +91,12 @@ RobotModel::RobotModel() {
 	gearInRobot_ = false;
 	distSensorCurr_ = false;
 	distSensorLast_ = false;
-
 }
 
-//refreshes the ini file
+// Refreshes the ini file
 void RobotModel::RefreshIni() {
-	printf("in robot model refresh ini\n");
 	delete pini;
 	pini = new Ini("/home/lvuser/robot.ini");
-	printf("at end of robot model refresh ini\n");
 }
 
 void RobotModel::ResetTimer() {
@@ -103,41 +108,42 @@ double RobotModel::GetTime() {
 }
 
 void RobotModel::SetTalonPIDConfig(Wheels wheels, double pFac, double iFac, double dFac, double fFac) {
-	switch(wheels) {
-		case(kLeftWheels):
+	switch (wheels) {
+		case kLeftWheels:
 			leftMaster_->SetPID(pFac, iFac, dFac, fFac);
 			break;
-		case(kRightWheels):
+		case kRightWheels:
 			rightMaster_->SetPID(pFac, iFac, dFac, fFac);
 			break;
-		case (kAllWheels):
-			printf("NOT EVEN????");
+		case kAllWheels:
+			leftMaster_->SetPID(pFac, iFac, dFac, fFac);
+			rightMaster_->SetPID(pFac, iFac, dFac, fFac);
 			break;
 	}
 }
 
-void RobotModel::SetMotionProfile() {
+void RobotModel::SetMotionProfileMode() {
 	leftMaster_->SetControlMode(CANTalon::kMotionProfile);
 	rightMaster_->SetControlMode(CANTalon::kMotionProfile);
 }
 
-void RobotModel::SetPercentVBusDrive() {
+void RobotModel::SetPercentVBusDriveMode() {
 	leftMaster_->SetControlMode(CANTalon::kPercentVbus);
 	rightMaster_->SetControlMode(CANTalon::kPercentVbus);
 }
 
 void RobotModel::SetDriveValues(Wheels wheels, double value) {
-	switch(wheels) {
-		case(kLeftWheels):
-				leftMaster_->Set(value);
-				break;
-		case(kRightWheels):
-				rightMaster_->Set(value);
-				break;
-		case(kAllWheels):
-				rightMaster_->Set(value);
-				leftMaster_->Set(value);
-				break;
+	switch (wheels) {
+		case kLeftWheels:
+			leftMaster_->Set(value);
+			break;
+		case kRightWheels:
+			rightMaster_->Set(value);
+			break;
+		case kAllWheels:
+			rightMaster_->Set(value);
+			leftMaster_->Set(value);
+			break;
 	}
 }
 
@@ -156,22 +162,22 @@ void RobotModel::ClearMotionProfileTrajectories() {
 
 double RobotModel::GetDriveEncoderValue(Wheels wheel) {
 	switch(wheel) {
-		case(kLeftWheels):
-				return leftMaster_->GetEncPosition();
-		case(kRightWheels):
-				return -rightMaster_->GetEncPosition();
-		case(kAllWheels):
-				return 0;
+		case kLeftWheels:
+			return leftMaster_->GetEncPosition();
+		case kRightWheels:
+			return -rightMaster_->GetEncPosition();		// TODO check if we want the neg sign here!!!!
+		case kAllWheels:
+			return 0;
 	}
 	return 0;
 }
 
 double RobotModel::GetLeftDistance() {
-	return GetDriveEncoderValue(kLeftWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * 4);
+	return GetDriveEncoderValue(kLeftWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * EDGES_PER_ENCODER_COUNT);
 }
 
 double RobotModel::GetRightDistance() {
-	return GetDriveEncoderValue(kRightWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * 4);
+	return GetDriveEncoderValue(kRightWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * EDGES_PER_ENCODER_COUNT);
 }
 
 void RobotModel::ZeroNavXYaw() {
@@ -179,7 +185,7 @@ void RobotModel::ZeroNavXYaw() {
 }
 
 double RobotModel::GetNavXYaw() {
-	return -navX_->GetYaw();	// so that turning counterclockwise is positive
+	return -navX_->GetYaw();	// Negative so that turning counterclockwise is positive
 }
 
 double RobotModel::GetFeederOutput() {
@@ -226,12 +232,15 @@ void RobotModel::SetGearInRobot(bool gearInRobot) {
 	gearInRobot_ = gearInRobot;
 }
 
+// TODO put distance sensor on robot and test this!
 void RobotModel::GearUpdate() {
 	distSensorLast_ = distSensorCurr_;
-	distSensorCurr_ = distanceSensor_->Get();
+	distSensorCurr_ = distanceSensor_->Get();	// Boolean
+
 	if (distSensorLast_ && !distSensorCurr_) {
 		gearInRobot_ = !gearInRobot_;
 	}
+
 	if (gearInRobot_) {
 		printf("Gear is in robot\n");
 	} else {

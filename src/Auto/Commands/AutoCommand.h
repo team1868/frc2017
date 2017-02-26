@@ -22,9 +22,13 @@ public:
 	AutoCommand() {
 		nextCommand = NULL;
 	}
+
 	virtual ~AutoCommand() {}
+
 	virtual void Init() = 0;
+
 	virtual void Update(double currTimeSec, double deltaTimeSec) = 0;
+
 	virtual bool IsDone() = 0;
 
 	AutoCommand* GetNextCommand() {

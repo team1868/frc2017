@@ -9,34 +9,36 @@
 
 class RobotModel {
 public:
-	enum Wheels {kLeftWheels, kRightWheels, kAllWheels};
-
 	RobotModel();
 	~RobotModel();
+
+	enum Wheels {kLeftWheels, kRightWheels, kAllWheels};
+
 	void ResetTimer();
 	double GetTime();
 
-	// Talon accessors and mutators
+	/* -------------------- DRIVE --------------------  */
+
 	void SetTalonPIDConfig(Wheels wheel, double pFac, double iFac, double dFac, double fFac);
 
-	void SetMotionProfile();	// Sets the talons to motion profile mode
+	void SetMotionProfileMode();	// Sets the talons to motion profile mode
+	void SetPercentVBusDriveMode();	// Sets the talons to percentVbus mode (the usual (-1,1) range outputs)
 	void ClearMotionProfileTrajectories();
-	void SetPercentVBusDrive();	// Sets the talons to percentVbus mode (the usual (-1,1) range outputs)
 
 	void SetDriveValues(Wheels wheel, double value);
 
 	void SetHighGear();
 	void SetLowGear();
 
-	double GetDriveEncoderValue(Wheels wheel);
-	double GetLeftDistance();
-	double GetRightDistance();
+	double GetDriveEncoderValue(Wheels wheel);		// Returns native encoder value
+	double GetLeftDistance();						// Returns left wheel distance (converted)
+	double GetRightDistance();						// Returns right wheel distance (converted)
 
-	double GetNavXYaw();
+	double GetNavXYaw();							// Returns negative navX
 	void ZeroNavXYaw();
-	void RefreshIni(); //refreshes the ini file
+	void RefreshIni(); 								// Refreshes the ini file
 
-	//Superstructure accessors and mutators
+	/* ------------------ SUPERSTRUCTURE ------------------  */
 	double GetFeederOutput();
 	void SetFeederOutput(double output);
 
@@ -54,10 +56,12 @@ public:
 	void SetGearInRobot(bool gearInRobot);
 	void GearUpdate();
 	void SetGearMechOut();
+	/* ------------------------------------------------------  */
 
 	Ini *pini;
 
 	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	//TODO move to private
+
 private:
 	Timer *timer_;
 	AHRS *navX_;

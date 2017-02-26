@@ -14,7 +14,7 @@ IntakeCommand::IntakeCommand(SuperstructureController *mySuperstructure, double 
 }
 
 void IntakeCommand::Init() {
-	superstructure_->SetAutoTimeITDesired(true);
+	superstructure_->SetAutoTimeIntakeDesired(true);
 	superstructure_->SetAutoIntakeTime(seconds_);
 	isDone_ = false;
 }
@@ -24,7 +24,7 @@ void IntakeCommand::Update(double currTimeSec, double deltaTimeSec) {
 		superstructure_->Update(currTimeSec, deltaTimeSec);
 	} else {
 		isDone_ = true;
-		superstructure_->SetAutoTimeITDesired(false);
+		superstructure_->SetAutoTimeIntakeDesired(false);
 		superstructure_->SetAutoFinishedIntake(false);
 	}
 }

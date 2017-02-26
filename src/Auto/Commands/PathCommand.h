@@ -15,6 +15,7 @@
 class PathCommand : public AutoCommand {
 public:
 	enum Path { kLiftOne, kLiftTwo, kLiftThree, kHighGoalAfterLeftLift, kHighGoalAfterRightLift };
+
 	/**
 	 * Constructor that generates a PathCommand
 	 * @param robot a RobotModel
@@ -33,8 +34,7 @@ private:
 	RobotModel *robot_;
 	Path path_;
 	int lengthOfLeftMotionProfile_, lengthOfRightMotionProfile_;
-	double leftMotionProfile_[][3];
-	double rightMotionProfile_[][3];
+	double leftMotionProfile_[][3], rightMotionProfile_[][3];
 	MotionProfileExecutor *leftMotionProfileExecutor_, *rightMotionProfileExecutor_;
 	bool isDone_;
 };

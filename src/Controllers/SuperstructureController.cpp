@@ -5,16 +5,16 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	robot_ = myRobot;
 	humanControl_ = myHumanControl;
 
-	m_stateVal_ = kInit;
-	nextState_ = kInit;
-
-	desiredFlywheelVelocity_ = 125;
+	// TODO put all this in the ini file
+	// TODO add dial for changing velocity
+	desiredFlywheelVelocity_ = 10.41;	// MAKE FEET / SEC	change anyway
 	expectedFlywheelMotorOutput_ = 0.84;
 	feederMotorOutput_ = -0.85;
 	climberMotorOutput_ = 0.85;
 	intakeMotorOutput_ = 0.7;
 	flywheelStartTime_ = 0.0;
 
+	// m_result = m_D * m_error + m_P * m_totalError + CalculateFeedForward();		// In line 123 of PIDController.cpp
 	flywheelController_ = new PIDController(0.0, 0.0, 0.2, (expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_), robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 //	flywheelController_ = new PIDController(0.0, 0.0, 0.2, 0.8, robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 	flywheelController_->SetSetpoint(desiredFlywheelVelocity_);
@@ -23,18 +23,20 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	flywheelController_->SetContinuous(false);
 
 	flywheelStarted_ = false;
-
 	autoFlywheelDesired_ = false;
-	autoTimeITDesired_ = false;
+	autoTimeIntakeDesired_ = false;
 	autoStartedIntake_ = false;
 	autoFinishedIntake_ = false;
 
 	autoIntakeTime_ = 0.0;
 	autoIntakeStartTime_ = 0.0;
+
+	currState_ = kInit;
+	nextState_ = kInit;
 }
 
 void SuperstructureController::Reset() {
-	m_stateVal_ = kInit;
+	currState_ = kInit;
 	nextState_ = kInit;
 
 	flywheelController_->Reset();
@@ -48,7 +50,7 @@ void SuperstructureController::Reset() {
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	robot_->GearUpdate();
 	SetOutput();
-	switch(m_stateVal_) {
+	switch(currState_) {
 	case (kInit):
 			SmartDashboard::PutString("State", "kInit");
 			flywheelController_->Disable();
@@ -74,7 +76,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			} else if (humanControl_->GetClimberDesired()) {
 				robot_->SetClimberOutput(climberMotorOutput_);
 				nextState_ = kClimber;
-			} else if (autoTimeITDesired_) {
+			} else if (autoTimeIntakeDesired_) {
 				nextState_ = kTimeIntake;
 			}
 			break;
@@ -91,11 +93,10 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 	case (kFeederAndFlywheel):
 			SmartDashboard::PutString("State", "kFeederAndFlywheel");
-//			SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
+			SmartDashboard::PutNumber("Feeder", feederMotorOutput_);
 			SmartDashboard::PutNumber("Flywheel Output", robot_->GetFlywheelMotorOutput());
-//			SmartDashboard::PutNumber("Flywheel Error", flywheelController_->GetError());
+			SmartDashboard::PutNumber("Flywheel Error", flywheelController_->GetError());
 			SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
-//			SmartDashboard::PutBoolean("flywheel desired: ", humanControl_->GetFlywheelDesired());
 			printf("Flywheel Velocity: %f\n", robot_->GetFlywheelEncoder()->GetRate());
 			printf("Flywheel Output: %f\n", robot_->GetFlywheelMotorOutput());
 			if (!flywheelStarted_) {
@@ -146,9 +147,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				autoFinishedIntake_ = true;
 				nextState_ = kIdle;
 			}
-
 	}
-	m_stateVal_ = nextState_;
+	currState_ = nextState_;
 }
 
 bool SuperstructureController::GetAutoFlywheelDesired() {
@@ -156,7 +156,7 @@ bool SuperstructureController::GetAutoFlywheelDesired() {
 }
 
 bool SuperstructureController::GetAutoIntakeDesired() {
-	return autoTimeITDesired_;
+	return autoTimeIntakeDesired_;
 }
 
 bool SuperstructureController::GetAutoFinishedIntake() {
@@ -167,8 +167,8 @@ void SuperstructureController::SetAutoFlywheelDesired(bool desired) {
 	autoFlywheelDesired_ = desired;
 }
 
-void SuperstructureController::SetAutoTimeITDesired(bool desired) {
-	autoTimeITDesired_ = desired;
+void SuperstructureController::SetAutoTimeIntakeDesired(bool desired) {
+	autoTimeIntakeDesired_ = desired;
 }
 
 void SuperstructureController::SetAutoIntakeTime(int seconds) {

@@ -29,18 +29,27 @@ public:
 	 * @param navXSource a NavXPIDSource
 	 */
 	PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolutePosition, NavXPIDSource* navXSource);
+
+	/**
+	 * Destructor
+	 */
+	virtual ~PivotCommand();
+
 	/**
 	 * Sets PID values to 0, gets PID from navX, sets Setpoint, continuous to false, output range, enables pivotPID
 	 */
 	void Init();
+
 	/**
 	 * Refresh ini, set initYaw to navX PID, create new PIDController, PivotPID, and enables it
 	 */
 	void Reset();
+
 	/**
 	 * Sets PID values to 0.0
 	 */
 	void GetIniValues();
+
 	/**
 	 * If PivotPID not done, checks if PivotPID is on target and if TalonOutput is less than the minimum
 	 * drive output, we set isDone to true and Reset and Disable PivotPID
@@ -49,21 +58,19 @@ public:
 	 * @param deltaTimeSec a double is the update interval in seconds
 	 */
 	void Update(double currTimeSec, double deltaTimeSec);
+
 	/**
 	 * @return isDone_
 	 */
 	bool IsDone();
-	/**
-	 * Destructor
-	 */
-	virtual ~PivotCommand();
+
 private:
 	/**
 	 * Calculating the value of delta angle if the angle is absolute position.
 	 * @param desiredAngle a double is the original angle passed in from constructor.
 	 * @return deltaAngle which is the amount we have to turn to get to the absolute position
 	 */
-	double CalculateDeltaAngle(double desiredAngle); // for absolute position
+	double CalculateDeltaAngle(double desiredAngle); // For absolute position
 
 	double pFac_, iFac_, dFac_;
 	double desiredDeltaAngle_;
@@ -76,6 +83,7 @@ private:
 	PivotPIDTalonOutput *talonOutput_;
 
 	double pivotCommandStartTime_;
+
 	/**
 	 * Minimum output we would correct for, if less, than it can be considered done
 	 */

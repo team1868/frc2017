@@ -54,6 +54,7 @@ private:
 
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonSource_;
+
 	AnglePIDOutput *angleOutput_;
 	DistancePIDOutput *distanceOutput_;
 

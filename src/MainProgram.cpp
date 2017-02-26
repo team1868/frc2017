@@ -1,14 +1,13 @@
-#include <Auto/Modes/OneGearMode.h>
-#include "Auto/Modes/OneGearHighShootMode.h"
-#include <Auto/Modes/TestMode.h>
-#include <WPILib.h>
+#include "WPILib.h"
 #include "RobotModel.h"
 #include "Controllers/DriveController.h"
 #include "Controllers/SuperstructureController.h"
 #include "Auto/AutoController.h"
+#include "Auto/Modes/OneGearMode.h"
+#include "Auto/Modes/OneGearHighShootMode.h"
 
 class MainProgram : public IterativeRobot {
-	RobotModel *robot_; /**< Testing. */
+	RobotModel *robot_;
 	ControlBoard *humanControl_;
 	DriveController *driveController_;
 	SuperstructureController *superstructureController_;
@@ -17,11 +16,7 @@ class MainProgram : public IterativeRobot {
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonEncoderSource_;
 
-	LiveWindow *liveWindow_;
-
-	double currTimeSec_;
-	double lastTimeSec_;
-	double deltaTimeSec_;
+	double currTimeSec_, lastTimeSec_, deltaTimeSec_;
 
 public:
 	void RobotInit() {
@@ -35,27 +30,27 @@ public:
 		navXSource_ = new NavXPIDSource(robot_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
 
-		Wait(1.0);
 		robot_->ZeroNavXYaw();
 		Wait(1.0);
-		navXSource_->ResetAccumulatedYaw();		// TODO reset accumulated yaw at some point
+		navXSource_->ResetAccumulatedYaw();
 	}
 
+	// TODO PUT INI FILE HERE
+	// TODO switches for auto
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
+		robot_->SetLowGear();
 		OneGearHighShootMode *oneGearHighShootMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_);
 		autoController_->SetAutonomousMode(oneGearHighShootMode);
 		autoController_->Init();
 	}
 
 	void AutonomousPeriodic() {
-		robot_->SetGearMechOut();
 		UpdateTimerVariables();
+		robot_->SetGearMechOut();
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
-		} else {
-			SmartDashboard::PutString("Auto Mode", "Done");
 		}
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
@@ -64,7 +59,7 @@ public:
 	void TeleopInit() {
 		ResetControllers();
 		robot_->SetHighGear();
-		robot_->SetPercentVBusDrive();
+		robot_->SetPercentVBusDriveMode();		// THIS SHOULD ALREADY BE IN RESET CONTROLLERS
 	}
 
 	void TeleopPeriodic() {
@@ -78,12 +73,11 @@ public:
 	}
 
 	void TestPeriodic() {
-		printf("Flywheel encoders %d\n", robot_->GetFlywheelEncoder()->Get());
+		// TODO write test program for everything
 	}
 
 	void DisabledPeriodic() {
-		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
-		robot_->SetPercentVBusDrive();
+		robot_->SetPercentVBusDriveMode();
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 		robot_->ClearMotionProfileTrajectories();
 		driveController_->PrintDriveValues();
@@ -106,7 +100,10 @@ private:
 		autoController_->Reset();
 		driveController_->Reset();
 		superstructureController_->Reset();
+		RefreshIni();
+	}
 
+	void RefreshIni() {
 		robot_->RefreshIni();	// TODO move
 		autoController_->RefreshIni();		// TODO put in other method
 	}

@@ -4,35 +4,33 @@
 DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl, NavXPIDSource *navX) {
 	robot_ = robot;
 	humanControl_ = humanControl;
-	navX_ = navX;
+	navXSource_ = navX;
 	anglePIDOutput_ = new AnglePIDOutput();
 
+	// TODO THIS SHOULD READ FROM INI FILE (IN A SEPARATE HEADER)
 	pFac_ = 0.01;
 	iFac_ = 0.0;
 	dFac_ = 0.0;
 
-	driveStraight_ = new PIDController(pFac_, iFac_, dFac_, navX_, anglePIDOutput_);
+	driveStraightPIDController_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, anglePIDOutput_);
 	isDone_ = false;
 	isDriveStraightStarted_ = false;
 	desiredAngle_ = robot_->GetNavXYaw();
 	angleOutput_ = 0.0;
 
-	driveStraight_->SetOutputRange(-1.0, 1.0);
-	driveStraight_->SetContinuous(false);
-	driveStraight_->SetAbsoluteTolerance(2);
+	driveStraightPIDController_->SetOutputRange(-1.0, 1.0);
+	driveStraightPIDController_->SetContinuous(false);
+	driveStraightPIDController_->SetAbsoluteTolerance(2.0);
 
 	currState_ = kInitialize;
 	nextState_ = kInitialize;
 }
 
 void DriveController::Reset() {
-
+	robot_->SetPercentVBusDriveMode();
 }
 
 void DriveController::Update(double currTimeSec, double deltaTimeSec) {
-	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
-	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
-
 	PrintDriveValues();
 
 	switch (currState_) {
@@ -40,7 +38,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			nextState_ = kTeleopDrive;
 			break;
 		case (kTeleopDrive) :
-			robot_->SetPercentVBusDrive();
+			robot_->SetPercentVBusDriveMode();
 
 			// Getting joystick values
 			double leftJoyY, rightJoyY, rightJoyX;
@@ -49,8 +47,10 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			rightJoyX = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX);
 
 			if (humanControl_->GetGearShiftDesired()) {
+				printf("Set high gear\n");
 				robot_->SetHighGear();
 			} else {
+				printf("Set low gear\n");
 				robot_->SetLowGear();
 			}
 
@@ -60,9 +60,12 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			} else if (humanControl_->GetArcadeDriveDesired()) {
 				printf("Arcade driving\n");
 				ArcadeDrive(rightJoyX, leftJoyY);
-			} else {
+			} else if (!humanControl_->GetArcadeDriveDesired()){
 				printf("Tank driving\n");
 				TankDrive(leftJoyY, rightJoyY);
+			} else {
+				printf("SOMETHING IS WRONG\n");
+				ArcadeDrive(rightJoyX, leftJoyY);		// Default to arcade drive
 			}
 
 			nextState_ = kTeleopDrive;
@@ -75,11 +78,14 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 void DriveController::PrintDriveValues() {
 	SmartDashboard::PutNumber("Drive direction", DriveDirection());
 	SmartDashboard::PutNumber("Get state", GetDriveState());
+	SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
+	SmartDashboard::PutNumber("Left drive distance", robot_->GetLeftDistance());
+	SmartDashboard::PutNumber("Right drive distance", robot_->GetRightDistance());
+	SmartDashboard::PutNumber("Left drive encoder value", robot_->leftMaster_->GetEncPosition());
+	SmartDashboard::PutNumber("Right drive encoder value", robot_->rightMaster_->GetEncPosition());
 }
 
 void DriveController::ArcadeDrive(double myX, double myY) {
-	PrintDriveValues();
-
 	double thrustValue = myY * DriveDirection();
 	double rotateValue = myX;
 	double leftOutput = 0.0;
@@ -94,7 +100,7 @@ void DriveController::ArcadeDrive(double myX, double myY) {
 	rightOutput = thrustValue;
 
 	if (fabs(rotateValue) > 0.1) {	 // If we want turn
-		driveStraight_->Disable();
+		driveStraightPIDController_->Disable();
 		isDriveStraightStarted_ = false;
 
 		leftOutput += rotateValue;
@@ -128,7 +134,7 @@ void DriveController::ArcadeDrive(double myX, double myY) {
 
 	// 	TODO ask about sensitivity of the joysticks
 
-	if (fabs(thrustValue) < 0.2) {			// TODO change if necessary
+	if (fabs(thrustValue) < 0.15) {			// TODO change if necessary
 		leftOutput = 0.0;
 		rightOutput = 0.0;
 	}
@@ -141,11 +147,8 @@ void DriveController::ArcadeDrive(double myX, double myY) {
 }
 
 void DriveController::TankDrive(double left, double right) {
-	PrintDriveValues();
 	double leftOutput = left * DriveDirection();
 	double rightOutput = right * DriveDirection();
-
-	// 	TODO ask about sensitivity of the joysticks
 
 	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
 	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
