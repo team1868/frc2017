@@ -9,6 +9,10 @@ const double WHEEL_DIAMETER = 3.5 / 12.0; 			// In feet
 const double WHEEL_DIAMETER = 6.05 / 12.0;			// In feet
 #endif
 
+#if PRACT_BOT
+const double WHEEL_DIAMETER = 3.5 / 12.0;
+#endif
+
 const double ENCODER_COUNT_PER_ROTATION = 256.0;
 const int EDGES_PER_ENCODER_COUNT = 4;
 
@@ -43,6 +47,10 @@ RobotModel::RobotModel() {
 	leftMaster_->SetSensorDirection(false);			// TODO check
 	leftMaster_->SetInverted(true);					// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(true); // TODO check
+	#elif PRACT_BOT
+	leftMaster_->SetSensorDirection(true);			// TODO check
+	leftMaster_->SetInverted(false);					// TODO check
+	leftMaster_->SetClosedLoopOutputDirection(false); // TODO check
 	#else
 	#error "DID NOT SET KOP COMP PRACTICE BOT"
 	#endif
@@ -59,6 +67,10 @@ RobotModel::RobotModel() {
 	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(false);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(false);	// TODO check
+	#elif PRACT_BOT
+	rightMaster_->SetSensorDirection(false); 	// TODO check
+	rightMaster_->SetInverted(true);			// TODO check_
+	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
 	#else
 	#error "DID NOT SET KOP COMP PRACTICE BOT"
 	#endif
