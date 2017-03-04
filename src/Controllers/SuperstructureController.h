@@ -25,7 +25,7 @@ public:
 	bool GetAutoIntakeDesired();
 	bool GetAutoFinishedIntake();
 
-	void SetOutput();		// TODO make work
+	void SetOutputs();		// TODO make work
 
 	enum SuperstructureState {
 		kInit, kIdle, kIntake, kFeederAndFlywheel, kClimber, kTimeIntake
@@ -40,13 +40,14 @@ private:
 	uint32_t currState_;
 	uint32_t nextState_;
 
+	double expectedFlywheelVelocity_, adjustedFlywheelVelocity_, desiredFlywheelVelocity_, expectedFlywheelMotorOutput_, feederMotorOutput_,
+		   climberMotorOutput_, intakeMotorOutput_, flywheelStartTime_;
+
 	bool flywheelStarted_;
-	double desiredFlywheelVelocity_, expectedFlywheelMotorOutput_, flywheelStartTime_;
-	double feederMotorOutput_, climberMotorOutput_, intakeMotorOutput_;
 
 	// Auto variables
 	bool autoFlywheelDesired_, autoTimeIntakeDesired_, autoStartedIntake_, autoFinishedIntake_;
-	double autoIntakeTime_, autoIntakeStartTime_;
+	double autoIntakeTime_, autoIntakeStartTime_, pFac_, iFac_, dFac_, fFac_;
 };
 
 #endif /* SRC_CONTROLLERS_SUPERSTRUCTURECONTROLLER_H_ */

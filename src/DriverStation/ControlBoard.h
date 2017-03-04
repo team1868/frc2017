@@ -51,12 +51,16 @@ public:
 	bool GetReverseIntakeDesired();
 	bool GetReverseFeederDesired();
 	bool GetGearMechOutDesired();
+	double GetFlywheelVelAdjust();
 
 	virtual ~ControlBoard();
 
 private:
 	// Desired values for driving and pivoting
 	double leftJoyX_, leftJoyY_, rightJoyX_, rightJoyY_;
+
+	// Flywheel Velocity dial
+	double flywheelVelAdjust_;
 
 	bool reverseDriveDesired_, gearShiftDesired_, arcadeDriveDesired_, quickTurnDesired_, flywheelDesired_, intakeDesired_, climberDesired_,
 	     reverseIntakeDesired_, reverseFeederDesired_, gearMechOutDesired_;

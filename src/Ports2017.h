@@ -119,12 +119,12 @@ static const int QUICK_TURN_BUTTON_PORT					= 1;
 static const int BRAKE_BUTTON_PORT						= 2;
 
 //Superstructure controller button ports
-static const int FLYWHEEL_SWITCH_PORT					= 7;
-static const int INTAKE_SWITCH_PORT						= 4;
-static const int CLIMBER_SWITCH_PORT					= 5;
+static const int FLYWHEEL_SWITCH_PORT					= 9;
+static const int INTAKE_SWITCH_PORT						= 8;
+static const int CLIMBER_SWITCH_PORT					= 7;
 
-static const int REVERSE_INTAKE_BUTTON_PORT				= -1;
-static const int REVERSE_FEEDER_BUTTON_PORT				= -2;
+static const int REVERSE_INTAKE_BUTTON_PORT				= 1;
+static const int REVERSE_FEEDER_BUTTON_PORT				= 2;
 static const int GEAR_MECH_OUT_BUTTON_PORT				= 3;
 
 //static const int REVERSE_INTAKE_BUTTON_PORT				= 2; //Change port
