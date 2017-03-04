@@ -21,9 +21,9 @@ ControlBoard::ControlBoard() {
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
 	intakeSwitch_ = new ButtonReader(operatorJoy_, INTAKE_SWITCH_PORT);
 	climberSwitch_ = new ButtonReader(operatorJoy_, CLIMBER_SWITCH_PORT);
-	reverseIntakeButton_ = new ButtonReader(operatorJoy_, REVERSE_INTAKE_BUTTON_PORT);
-	reverseFeederButton_ = new ButtonReader(operatorJoy_, REVERSE_FEEDER_BUTTON_PORT);
-	gearMechOutButton_ = new ButtonReader(operatorJoy_, GEAR_MECH_OUT_BUTTON_PORT);
+	reverseIntakeButton_ = new ButtonReader(operatorJoyB_, REVERSE_INTAKE_BUTTON_PORT);
+	reverseFeederButton_ = new ButtonReader(operatorJoyB_, REVERSE_FEEDER_BUTTON_PORT);
+	gearMechOutButton_ = new ButtonReader(operatorJoyB_, GEAR_MECH_OUT_BUTTON_PORT);
 
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
@@ -38,6 +38,7 @@ ControlBoard::ControlBoard() {
 	reverseIntakeDesired_ = false;
 	reverseFeederDesired_ = false;
 	gearMechOutDesired_ = false;
+	flywheelVelAdjust_ = 0.0;
 }
 
 void ControlBoard::ReadControls() {
@@ -66,6 +67,8 @@ void ControlBoard::ReadControls() {
 		reverseFeederDesired_ = !reverseFeederDesired_;
 	}
 	gearMechOutDesired_ = gearMechOutButton_->WasJustPressed();
+	flywheelVelAdjust_ = operatorJoy_->GetZ();
+
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -145,6 +148,10 @@ bool ControlBoard::GetReverseIntakeDesired() {
 
 bool ControlBoard::GetGearMechOutDesired() {
 	return gearMechOutDesired_;
+}
+
+double ControlBoard::GetFlywheelVelAdjust() {
+	return flywheelVelAdjust_;
 }
 
 ControlBoard::~ControlBoard() {
