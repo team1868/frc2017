@@ -17,17 +17,23 @@ OneGearHighShootMode::OneGearHighShootMode(RobotModel *robot, SuperstructureCont
 	// IF SWITCH SIDES, KHIGHGOALAFTERRIGHTLIFT
 	highGoalPath_ = new PathCommand(robot_, PathCommand::kHighGoalAfterRightLift);
 	highGoalShootCommand_ = new HighGoalShootCommand(superstructure_);
-	alignWithHighGoalCommand_ = new AlignWithHighGoalCommand(robot_, navXSource, talonSource_);
+	alignWithHighGoalCommand_ = new AlignWithHighGoalCommand(robot_, navXSource_, talonSource_);
+
 	printf("in one gear high shoot mode constructor\n");
 }
 
 void OneGearHighShootMode::CreateQueue() {
 	printf("Creating queue\n");
+
+	//	firstCommand_ = highGoalPath_;
 	firstCommand_ = liftPath_;
-	liftPath_->SetNextCommand(gearCommand_);
-	gearCommand_->SetNextCommand(highGoalPath_);
-	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
-	alignWithHighGoalCommand_->SetNextCommand(highGoalShootCommand_);
+//	liftPath_->SetNextCommand(gearCommand_);
+//	gearCommand_->SetNextCommand(highGoalPath_);
+//	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
+//	alignWithHighGoalCommand_->SetNextCommand(highGoalShootCommand_);
+//	liftPath_->SetNextCommand(highGoalPath_);
+//	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
+//	firstCommand_ = alignWithHighGoalCommand_;
 
 	currentCommand = firstCommand_;
 }

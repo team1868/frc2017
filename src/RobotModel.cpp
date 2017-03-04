@@ -48,7 +48,7 @@ RobotModel::RobotModel() {
 	leftMaster_->SetInverted(true);					// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(true); // TODO check
 	#elif PRACT_BOT
-	leftMaster_->SetSensorDirection(true);			// TODO check
+	leftMaster_->SetSensorDirection(false);			// TODO check
 	leftMaster_->SetInverted(false);					// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(false); // TODO check
 	#else
@@ -68,7 +68,7 @@ RobotModel::RobotModel() {
 	rightMaster_->SetInverted(false);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(false);	// TODO check
 	#elif PRACT_BOT
-	rightMaster_->SetSensorDirection(false); 	// TODO check
+	rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(true);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
 	#else

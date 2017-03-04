@@ -13,6 +13,12 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 }
 
 void PathCommand::Init() {
+	robot_->leftMaster_->ClearIaccum();
+	robot_->rightMaster_->ClearIaccum();
+
+	robot_->leftMaster_->ClearError();
+	robot_->rightMaster_->ClearError();
+
 	MotionProfile *motionProfile;
 	switch(path_) {
 		case(kLiftOne) :
@@ -73,10 +79,18 @@ void PathCommand::Init() {
 //	robot_->rightSlave_->SetPID(0.0, 0.0, 0.0, 0.0);
 
 	// TODO set slot
-	robot_->leftMaster_->SetPID(0.6, 0.0, 0.3, 1.25);
-	robot_->rightMaster_->SetPID(0.6, 0.0, 0.3, 1.5);
-	robot_->leftSlave_->SetPID(0.6, 0.0, 0.3, 1.25);
-	robot_->rightSlave_->SetPID(0.6, 0.0, 0.3, 1.5);
+//	robot_->leftMaster_->SetPID(0.8, 0.0, 0.0, 0.0);
+//	robot_->rightMaster_->SetPID(0.8, 0.0, 0.0, 0.0);
+//	robot_->leftSlave_->SetPID(0.8, 0.0, 0.0, 0.0);
+//	robot_->rightSlave_->SetPID(0.8, 0.0, 0.0, 0.0);
+	robot_->leftMaster_->SetPID(1.0, 0.0, 0.0, 0.0);
+	robot_->rightMaster_->SetPID(1.0, 0.0, 0.0, 0.0);
+	robot_->leftSlave_->SetPID(1.0, 0.0, 0.0, 0.0);
+	robot_->rightSlave_->SetPID(1.0, 0.0, 0.0, 0.0);
+	//	robot_->leftMaster_->SetPID(0.6, 0.0, 0.3, 1.25);
+//	robot_->rightMaster_->SetPID(0.6, 0.0, 0.3, 1.5);
+//	robot_->leftSlave_->SetPID(0.6, 0.0, 0.3, 1.25);
+//	robot_->rightSlave_->SetPID(0.6, 0.0, 0.3, 1.5);
 //	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.7, 0.0, 0.2, 1.40329);
 //	robot_->SetTalonPIDConfig(RobotModel::kRightWheels, 0.7, 0.0, 0.2, 1.31154);
 //	robot_->SetTalonPIDConfig(RobotModel::kLeftWheels, 0.6, 0.0, 0.3, 1.25);
@@ -110,8 +124,10 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 //	SmartDashboard::PutNumber("Left encoder", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
 //	SmartDashboard::PutNumber("Right encoder", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
-//	SmartDashboard::PutNumber("Left error", robot_->leftMaster_->GetClosedLoopError());
-//	SmartDashboard::PutNumber("Right error", robot_->rightMaster_->GetClosedLoopError());
+
+	SmartDashboard::PutNumber("Left Error", robot_->leftMaster_->GetClosedLoopError());
+	SmartDashboard::PutNumber("Right Error", robot_->rightMaster_->GetClosedLoopError());
+
 //	double leftSpeed = robot_->leftMaster_->GetSpeed();
 //	double rightSpeed = robot_->rightMaster_->GetSpeed();
 //	SmartDashboard::PutNumber("Left speed", leftSpeed);
@@ -137,6 +153,9 @@ bool PathCommand::IsDone() {
 
 		robot_->leftMaster_->ClearError();
 		robot_->rightMaster_->ClearError();
+
+		robot_->leftMaster_->ClearMotionProfileTrajectories();
+		robot_->rightMaster_->ClearMotionProfileTrajectories();
 
 		robot_->leftMaster_->ClearStickyFaults();
 		robot_->rightMaster_->ClearStickyFaults();

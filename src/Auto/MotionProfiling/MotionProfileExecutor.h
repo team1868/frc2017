@@ -143,6 +143,9 @@ public:
 		 * sitting in memory.
 		 */
 		talon_.ClearMotionProfileTrajectories();
+		talon_.ClearError();
+		talon_.ClearIaccum();
+		talon_.ClearStickyFaults();
 		/* When we do re-enter motionProfile control mode, stay disabled. */
 		setValue_ = CANTalon::SetValueMotionProfileDisable;
 		/* When we do start running our state machine start at the beginning. */

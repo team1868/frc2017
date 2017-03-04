@@ -4,14 +4,15 @@ using namespace std;
 
 AlignWithHighGoalCommand::AlignWithHighGoalCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource) {
 	printf("in beginning of alignwithhighgoalcommand\n");
+
 	angleContext_ = new zmq::context_t(1);
 	distanceContext_ = new zmq::context_t(1);
 
 	angleSubscriber_ = new zmq::socket_t(*angleContext_, ZMQ_SUB);
-	angleSubscriber_->connect("tcp://10.18.68.40:5564");	// MAKE SURE RIGHT IP
+	angleSubscriber_->connect("tcp://10.18.68.15:5564");	// MAKE SURE RIGHT IP
 
 	distanceSubscriber_ = new zmq::socket_t(*distanceContext_, ZMQ_SUB);
-	distanceSubscriber_->connect("tcp://10.18.68.40:5564");	// MAKE SURE RIGHT IP
+	distanceSubscriber_->connect("tcp://10.18.68.15:5564");	// MAKE SURE RIGHT IP
 	angleSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "ANGLE", 1);
 	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
 
@@ -36,7 +37,7 @@ AlignWithHighGoalCommand::AlignWithHighGoalCommand(RobotModel *robot, NavXPIDSou
 	nextState_ = kDriveStraightInit;
 
 	numTimesInkDriveStraightInit = 0;
-	printf("in alignWithPegCommand constructor\n");
+	printf("in alignWithHighGoalCommand constructor\n");
 }
 
 void AlignWithHighGoalCommand::RefreshIni() {
@@ -59,7 +60,7 @@ void AlignWithHighGoalCommand::Init() {
 	numTimesInkPivotToAngleInit = 0;
 	numTimesInkDriveStraightInit = 0;
 
-	printf("in alignwithpegcommand init\n");
+	printf("in alignwithhighgoalcommand init\n");
 }
 
 void AlignWithHighGoalCommand::Update(double currTimeSec, double deltaTimeSec) {
@@ -107,6 +108,13 @@ void AlignWithHighGoalCommand::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 
 		case (kDriveStraightInit) :
+//			driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
+//												robot_, 1.0);	// converting to feet
+//			driveStraightCommand_->Init();
+//			nextState_ = kDriveStraightUpdate;
+//
+//			printf("in kDriveStraightInit\n");
+
 			// Get distance from Jetson
 			if (distanceAddress == "DISTANCE") {
 				desiredDistance_ = stod(distanceContents);		// IN INCHES
@@ -121,7 +129,7 @@ void AlignWithHighGoalCommand::Update(double currTimeSec, double deltaTimeSec) {
 				// Jetson returns in inches, so /12.0
 				// Subtract 10 inches bc of length of peg
 				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-						robot_, (desiredDistance_ - 28.0)/12.0);	// converting to feet
+						robot_, (desiredDistance_ - 30.0)/12.0);	// converting to feet
 				driveStraightCommand_->Init();
 				nextState_ = kDriveStraightUpdate;
 			} else {
@@ -130,6 +138,7 @@ void AlignWithHighGoalCommand::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 
 		case (kDriveStraightUpdate) :
+			printf("in kDriveStraightUpdate\n");
 			if (!driveStraightCommand_->IsDone()) {
 				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
 				nextState_ = kDriveStraightUpdate;

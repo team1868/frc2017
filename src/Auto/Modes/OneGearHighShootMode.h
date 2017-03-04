@@ -9,6 +9,7 @@
 #include "Auto/Commands/GearCommand.h"
 #include "Auto/Commands/AlignWithHighGoalCommand.h"
 #include "Auto/Commands/HighGoalShootCommand.h"
+#include "Auto/Commands/DriveStraightCommand.h"
 #include "Auto/PIDInputSource.h"
 #include "Controllers/SuperstructureController.h"
 

@@ -51,8 +51,8 @@ void DriveStraightCommand::Init() {
 	distancePID_->SetOutputRange(-0.8, 0.8);
 
 	// TODO fix this later
-	anglePID_->SetAbsoluteTolerance(1.0);			// 1 degree
-	distancePID_->SetAbsoluteTolerance(1.0/12.0);	// 1 inch
+	anglePID_->SetAbsoluteTolerance(2.0);			// 1 degree
+	distancePID_->SetAbsoluteTolerance(2.5/12.0);	// 1 inch
 
 	anglePID_->Enable();
 	distancePID_->Enable();
@@ -112,21 +112,19 @@ bool DriveStraightCommand::IsDone() {
 }
 
 void DriveStraightCommand::GetIniValues() {
-	// TODO read from ini
+	rPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
+	rIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
+	rDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
+//	rPFac_ = 0.0;
+//	rIFac_ = 0.0;
+//	rDFac_ = 0.0;
 
-//	rPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
-//	rIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
-//	rDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
-	rPFac_ = 0.0;
-	rIFac_ = 0.0;
-	rDFac_ = 0.0;
-
-//	dPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dPFac", 0.2);
-//	dIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
-//	dDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
-	dPFac_ = 0.2;
-	dIFac_ = 0.0;
-	dDFac_ = 0.0;
+	dPFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dPFac", 0.2);
+	dIFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
+	dDFac_ = robot_->pini->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
+//	dPFac_ = 0.3;
+//	dIFac_ = 0.0;
+//	dDFac_ = 0.0;
 }
 
 DriveStraightCommand::~DriveStraightCommand() {
