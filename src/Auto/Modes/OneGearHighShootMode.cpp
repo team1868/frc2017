@@ -31,7 +31,7 @@ void OneGearHighShootMode::CreateQueue() {
 //	gearCommand_->SetNextCommand(highGoalPath_);
 //	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
 //	alignWithHighGoalCommand_->SetNextCommand(highGoalShootCommand_);
-//	liftPath_->SetNextCommand(highGoalPath_);
+	liftPath_->SetNextCommand(highGoalPath_);
 //	highGoalPath_->SetNextCommand(alignWithHighGoalCommand_);
 //	firstCommand_ = alignWithHighGoalCommand_;
 
