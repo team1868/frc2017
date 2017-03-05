@@ -16,7 +16,7 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	// TODO add dial for changing velocity
 	expectedFlywheelMotorOutput_ = 0.84; // Tune value
 	feederMotorOutput_ = -0.85;
-	climberMotorOutput_ = 0.85;
+	climberMotorOutput_ = 0.9;
 	intakeMotorOutput_ = 0.7;
 	flywheelStartTime_ = 0.0;
 
@@ -103,6 +103,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			SmartDashboard::PutString("State", "kIntake");
 			SmartDashboard::PutNumber("Intake Output:", intakeMotorOutput_);
 			if (humanControl_->GetIntakeDesired()) {
+				printf("in intake desired: %f\n", intakeMotorOutput_);
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kIntake;
 			} else {
@@ -196,16 +197,16 @@ void SuperstructureController::SetAutoFinishedIntake(bool finished) {
 }
 
 void SuperstructureController::SetOutputs() {
-	if (humanControl_->GetReverseIntakeDesired()) {
-		intakeMotorOutput_ = -intakeMotorOutput_;
-	}
-	if (humanControl_->GetReverseFeederDesired()) {
-		feederMotorOutput_ = -feederMotorOutput_;
-	}
-	SmartDashboard::PutNumber("Feeder Velocity", feederMotorOutput_);
-	SmartDashboard::PutNumber("Intake Velocity", intakeMotorOutput_);
-	adjustedFlywheelVelocity_ = desiredFlywheelVelocity_ + (desiredFlywheelVelocity_ * 0.1 * humanControl_->GetFlywheelVelAdjust());
-	flywheelController_->SetSetpoint(adjustedFlywheelVelocity_);
+//	if (humanControl_->GetReverseIntakeDesired()) {
+//		intakeMotorOutput_ = -intakeMotorOutput_;
+//	}
+//	if (humanControl_->GetReverseFeederDesired()) {
+//		feederMotorOutput_ = -feederMotorOutput_;
+//	}
+//	SmartDashboard::PutNumber("Feeder Velocity", feederMotorOutput_);
+//	SmartDashboard::PutNumber("Intake Velocity", intakeMotorOutput_);
+//	adjustedFlywheelVelocity_ = desiredFlywheelVelocity_ + (desiredFlywheelVelocity_ * 0.1 * humanControl_->GetFlywheelVelAdjust());
+//	flywheelController_->SetSetpoint(adjustedFlywheelVelocity_);
 }
 
 SuperstructureController::~SuperstructureController() {

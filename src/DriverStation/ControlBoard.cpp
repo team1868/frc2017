@@ -15,8 +15,8 @@ ControlBoard::ControlBoard() {
 
 	// Buttons
 	driveDirectionButton_ = new ButtonReader(leftJoy_, DRIVE_DIRECTION_BUTTON_PORT);
-	gearShiftButton_ = new ButtonReader(operatorJoyB_, HIGH_LOW_GEAR_BUTTON_PORT);
-	arcadeDriveButton_ = new ButtonReader(rightJoy_, ARCADE_DRIVE_BUTTON_PORT);
+	gearShiftButton_ = new ButtonReader(rightJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
+	arcadeDriveButton_ = new ButtonReader(operatorJoyB_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
 	intakeSwitch_ = new ButtonReader(operatorJoy_, INTAKE_SWITCH_PORT);
@@ -60,12 +60,8 @@ void ControlBoard::ReadControls() {
 	flywheelDesired_ = flywheelSwitch_->IsDown();
 	intakeDesired_ = intakeSwitch_->IsDown();
 	climberDesired_ = climberSwitch_->IsDown();
-	if (reverseIntakeButton_->WasJustPressed()) {
-		reverseIntakeDesired_ = !reverseIntakeDesired_;
-	}
-	if (reverseFeederButton_->WasJustPressed()) {
-		reverseFeederDesired_ = !reverseFeederDesired_;
-	}
+	reverseIntakeDesired_ = reverseIntakeButton_->WasJustPressed();
+	reverseFeederDesired_ = reverseFeederButton_->WasJustPressed();
 	gearMechOutDesired_ = gearMechOutButton_->WasJustPressed();
 	flywheelVelAdjust_ = operatorJoy_->GetZ();
 

@@ -55,10 +55,10 @@ static const int CLIMBER_MOTOR_PWM_PORT					= 5;
 #endif
 
 #if PRACT_BOT	// might want to check again
-static const int FLYWHEEL_MOTOR_PWM_PORT				= 4;
-static const int FEEDER_MOTOR_PWM_PORT					= 5;
-static const int INTAKE_MOTOR_PWM_PORT					= 7;
-static const int CLIMBER_MOTOR_PWM_PORT					= -2;
+static const int FLYWHEEL_MOTOR_PWM_PORT				= 6;
+static const int FEEDER_MOTOR_PWM_PORT					= 9;
+static const int INTAKE_MOTOR_PWM_PORT					= 0;
+static const int CLIMBER_MOTOR_PWM_PORT					= 5;
 #endif
 
 #if KOP_BOT
@@ -79,8 +79,8 @@ static const int DISTANCE_SENSOR_PWM_PORT				= -1;
 #endif
 
 #if PRACT_BOT
-static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 8;
-static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 9;
+static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 1;
+static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 2;
 
 static const int DISTANCE_SENSOR_PWM_PORT				= -1;
 #endif
@@ -113,9 +113,9 @@ static const int OPERATOR_JOY_B_USB_PORT				= 3;
 
 //Drive controller button ports
 static const int DRIVE_DIRECTION_BUTTON_PORT			= 3;
-static const int HIGH_LOW_GEAR_BUTTON_PORT				= 8;
-static const int ARCADE_DRIVE_BUTTON_PORT				= 3;
-static const int QUICK_TURN_BUTTON_PORT					= 1;
+static const int HIGH_LOW_GEAR_BUTTON_PORT				= 3;
+static const int ARCADE_DRIVE_BUTTON_PORT				= 6;
+static const int QUICK_TURN_BUTTON_PORT					= 2;
 static const int BRAKE_BUTTON_PORT						= 2;
 
 //Superstructure controller button ports
