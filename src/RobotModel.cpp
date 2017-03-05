@@ -103,6 +103,8 @@ RobotModel::RobotModel() {
 	gearInRobot_ = false;
 	distSensorCurr_ = false;
 	distSensorLast_ = false;
+
+	compressor_ = new Compressor(PNEUMATICS_CONTROL_MODULE_ID);
 }
 
 // Refreshes the ini file

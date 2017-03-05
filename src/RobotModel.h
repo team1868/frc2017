@@ -67,6 +67,7 @@ private:
 	AHRS *navX_;
 
 	Victor *flywheelMotor_, *feederMotor_, *climberMotor_, *intakeMotor_;
+	Compressor *compressor_;
 	DoubleSolenoid *gearShiftSolenoid_;
 	Solenoid *gearMechSolenoid_;
 	Encoder *flywheelEncoder_;

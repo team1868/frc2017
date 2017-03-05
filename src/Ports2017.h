@@ -94,6 +94,7 @@ static const int DISTANCE_SENSOR_PWM_PORT				= -1;
 /* ------------------ ANALOG IN PORTS --------------------*/
 
 /* ------------------------ MISC -------------------------*/
+//static const int COMPRESSOR_PORT						= 0;		// TODO check
 static const int PNEUMATICS_CONTROL_MODULE_ID			= 0;
 
 /* ------------------- SOLENOID PORTS ------------------- */
