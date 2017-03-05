@@ -13,6 +13,7 @@ public:
 
 	void Reset();
 	void Update(double currTimeSec, double deltaTimeSec);
+	void RefreshIni();
 
 	// Auto mutator methods
 	void SetAutoFlywheelDesired(bool desired);

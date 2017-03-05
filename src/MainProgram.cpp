@@ -73,7 +73,9 @@ public:
 	}
 
 	void TestPeriodic() {
-		// TODO write test program for everything
+		SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
+		SmartDashboard::PutNumber("Flywheel Distance", robot_->GetFlywheelEncoder()->GetDistance());
+		SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());
 	}
 
 	void DisabledPeriodic() {
@@ -81,6 +83,11 @@ public:
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 		robot_->ClearMotionProfileTrajectories();
 		driveController_->PrintDriveValues();
+		SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
+		SmartDashboard::PutNumber("Flywheel Distance", robot_->GetFlywheelEncoder()->GetDistance());
+		SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());
+		SmartDashboard::PutNumber("Flywheel Dial Value", humanControl_->GetFlywheelVelAdjust());
+
 	}
 
 private:
