@@ -10,6 +10,7 @@
 #include "Auto/Commands/AlignWithHighGoalCommand.h"
 #include "Auto/Commands/HighGoalShootCommand.h"
 #include "Auto/Commands/DriveStraightCommand.h"
+#include "Auto/Commands/WaitingCommand.h"
 #include "Auto/PIDInputSource.h"
 #include "Controllers/SuperstructureController.h"
 
@@ -29,8 +30,9 @@ private:
 	AutoCommand *firstCommand_;
 
 	PathCommand *liftPath_, *highGoalPath_;
-	AlignWithPegCommand *alignWithPegCommand_;
-	GearCommand *gearCommand_;
+	AlignWithPegCommand *alignWithPegCommand_;	// unused
+	WaitingCommand *waitingCommand_;
+	GearCommand *gearCommand_;	// unused
 	AlignWithHighGoalCommand *alignWithHighGoalCommand_;
 	HighGoalShootCommand *highGoalShootCommand_;
 

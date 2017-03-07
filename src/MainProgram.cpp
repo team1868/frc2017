@@ -33,6 +33,8 @@ public:
 		robot_->ZeroNavXYaw();
 		Wait(1.0);
 		navXSource_->ResetAccumulatedYaw();
+
+		CameraServer::GetInstance()->StartAutomaticCapture();		// Starting camera
 	}
 
 	// TODO PUT INI FILE HERE

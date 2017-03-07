@@ -88,10 +88,10 @@ void PathCommand::Init() {
 //	robot_->leftSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
 //	robot_->rightSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
 
-	robot_->leftMaster_->SetPID(0.8, 0.0, 12.0, 0.0);
-	robot_->rightMaster_->SetPID(0.8, 0.0, 12.0, 0.0);
-	robot_->leftSlave_->SetPID(0.8, 0.0, 12.0, 0.0);
-	robot_->rightSlave_->SetPID(0.8, 0.0, 12.0, 0.0);
+	robot_->leftMaster_->SetPID(0.8, 0.0, 50.0, 0.0);
+	robot_->rightMaster_->SetPID(0.8, 0.0, 50.0, 0.0);
+	robot_->leftSlave_->SetPID(0.8, 0.0, 50.0, 0.0);
+	robot_->rightSlave_->SetPID(0.8, 0.0, 50.0, 0.0);
 
 	//	robot_->leftMaster_->SetPID(0.6, 0.0, 0.3, 1.25);
 //	robot_->rightMaster_->SetPID(0.6, 0.0, 0.3, 1.5);

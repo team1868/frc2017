@@ -9,10 +9,10 @@ AlignWithHighGoalCommand::AlignWithHighGoalCommand(RobotModel *robot, NavXPIDSou
 	distanceContext_ = new zmq::context_t(1);
 
 	angleSubscriber_ = new zmq::socket_t(*angleContext_, ZMQ_SUB);
-	angleSubscriber_->connect("tcp://10.18.68.15:5564");	// MAKE SURE RIGHT IP
+	angleSubscriber_->connect("tcp://10.18.68.15:5806");	// MAKE SURE RIGHT IP
 
 	distanceSubscriber_ = new zmq::socket_t(*distanceContext_, ZMQ_SUB);
-	distanceSubscriber_->connect("tcp://10.18.68.15:5564");	// MAKE SURE RIGHT IP
+	distanceSubscriber_->connect("tcp://10.18.68.15:5806");	// MAKE SURE RIGHT IP
 	angleSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "ANGLE", 1);
 	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
 
@@ -129,7 +129,7 @@ void AlignWithHighGoalCommand::Update(double currTimeSec, double deltaTimeSec) {
 				// Jetson returns in inches, so /12.0
 				// Subtract 10 inches bc of length of peg
 				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-						robot_, (desiredDistance_ - 30.0)/12.0);	// converting to feet
+						robot_, (desiredDistance_ - 40.0)/12.0);	// converting to feet
 				driveStraightCommand_->Init();
 				nextState_ = kDriveStraightUpdate;
 			} else {
