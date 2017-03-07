@@ -2,8 +2,8 @@
 #define SRC_PORTS2017_H_
 
 #define COMP_BOT false
-#define PRACT_BOT false
-#define KOP_BOT true
+#define PRACT_BOT true
+#define KOP_BOT false
 
 /**
  * Ports
@@ -18,21 +18,14 @@ static const int LEFT_DRIVE_MASTER_ID					= 3;
 static const int LEFT_DRIVE_SLAVE_ID 		 			= 4;
 static const int RIGHT_DRIVE_MASTER_ID					= 1;
 static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
-
-//static const int LEFT_DRIVE_MASTER_ID					= 3;
-//static const int LEFT_DRIVE_SLAVE_ID 		 			= 2;
-//static const int RIGHT_DRIVE_MASTER_ID					= 4;
-//static const int RIGHT_DRIVE_SLAVE_ID 					= 1;
 #endif
 
 // Check the ids
 #if PRACT_BOT
 static const int LEFT_DRIVE_MASTER_ID					= 3;
 static const int LEFT_DRIVE_SLAVE_ID 		 			= 4;
-//static const int RIGHT_DRIVE_MASTER_ID					= 1;
-//static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
-static const int RIGHT_DRIVE_MASTER_ID					= 2;
-static const int RIGHT_DRIVE_SLAVE_ID 					= 1;
+static const int RIGHT_DRIVE_MASTER_ID					= 1;
+static const int RIGHT_DRIVE_SLAVE_ID 					= 2;
 #endif
 
 #if KOP_BOT
