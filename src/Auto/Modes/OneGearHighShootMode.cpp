@@ -27,9 +27,9 @@ void OneGearHighShootMode::CreateQueue() {
 	printf("Creating queue\n");
 
 	firstCommand_ = liftPath_;
-//	liftPath_->SetNextCommand(waitingCommand_);
-//	waitingCommand_->SetNextCommand(highGoalPath_);
-//	highGoalPath_->SetNextCommand(highGoalShootCommand_);
+	liftPath_->SetNextCommand(waitingCommand_);
+	waitingCommand_->SetNextCommand(highGoalPath_);
+	highGoalPath_->SetNextCommand(highGoalShootCommand_);
 
 	currentCommand = firstCommand_;
 }

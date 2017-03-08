@@ -24,8 +24,11 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	iFac_ = 0.0;
 	dFac_ = 0.0;
 	fFac_ = expectedFlywheelMotorOutput_ / expectedFlywheelVelocity_;
-	flywheelController_ = new PIDController(pFac_, iFac_, dFac_, fFac_, robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
+	//flywheelController_ = new PIDController(pFac_, iFac_, dFac_, fFac_, robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 	// m_result = m_D * m_error + m_P * m_totalError + CalculateFeedForward();		// In line 123 of PIDController.cpp
+
+	RefreshIni();
+	flywheelController_ = new PIDController(pFac_, iFac_, dFac_, fFac_, robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 
 	flywheelController_->SetSetpoint(desiredFlywheelVelocity_);
 	flywheelController_->SetOutputRange(0.0, 1.0);
@@ -118,6 +121,9 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
 			SmartDashboard::PutNumber("Flywheel Distance", robot_->GetFlywheelEncoder()->GetDistance());
 			SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());
+
+			RefreshIni();
+			flywheelController_->SetPID(pFac_, iFac_, dFac_, fFac_);
 			if (!flywheelStarted_) {
 				flywheelStartTime_ = robot_->GetTime();
 				flywheelStarted_ = true;
