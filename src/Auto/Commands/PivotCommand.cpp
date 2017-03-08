@@ -28,10 +28,10 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 }
 
 void PivotCommand::GetIniValues() {
-	pFac_ = robot_->pini->getf("PIVOT PID", "pFac", 0.0);
-	iFac_ = robot_->pini->getf("PIVOT PID", "iFac", 0.0);
-	dFac_ = robot_->pini->getf("PIVOT PID", "dFac", 0.0);
-	minDrivePivotOutput_ = robot_->pini->getf("PIVOT PID", "minDrivePivotOutput", 0.0);
+	pFac_ = robot_->pini_->getf("PIVOT PID", "pFac", 0.0);
+	iFac_ = robot_->pini_->getf("PIVOT PID", "iFac", 0.0);
+	dFac_ = robot_->pini_->getf("PIVOT PID", "dFac", 0.0);
+	minDrivePivotOutput_ = robot_->pini_->getf("PIVOT PID", "minDrivePivotOutput", 0.0);
 	printf("PIVOT COMMAND p: %f, i: %f, d: %f\n", pFac_, iFac_, dFac_);
 }
 

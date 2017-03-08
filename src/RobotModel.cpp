@@ -85,7 +85,7 @@ RobotModel::RobotModel() {
 	navX_ = new AHRS(SPI::kMXP);	// may change to micro navX
 	Wait(1.0);						// Need to wait for navX to initialize
 
-	pini = new Ini("/home/lvuser/robot.ini");
+	pini_ = new Ini("/home/lvuser/robot.ini");
 
 	flywheelMotor_ = new Victor(FLYWHEEL_MOTOR_PWM_PORT);
 	feederMotor_ = new Victor(FEEDER_MOTOR_PWM_PORT);
@@ -109,8 +109,8 @@ RobotModel::RobotModel() {
 
 // Refreshes the ini file
 void RobotModel::RefreshIni() {
-	delete pini;
-	pini = new Ini("/home/lvuser/robot.ini");
+	delete pini_;
+	pini_ = new Ini("/home/lvuser/robot.ini");
 }
 
 void RobotModel::ResetTimer() {

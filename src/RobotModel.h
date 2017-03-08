@@ -58,7 +58,7 @@ public:
 	void SetGearMechOut();
 	/* ------------------------------------------------------  */
 
-	Ini *pini;
+	Ini *pini_;
 
 	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	//TODO move to private
 

@@ -214,11 +214,11 @@ void SuperstructureController::SetOutputs() {
 }
 
 void SuperstructureController::RefreshIni() {
-	pFac_ = robot_->pini->getf("VELOCITY PID", "pFac", 0.0);
-	iFac_ = robot_->pini->getf("VELOCITY PID", "iFac", 0.0);
-	dFac_ = robot_->pini->getf("VELOCITY PID", "dFac", 0.1);
-	expectedFlywheelMotorOutput_ = robot_->pini->getf("VELOCITY PID", "motorOutput", 0.9);
-	desiredFlywheelVelocity_ = robot_->pini->getf("VELOCITY PID", "flywheelVelocity", 11.5);
+	pFac_ = robot_->pini_->getf("VELOCITY PID", "pFac", 0.0);
+	iFac_ = robot_->pini_->getf("VELOCITY PID", "iFac", 0.0);
+	dFac_ = robot_->pini_->getf("VELOCITY PID", "dFac", 0.1);
+	expectedFlywheelMotorOutput_ = robot_->pini_->getf("VELOCITY PID", "motorOutput", 0.9);
+	desiredFlywheelVelocity_ = robot_->pini_->getf("VELOCITY PID", "flywheelVelocity", 11.5);
 }
 
 SuperstructureController::~SuperstructureController() {
