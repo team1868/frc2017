@@ -92,7 +92,7 @@ RobotModel::RobotModel() {
 	intakeMotor_ = new Victor(INTAKE_MOTOR_PWM_PORT);
 	climberMotor_ = new Victor(CLIMBER_MOTOR_PWM_PORT);
 
-	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, true);
+	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, false);
 	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate);
 	flywheelEncoder_->SetDistancePerPulse(FLYWHEEL_DIAMETER * M_PI / (ENCODER_COUNT_PER_ROTATION * EDGES_PER_ENCODER_COUNT));	// TODO tune velocity PID
 

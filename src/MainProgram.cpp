@@ -114,6 +114,7 @@ private:
 
 	void RefreshIni() {
 		robot_->RefreshIni();	// TODO move
+		superstructureController_->RefreshIni();
 		autoController_->RefreshIni();		// TODO put in other method
 	}
 };

@@ -9,12 +9,11 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	currState_ = kInit;
 	nextState_ = kInit;
 
-	expectedFlywheelVelocity_ = 11.5; // ft/sec, tune value
 	adjustedFlywheelVelocity_ = 0.0;
-	desiredFlywheelVelocity_ = expectedFlywheelVelocity_; // ft/sec, tune value
+	desiredFlywheelVelocity_ = 11.5; // ft/sec, tune value
 	// TODO put all this in the ini file
 	// TODO add dial for changing velocity
-	expectedFlywheelMotorOutput_ = 0.9; // Tune value
+	expectedFlywheelMotorOutput_ = 0.7; // Tune value
 	feederMotorOutput_ = 0.85;
 	climberMotorOutput_ = 0.9;
 	intakeMotorOutput_ = -0.7;
@@ -23,7 +22,7 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	pFac_ = 0.0;
 	iFac_ = 0.0;
 	dFac_ = 0.0;
-	fFac_ = expectedFlywheelMotorOutput_ / expectedFlywheelVelocity_;
+	fFac_ = expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_;
 	flywheelController_ = new PIDController(pFac_, iFac_, dFac_, fFac_, robot_->GetFlywheelEncoder(), robot_->GetFlywheelMotor(), 0.02);
 	// m_result = m_D * m_error + m_P * m_totalError + CalculateFeedForward();		// In line 123 of PIDController.cpp
 
@@ -205,15 +204,18 @@ void SuperstructureController::SetOutputs() {
 	SmartDashboard::PutNumber("Intake Velocity", intakeMotorOutput_);
 	SmartDashboard::PutNumber("Flywheel Dial Value", humanControl_->GetFlywheelVelAdjust());
 	adjustedFlywheelVelocity_ = desiredFlywheelVelocity_ + (desiredFlywheelVelocity_ * 0.2 * humanControl_->GetFlywheelVelAdjust());
+	SmartDashboard::PutNumber("Adjusted Velocity", adjustedFlywheelVelocity_);
 	flywheelController_->SetSetpoint(adjustedFlywheelVelocity_);
+	fFac_ = expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_;
+	flywheelController_->SetPID(pFac_, iFac_, dFac_, fFac_);
 }
 
 void SuperstructureController::RefreshIni() {
 	pFac_ = robot_->pini->getf("VELOCITY PID", "pFac", 0.0);
 	iFac_ = robot_->pini->getf("VELOCITY PID", "iFac", 0.0);
-	dFac_ = robot_->pini->getf("VELOCITY PID", "dFac", 0.0);
-	expectedFlywheelMotorOutput_ = robot_->pini->getf("VELOCITY PID", "motorOutput", 0.8);
-	desiredFlywheelVelocity_ = robot_->pini->getf("VELOCITY PID", "flywheelVelocity", 11.0);
+	dFac_ = robot_->pini->getf("VELOCITY PID", "dFac", 0.1);
+	expectedFlywheelMotorOutput_ = robot_->pini->getf("VELOCITY PID", "motorOutput", 0.9);
+	desiredFlywheelVelocity_ = robot_->pini->getf("VELOCITY PID", "flywheelVelocity", 11.5);
 }
 
 SuperstructureController::~SuperstructureController() {
