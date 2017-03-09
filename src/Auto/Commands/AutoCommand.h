@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class AutoCommand {		// TODO parallel auto commands
+class AutoCommand {
 public:
 	/**
 	 * AutoCommand, if extended, allows other commands to implement these methods
@@ -41,6 +41,47 @@ public:
 
 private:
 	AutoCommand *nextCommand;
+};
+
+class ParallelAutoCommand : public AutoCommand {
+public:
+	ParallelAutoCommand(AutoCommand* myFirst, AutoCommand* mySecond) {
+		first = myFirst;
+		second = mySecond;
+		firstDone = false;
+		secondDone = false;
+		done = false;
+	}
+
+	virtual void Init() {
+		first->Init();
+		second->Init();
+	}
+
+	virtual void Update(double currTimeSec, double deltaTimeSec) {
+		firstDone = first->IsDone();
+		secondDone = second->IsDone();
+		if (firstDone && secondDone) {
+			done = true;
+		} else if (firstDone && !secondDone) {
+			second->Update(currTimeSec, deltaTimeSec);
+		} else if (!firstDone && secondDone) {
+			first->Update(currTimeSec, deltaTimeSec);
+		} else {
+			first->Update(currTimeSec, deltaTimeSec);
+			second->Update(currTimeSec, deltaTimeSec);
+		}
+	}
+
+	virtual bool IsDone() {
+		return done;
+	}
+
+	virtual ~ParallelAutoCommand() {}
+
+private:
+	AutoCommand *first, *second;
+	bool firstDone, secondDone, done;
 };
 
 #endif /* AUTOCOMMAND_H */

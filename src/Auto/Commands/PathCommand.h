@@ -1,20 +1,20 @@
 #ifndef SRC_AUTO_COMMANDS_PATHCOMMAND_H_
 #define SRC_AUTO_COMMANDS_PATHCOMMAND_H_
 
+#include <Auto/MotionProfiling/LeftLift_MotionProfile.h>
+#include <Auto/MotionProfiling/MiddleLift_MotionProfile.h>
 #include <Auto/MotionProfiling/MotionProfileExecutor.h>
+#include <Auto/MotionProfiling/RightLift_MotionProfile.h>
 #include "WPILib.h"
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/MotionProfiling/MotionProfile.h"
-#include "Auto/MotionProfiling/LiftOne_MotionProfile.h"
-#include "Auto/MotionProfiling/LiftTwo_MotionProfile.h"
-#include "Auto/MotionProfiling/LiftThree_MotionProfile.h"
 #include "Auto/MotionProfiling/HighGoalAfterLeftLift_MotionProfile.h"
 #include "Auto/MotionProfiling/HighGoalAfterRightLift_MotionProfile.h"
 #include "RobotModel.h"
 
 class PathCommand : public AutoCommand {
 public:
-	enum Path { kLiftOne, kLiftTwo, kLiftThree, kHighGoalAfterLeftLift, kHighGoalAfterRightLift };
+	enum Path { kLeftLift, kMiddleLift, kRightLift, kHighGoalAfterLeftLift, kHighGoalAfterRightLift };
 
 	/**
 	 * Constructor that generates a PathCommand

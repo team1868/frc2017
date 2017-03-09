@@ -21,21 +21,21 @@ void PathCommand::Init() {
 
 	MotionProfile *motionProfile;
 	switch(path_) {
-		case(kLiftOne) :
-			printf("Lift one\n");
+		case(kLeftLift) :
+			printf("Left lift\n");
 			motionProfile = new LiftOne_MotionProfile();
 			break;
-		case(kLiftTwo) :
-			printf("Lift two\n");
+		case(kMiddleLift) :
+			printf("Middle lift\n");
 			motionProfile = new LiftTwo_MotionProfile();
 			break;
-		case(kLiftThree) :
-			printf("Lift three\n");
+		case(kRightLift) :
+			printf("Right lift\n");
 			motionProfile = new LiftThree_MotionProfile();
 			break;
 		case(kHighGoalAfterLeftLift) :
 			printf("High goal after left lift\n");
-//			motionProfile = new HighGoalAfterLeftLift_MotionProfile();
+			motionProfile = new HighGoalAfterLeftLift_MotionProfile();
 			break;
 		case(kHighGoalAfterRightLift) :
 			printf("High goal after right lift\n");
@@ -88,10 +88,19 @@ void PathCommand::Init() {
 //	robot_->leftSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
 //	robot_->rightSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
 
-	robot_->leftMaster_->SetPID(0.7, 0.0, 70.0, 0.0);		// was 0.8 // was 50
-	robot_->rightMaster_->SetPID(0.7, 0.0, 90.0, 0.0);
-	robot_->leftSlave_->SetPID(0.7, 0.0, 70.0, 0.0);
-	robot_->rightSlave_->SetPID(0.7, 0.0, 90.0, 0.0);
+	robot_->leftMaster_->SetPID(0.9, 0.0, 195.0, 0.85);		// was 0.8 // was 50
+	robot_->rightMaster_->SetPID(0.9, 0.0, 210.0, 0.85);
+	robot_->leftSlave_->SetPID(0.9, 0.0, 195.0, 0.85);
+	robot_->rightSlave_->SetPID(0.9, 0.0, 210.0, 0.85);
+//	robot_->leftMaster_->SetPID(0.9, 0.0, 0.0, 0.0);		// was 0.8 // was 50
+//	robot_->rightMaster_->SetPID(0.9, 0.0, 0.0, 0.0);
+//	robot_->leftSlave_->SetPID(0.9, 0.0, 0.0, 0.0);
+//	robot_->rightSlave_->SetPID(0.9, 0.0, 0.0, 0.0);
+
+//	robot_->leftMaster_->SetPID(0.2, 0.0, 10.0, 0.0);		// was 0.8 // was 50
+//	robot_->rightMaster_->SetPID(0.2, 0.0, 10.0, 0.0);
+//	robot_->leftSlave_->SetPID(0.2, 0.0, 10.0, 0.0);
+//	robot_->rightSlave_->SetPID(0.2, 0.0, 10.0, 0.0);
 
 	//	robot_->leftMaster_->SetPID(0.6, 0.0, 0.3, 1.25);
 //	robot_->rightMaster_->SetPID(0.6, 0.0, 0.3, 1.5);

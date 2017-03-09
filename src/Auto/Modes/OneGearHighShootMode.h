@@ -16,7 +16,7 @@
 
 class OneGearHighShootMode : public AutoMode {
 public:
-	OneGearHighShootMode(RobotModel *robot, SuperstructureController *superstructure, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource);
+	OneGearHighShootMode(RobotModel *robot, SuperstructureController *superstructure, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource, bool isLeft);
 	virtual ~OneGearHighShootMode();
 	void CreateQueue();
 	void Init(); 	// To put in AutoMode
@@ -35,6 +35,8 @@ private:
 	GearCommand *gearCommand_;	// unused
 	AlignWithHighGoalCommand *alignWithHighGoalCommand_;
 	HighGoalShootCommand *highGoalShootCommand_;
+
+	ParallelAutoCommand *highGoalPathAndShootCommand_;
 
 	NavXPIDSource *navXSource_;
 	TalonEncoderPIDSource *talonSource_;

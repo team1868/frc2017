@@ -33,7 +33,6 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	flywheelController_->SetContinuous(false);
 
 	flywheelStarted_ = false;
-
 	flywheelStartTime_ = 0.0;
 
 	autoFlywheelDesired_ = false;
@@ -60,10 +59,19 @@ void SuperstructureController::Reset() {
 	feederMotorOutput_ = -fabs(feederMotorOutput_);
 	intakeMotorOutput_ = -fabs(intakeMotorOutput_);
 
+	flywheelStarted_ = false;
+	flywheelStartTime_ = 0.0;
+
 	autoFlywheelDesired_ = false;
 	autoTimeIntakeDesired_ = false;
 	autoStartedIntake_ = false;
 	autoFinishedIntake_ = false;
+
+	autoIntakeTime_ = 0.0;
+	autoIntakeStartTime_ = 0.0;
+
+	currState_ = kInit;
+	nextState_ = kInit;
 }
 
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
@@ -124,9 +132,11 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 				flywheelStartTime_ = robot_->GetTime();
 				flywheelStarted_ = true;
 				nextState_ = kFeederAndFlywheel;
-			} else if (robot_->GetTime() - flywheelStartTime_ < 2.0) {
+			} else if (robot_->GetTime() - flywheelStartTime_ < 3.0) {
 				nextState_ = kFeederAndFlywheel;
+				printf("time - flywheelStartTime: %f\n", robot_->GetTime() - flywheelStartTime_);
 			} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
+				printf("IN FEEDER\n");
 				robot_->SetFeederOutput(feederMotorOutput_);
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kFeederAndFlywheel;

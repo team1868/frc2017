@@ -3,6 +3,7 @@
 #include "Controllers/DriveController.h"
 #include "Controllers/SuperstructureController.h"
 #include "Auto/AutoController.h"
+#include "Auto/Modes/AutoMode.h"
 #include "Auto/Modes/OneGearMode.h"
 #include "Auto/Modes/OneGearHighShootMode.h"
 
@@ -43,8 +44,42 @@ public:
 		ResetTimerVariables();
 		ResetControllers();
 		robot_->SetLowGear();
-		OneGearHighShootMode *oneGearHighShootMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_);
-		autoController_->SetAutonomousMode(oneGearHighShootMode);
+
+		// TODO move this into AutoController
+
+		int kAutoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
+		enum autoModes {
+			kBlank, kDriveStraight, kLeftLift, kMiddleLift, kRightLift, kLeftLiftAndShoot, kRightLiftAndShoot
+		};
+
+		AutoMode *autoMode;
+
+		switch(kAutoMode) {
+		case kBlank :
+			break;
+		case kDriveStraight :
+			break;
+		case kLeftLift :
+			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
+			break;
+		case kMiddleLift :
+			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
+			break;
+		case kRightLift :
+			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
+			break;
+		case kLeftLiftAndShoot :
+			autoMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_, true);
+			break;
+		case kRightLiftAndShoot :
+			autoMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_, false);
+			break;
+		default :
+			//autoMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_, true);
+			break;
+		}
+
+		autoController_->SetAutonomousMode(autoMode);
 		autoController_->Init();
 	}
 
