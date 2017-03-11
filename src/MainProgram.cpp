@@ -36,6 +36,7 @@ public:
 		navXSource_->ResetAccumulatedYaw();
 
 		CameraServer::GetInstance()->StartAutomaticCapture();		// Starting camera
+		robot_->SetHighGear();
 	}
 
 	// TODO PUT INI FILE HERE
@@ -43,7 +44,8 @@ public:
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-		robot_->SetLowGear();
+		robot_->SetHighGear();
+		robot_->SetGearMech(true);
 
 		// TODO move this into AutoController
 
@@ -85,7 +87,6 @@ public:
 
 	void AutonomousPeriodic() {
 		UpdateTimerVariables();
-		robot_->SetGearMechOut();
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
 		}
@@ -103,6 +104,7 @@ public:
 		humanControl_->ReadControls();
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
+
 	}
 
 	void TestInit() {

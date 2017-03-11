@@ -46,7 +46,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			rightJoyY = -humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY);	// was neg
 			rightJoyX = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX);
 
-			if (humanControl_->GetGearShiftDesired()) {
+			if (humanControl_->GetHighGearDesired()) {
 				printf("Set high gear\n");
 				robot_->SetHighGear();
 			} else {

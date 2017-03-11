@@ -55,7 +55,7 @@ public:
 	bool GetGearInRobot();
 	void SetGearInRobot(bool gearInRobot);
 	void GearUpdate();
-	void SetGearMechOut();
+	void SetGearMech(bool dir);
 	/* ------------------------------------------------------  */
 
 	Ini *pini_;

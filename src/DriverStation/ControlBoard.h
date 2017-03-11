@@ -34,7 +34,7 @@ public:
 	/**
 	 *@return true if gear shift is desired
 	 */
-	bool GetGearShiftDesired();
+	bool GetHighGearDesired();
 	/**
 	 * @return true if arcade drive is desired
 	 */
@@ -62,7 +62,7 @@ private:
 	// Flywheel Velocity dial
 	double flywheelVelAdjust_;
 
-	bool reverseDriveDesired_, gearShiftDesired_, arcadeDriveDesired_, quickTurnDesired_, flywheelDesired_, intakeDesired_, climberDesired_,
+	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, flywheelDesired_, intakeDesired_, climberDesired_,
 	     reverseIntakeDesired_, reverseFeederDesired_, gearMechOutDesired_;
 
 	// Joysticks

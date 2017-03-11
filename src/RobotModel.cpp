@@ -262,8 +262,8 @@ void RobotModel::GearUpdate() {
 	}
 }
 
-void RobotModel::SetGearMechOut() {
-	gearMechSolenoid_->Set(true);
+void RobotModel::SetGearMech(bool dir) {
+	gearMechSolenoid_->Set(dir);
 }
 
 RobotModel::~RobotModel() {

@@ -13,7 +13,7 @@ public:
 
 	// Drive controller button accessors
 	virtual bool GetReverseDriveDesired() = 0;
-	virtual bool GetGearShiftDesired() = 0;
+	virtual bool GetHighGearDesired() = 0;
 	virtual bool GetArcadeDriveDesired() = 0;
 	virtual bool GetQuickTurnDesired() = 0;
 

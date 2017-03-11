@@ -16,7 +16,7 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	expectedFlywheelMotorOutput_ = 0.7; // Tune value
 	feederMotorOutput_ = 0.85;
 	climberMotorOutput_ = 0.9;
-	intakeMotorOutput_ = -0.7;
+	intakeMotorOutput_ = 0.7; // postive for comp
 	flywheelStartTime_ = 0.0;
 
 	pFac_ = 0.0;
@@ -31,6 +31,8 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	flywheelController_->SetOutputRange(0.0, 1.0);
 	flywheelController_->SetAbsoluteTolerance(2.0);
 	flywheelController_->SetContinuous(false);
+
+	gearMechPos_ = false;
 
 	flywheelStarted_ = false;
 	flywheelStartTime_ = 0.0;
@@ -57,7 +59,7 @@ void SuperstructureController::Reset() {
 	robot_->SetClimberOutput(0.0);
 
 	feederMotorOutput_ = -fabs(feederMotorOutput_);
-	intakeMotorOutput_ = -fabs(intakeMotorOutput_);
+	intakeMotorOutput_ = fabs(intakeMotorOutput_); // positive for comp
 
 	flywheelStarted_ = false;
 	flywheelStartTime_ = 0.0;
@@ -77,6 +79,10 @@ void SuperstructureController::Reset() {
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	robot_->GearUpdate();
 	SetOutputs();
+	if (humanControl_->GetGearMechOutDesired()) {
+		gearMechPos_ = !gearMechPos_;
+		robot_->SetGearMech(gearMechPos_);
+	}
 
 	switch(currState_) {
 	case kInit:
@@ -90,9 +96,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	case kIdle:
 			SmartDashboard::PutString("State", "kIdle");
 			nextState_ = kIdle;
-			if (humanControl_->GetGearMechOutDesired()) {
-				robot_->SetGearMechOut();
-			}
 			if (humanControl_->GetIntakeDesired()) {
 				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kIntake;
@@ -227,7 +230,7 @@ void SuperstructureController::RefreshIni() {
 	pFac_ = robot_->pini_->getf("VELOCITY PID", "pFac", 0.0);
 	iFac_ = robot_->pini_->getf("VELOCITY PID", "iFac", 0.0);
 	dFac_ = robot_->pini_->getf("VELOCITY PID", "dFac", 0.1);
-	expectedFlywheelMotorOutput_ = robot_->pini_->getf("VELOCITY PID", "motorOutput", 0.9);
+	fFac_ = expectedFlywheelMotorOutput_ / desiredFlywheelVelocity_;
 	desiredFlywheelVelocity_ = robot_->pini_->getf("VELOCITY PID", "flywheelVelocity", 11.5);
 }
 

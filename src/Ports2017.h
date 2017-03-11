@@ -1,8 +1,8 @@
 #ifndef SRC_PORTS2017_H_
 #define SRC_PORTS2017_H_
 
-#define COMP_BOT false
-#define PRACT_BOT true
+#define COMP_BOT true
+#define PRACT_BOT false
 #define KOP_BOT false
 
 /**

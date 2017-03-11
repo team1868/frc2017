@@ -88,10 +88,28 @@ void PathCommand::Init() {
 //	robot_->leftSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
 //	robot_->rightSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
 
-	robot_->leftMaster_->SetPID(0.9, 0.0, 195.0, 0.85);		// was 0.8 // was 50
+	leftPFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lPFac");
+	leftIFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lIFac");
+	leftDFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lDFac");
+	leftFFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lFFac");
+
+	rightPFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rPFac");
+	rightIFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rIFac");
+	rightDFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rDFac");
+	rightFFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rFFac");
+
+
+	robot_->leftMaster_->SetPID(leftPFac_, leftIFac_, leftDFac_, leftFFac_);
+	robot_->rightMaster_->SetPID(rightPFac_, rightIFac_, rightDFac_, rightFFac_);
+	robot_->leftSlave_->SetPID(leftPFac_, leftIFac_, leftDFac_, leftFFac_);
+	robot_->rightSlave_->SetPID(rightPFac_, rightIFac_, rightDFac_, rightFFac_);
+
+/*	BEFORE COMP VALUES
+   robot_->leftMaster_->SetPID(0.9, 0.0, 195.0, 0.85);		// was 0.8 // was 50
 	robot_->rightMaster_->SetPID(0.9, 0.0, 210.0, 0.85);
 	robot_->leftSlave_->SetPID(0.9, 0.0, 195.0, 0.85);
 	robot_->rightSlave_->SetPID(0.9, 0.0, 210.0, 0.85);
+*/
 //	robot_->leftMaster_->SetPID(0.9, 0.0, 0.0, 0.0);		// was 0.8 // was 50
 //	robot_->rightMaster_->SetPID(0.9, 0.0, 0.0, 0.0);
 //	robot_->leftSlave_->SetPID(0.9, 0.0, 0.0, 0.0);

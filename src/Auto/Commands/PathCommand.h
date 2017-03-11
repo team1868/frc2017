@@ -35,6 +35,8 @@ private:
 	Path path_;
 	int lengthOfLeftMotionProfile_, lengthOfRightMotionProfile_;
 	double leftMotionProfile_[][3], rightMotionProfile_[][3];
+	double leftPFac_, leftIFac_, leftDFac_, leftFFac_;
+	double rightPFac_, rightIFac_, rightDFac_, rightFFac_;
 	MotionProfileExecutor *leftMotionProfileExecutor_, *rightMotionProfileExecutor_;
 	bool isDone_;
 };

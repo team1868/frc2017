@@ -44,7 +44,7 @@ private:
 	double expectedFlywheelVelocity_, adjustedFlywheelVelocity_, desiredFlywheelVelocity_, expectedFlywheelMotorOutput_, feederMotorOutput_,
 		   climberMotorOutput_, intakeMotorOutput_, flywheelStartTime_;
 
-	bool flywheelStarted_;
+	bool flywheelStarted_, gearMechPos_;
 
 	// Auto variables
 	bool autoFlywheelDesired_, autoTimeIntakeDesired_, autoStartedIntake_, autoFinishedIntake_;
