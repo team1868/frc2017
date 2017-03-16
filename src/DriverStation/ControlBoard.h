@@ -52,6 +52,7 @@ public:
 	bool GetReverseFeederDesired();
 	bool GetGearMechOutDesired();
 	double GetFlywheelVelAdjust();
+	bool GetGearCameraDesired();
 
 	virtual ~ControlBoard();
 
@@ -62,15 +63,21 @@ private:
 	// Flywheel Velocity dial
 	double flywheelVelAdjust_;
 
-	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, flywheelDesired_, intakeDesired_, climberDesired_,
-	     reverseIntakeDesired_, reverseFeederDesired_, gearMechOutDesired_;
+	// Bool values for drive
+	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_;
+	// Bool values for superstructure
+	bool flywheelDesired_, intakeDesired_, climberDesired_, reverseIntakeDesired_, reverseFeederDesired_, gearMechOutDesired_, cameraSwitchDesired_,
+		gearCameraDesired_;
 
 	// Joysticks
 	Joystick *leftJoy_, *rightJoy_, *operatorJoy_, *operatorJoyB_;
 
-	// Buttons
-	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_, *flywheelSwitch_, *intakeSwitch_, *climberSwitch_,
-				 *reverseIntakeButton_, *reverseFeederButton_, *gearMechOutButton_;
+	// Buttons for drive
+	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_;
+
+	// Buttons for superstructure
+	ButtonReader *flywheelSwitch_, *intakeSwitch_, *climberSwitch_, *reverseIntakeButton_, *reverseFeederButton_, *gearMechOutButton_,
+				*gearSwitchButton_;
 
 	void ReadAllButtons();
 };

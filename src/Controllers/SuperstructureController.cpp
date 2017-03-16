@@ -141,7 +141,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
 				printf("IN FEEDER\n");
 				robot_->SetFeederOutput(feederMotorOutput_);
-				robot_->SetIntakeOutput(intakeMotorOutput_);
+//				robot_->SetIntakeOutput(intakeMotorOutput_);
 				nextState_ = kFeederAndFlywheel;
 			} else {
 				robot_->SetFeederOutput(0.0);

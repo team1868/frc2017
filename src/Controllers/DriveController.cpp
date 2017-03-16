@@ -86,6 +86,7 @@ void DriveController::PrintDriveValues() {
 }
 
 void DriveController::ArcadeDrive(double myX, double myY) {
+	SmartDashboard::PutString("Drive Mode", "Arcade Drive");
 	double thrustValue = myY * DriveDirection();
 	double rotateValue = myX;
 	double leftOutput = 0.0;
@@ -147,6 +148,7 @@ void DriveController::ArcadeDrive(double myX, double myY) {
 }
 
 void DriveController::TankDrive(double left, double right) {
+	SmartDashboard::PutString("Drive Mode", "Tank Drive");
 	double leftOutput = left * DriveDirection();
 	double rightOutput = right * DriveDirection();
 
@@ -155,6 +157,7 @@ void DriveController::TankDrive(double left, double right) {
 }
 
 void DriveController::QuickTurn(double myRight) {
+	SmartDashboard::PutString("Drive Mode", "Quick Turn");
 	robot_->SetDriveValues(RobotModel::kLeftWheels, myRight);
 	robot_->SetDriveValues(RobotModel::kRightWheels, -myRight);
 }

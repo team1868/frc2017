@@ -115,6 +115,7 @@ static const int CLIMBER_SWITCH_PORT					= 7;
 static const int REVERSE_INTAKE_BUTTON_PORT				= 1;
 static const int REVERSE_FEEDER_BUTTON_PORT				= 2;
 static const int GEAR_MECH_OUT_BUTTON_PORT				= 3;
+static const int CAMERA_SWITCH_BUTTON_PORT				= 4;
 
 //static const int REVERSE_INTAKE_BUTTON_PORT				= 2; //Change port
 //static const int REVERSE_FEEDER_BUTTON_PORT				= 3; //Change port

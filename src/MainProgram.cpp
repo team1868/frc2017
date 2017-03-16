@@ -19,6 +19,9 @@ class MainProgram : public IterativeRobot {
 
 	double currTimeSec_, lastTimeSec_, deltaTimeSec_;
 
+//	cs::UsbCamera gearCamera;
+//	cs::UsbCamera climbCamera;
+//	cs::VideoSink server;
 public:
 	void RobotInit() {
 		ResetTimerVariables();
@@ -35,7 +38,10 @@ public:
 		Wait(1.0);
 		navXSource_->ResetAccumulatedYaw();
 
-		CameraServer::GetInstance()->StartAutomaticCapture();		// Starting camera
+		CameraServer::GetInstance()->StartAutomaticCapture();
+//		gearCamera = CameraServer::GetInstance()->StartAutomaticCapture(1);		// Starting camera
+//		climbCamera = CameraServer::GetInstance()->StartAutomaticCapture(0);
+//		server = CameraServer::GetInstance()->GetServer();
 		robot_->SetHighGear();
 	}
 
@@ -105,6 +111,13 @@ public:
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
 
+		if(humanControl_->GetGearCameraDesired()) {
+			SmartDashboard::PutString("Camera", "Gear");
+//			server.SetSource(gearCamera);
+		} else {
+			SmartDashboard::PutString("Camera", "Climb");
+//			server.SetSource(climbCamera);
+		}
 	}
 
 	void TestInit() {
@@ -127,6 +140,8 @@ public:
 		SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());
 		SmartDashboard::PutNumber("Flywheel Dial Value", humanControl_->GetFlywheelVelAdjust());
 
+		SmartDashboard::PutNumber("LeftJoy Y", humanControl_->GetJoystickValue(ControlBoard::kLeftJoy, ControlBoard::kY));
+		SmartDashboard::PutNumber("RightJoy X", humanControl_->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kX));
 	}
 
 private:

@@ -25,6 +25,7 @@ public:
 	virtual bool GetReverseFeederDesired() = 0;
 	virtual bool GetGearMechOutDesired() = 0;
 	virtual double GetFlywheelVelAdjust() = 0;
+	virtual bool GetGearCameraDesired() = 0;
 
 	virtual ~RemoteControl() {}
 };

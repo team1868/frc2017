@@ -13,17 +13,20 @@ ControlBoard::ControlBoard() {
 	rightJoyX_ = 0;
 	rightJoyY_ = 0;
 
-	// Buttons
+	// Buttons for drive
 	driveDirectionButton_ = new ButtonReader(leftJoy_, DRIVE_DIRECTION_BUTTON_PORT);
 	gearShiftButton_ = new ButtonReader(rightJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
 	arcadeDriveButton_ = new ButtonReader(operatorJoy_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
+
+	// Buttons for superstructure
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
 	intakeSwitch_ = new ButtonReader(operatorJoy_, INTAKE_SWITCH_PORT);
 	climberSwitch_ = new ButtonReader(operatorJoy_, CLIMBER_SWITCH_PORT);
 	reverseIntakeButton_ = new ButtonReader(operatorJoyB_, REVERSE_INTAKE_BUTTON_PORT);
 	reverseFeederButton_ = new ButtonReader(operatorJoyB_, REVERSE_FEEDER_BUTTON_PORT);
 	gearMechOutButton_ = new ButtonReader(operatorJoyB_, GEAR_MECH_OUT_BUTTON_PORT);
+	gearSwitchButton_ = new ButtonReader(operatorJoyB_, CAMERA_SWITCH_BUTTON_PORT);
 
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
@@ -39,6 +42,9 @@ ControlBoard::ControlBoard() {
 	reverseFeederDesired_ = false;
 	gearMechOutDesired_ = false;
 	flywheelVelAdjust_ = 0.0;
+
+	cameraSwitchDesired_ = false;
+	gearCameraDesired_ = true;
 }
 
 void ControlBoard::ReadControls() {
@@ -62,6 +68,7 @@ void ControlBoard::ReadControls() {
 	reverseFeederDesired_ = reverseFeederButton_->WasJustPressed();
 	gearMechOutDesired_ = gearMechOutButton_->WasJustPressed();
 	flywheelVelAdjust_ = operatorJoy_->GetZ();
+	cameraSwitchDesired_ = gearSwitchButton_->WasJustPressed();
 
 }
 
@@ -146,6 +153,14 @@ bool ControlBoard::GetGearMechOutDesired() {
 
 double ControlBoard::GetFlywheelVelAdjust() {
 	return flywheelVelAdjust_;
+}
+
+bool ControlBoard::GetGearCameraDesired() {
+	if (cameraSwitchDesired_) {
+		gearCameraDesired_ = !gearCameraDesired_;
+		SmartDashboard::PutBoolean("Camera Switched", true);
+	}
+	return gearCameraDesired_;
 }
 
 ControlBoard::~ControlBoard() {

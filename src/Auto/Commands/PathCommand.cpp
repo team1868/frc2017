@@ -10,6 +10,16 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 	leftMotionProfileExecutor_ = NULL;
 	rightMotionProfileExecutor_ = NULL;
 	isDone_ = false;
+
+	leftPFac_ = 0.0;
+	leftIFac_ = 0.0;
+	leftDFac_ = 0.0;
+	leftFFac_ = 0.0;
+
+	rightPFac_ = 0.0;
+	rightIFac_ = 0.0;
+	rightDFac_ = 0.0;
+	rightFFac_ = 0.0;
 }
 
 void PathCommand::Init() {
@@ -24,22 +34,72 @@ void PathCommand::Init() {
 		case(kLeftLift) :
 			printf("Left lift\n");
 			motionProfile = new LiftOne_MotionProfile();
+
+			leftPFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lPFac", 0.0);
+			leftIFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lIFac", 0.0);
+			leftDFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lDFac", 0.0);
+			leftFFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lFFac", 0.0);
+
+			rightPFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rPFac", 0.0);
+			rightIFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rIFac", 0.0);
+			rightDFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rDFac", 0.0);
+			rightFFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rFFac", 0.0);
 			break;
 		case(kMiddleLift) :
 			printf("Middle lift\n");
 			motionProfile = new LiftTwo_MotionProfile();
+
+			leftPFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lPFac", 0.1);
+			leftIFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lIFac", 0.0);
+			leftDFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lDFac", 50.0);
+			leftFFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lFFac", 0.92);
+
+			rightPFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rPFac", 0.1);
+			rightIFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rIFac", 0.0);
+			rightDFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rDFac", 50.0);
+			rightFFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rFFac", 0.90);
 			break;
 		case(kRightLift) :
 			printf("Right lift\n");
 			motionProfile = new LiftThree_MotionProfile();
+
+			leftPFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lPFac", 0.1);
+			leftIFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lIFac", 0.0);
+			leftDFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lDFac", 62.0);
+			leftFFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lFFac", 0.92);
+
+			rightPFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rPFac", 0.1);
+			rightIFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rIFac", 0.0);
+			rightDFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rDFac", 50.0);
+			rightFFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rFFac", 0.90);
 			break;
 		case(kHighGoalAfterLeftLift) :
 			printf("High goal after left lift\n");
 			motionProfile = new HighGoalAfterLeftLift_MotionProfile();
+
+			leftPFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lPFac");
+			leftIFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lIFac");
+			leftDFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lDFac");
+			leftFFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lFFac");
+
+			rightPFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rPFac");
+			rightIFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rIFac");
+			rightDFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rDFac");
+			rightFFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rFFac");
 			break;
 		case(kHighGoalAfterRightLift) :
 			printf("High goal after right lift\n");
 			motionProfile = new HighGoalAfterRightLift_MotionProfile();
+
+			leftPFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lPFac", 0.1);
+			leftIFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lIFac", 0.0);
+			leftDFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lDFac", 50.0);
+			leftFFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lFFac", 0.92);
+
+			rightPFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rPFac", 0.1);
+			rightIFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rIFac", 0.0);
+			rightDFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rDFac", 50.0);
+			rightFFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rFFac)", 0.90);
 			break;
 		default :
 			motionProfile = NULL;
@@ -87,17 +147,6 @@ void PathCommand::Init() {
 //	robot_->rightMaster_->SetPID(1.0, 0.0, 1.0, 0.0);
 //	robot_->leftSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
 //	robot_->rightSlave_->SetPID(1.0, 0.0, 1.0, 0.0);
-
-	leftPFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lPFac");
-	leftIFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lIFac");
-	leftDFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lDFac");
-	leftFFac_ = robot_->pini_->getf("MOTION PROFILE PID", "lFFac");
-
-	rightPFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rPFac");
-	rightIFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rIFac");
-	rightDFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rDFac");
-	rightFFac_ = robot_->pini_->getf("MOTION PROFILE PID", "rFFac");
-
 
 	robot_->leftMaster_->SetPID(leftPFac_, leftIFac_, leftDFac_, leftFFac_);
 	robot_->rightMaster_->SetPID(rightPFac_, rightIFac_, rightDFac_, rightFFac_);
@@ -160,6 +209,8 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	SmartDashboard::PutNumber("Left Error", robot_->leftMaster_->GetClosedLoopError());
 	SmartDashboard::PutNumber("Right Error", robot_->rightMaster_->GetClosedLoopError());
+	SmartDashboard::PutNumber("Left Velocity", robot_->leftMaster_->GetSpeed());
+	SmartDashboard::PutNumber("Right Velocity", robot_->rightMaster_->GetSpeed());
 
 //	double leftSpeed = robot_->leftMaster_->GetSpeed();
 //	double rightSpeed = robot_->rightMaster_->GetSpeed();
