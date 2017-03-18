@@ -311,6 +311,8 @@ void PathCommand::Init() {
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
+	leftEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kLeftWheels);
+	rightEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kRightWheels);
 
 	leftError = get_error(leftEncoderFollower_);
 	rightError = get_error(rightEncoderFollower_);
