@@ -93,7 +93,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				pegCommand_->Update(currTimeSec, deltaTimeSec);
 			}
 
-			if (humanControl_->GetAlignWithPegDesired()) {
+			if (humanControl_->GetAlignWithPegDesired()) {		// DOES THIS WORK WE SHOULD CHECK
 				nextState_ = kAlignWithPeg;
 			} else {
 				nextState_ = kTeleopDrive;

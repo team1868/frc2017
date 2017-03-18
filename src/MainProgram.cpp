@@ -112,6 +112,7 @@ public:
 		}
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
+
 		Logger::LogState(robot_);
 	}
 
@@ -133,7 +134,7 @@ public:
 			SmartDashboard::PutString("Camera", "Climb");
 //			server.SetSource(climbCamera);
 		}
-		//Logs state of robot
+		// Logs state of robot
 		Logger::LogState(robot_);
 	}
 

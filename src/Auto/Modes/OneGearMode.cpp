@@ -10,11 +10,11 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	int autoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
 
 	if (autoMode == 2) {
-		liftPath_ = new PathCommand_OLD(robot_, PathCommand_OLD::kLeftLift);
+		liftPath_ = new PathCommand(robot_, PathCommand::kLeftLift);
 	} else if (autoMode == 3) {
-		liftPath_ = new PathCommand_OLD(robot_, PathCommand_OLD::kMiddleLift);
+		liftPath_ = new PathCommand(robot_, PathCommand::kMiddleLift);
 	} else if (autoMode == 4) {
-		liftPath_ = new PathCommand_OLD(robot_, PathCommand_OLD::kRightLift);
+		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
 	}
 
 	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);

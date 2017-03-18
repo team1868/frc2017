@@ -1,7 +1,7 @@
 #ifndef SRC_AUTO_MODES_ONEGEARHIGHSHOOTMODE_H_
 #define SRC_AUTO_MODES_ONEGEARHIGHSHOOTMODE_H_
 
-#include <Auto/Commands/PathCommand_OLD.h>
+#include <Auto/Commands/PathCommand.h>
 #include "RobotModel.h"
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Commands/AutoCommand.h"
@@ -29,7 +29,7 @@ private:
 
 	AutoCommand *firstCommand_;
 
-	PathCommand_OLD *liftPath_, *highGoalPath_;
+	PathCommand *liftPath_, *highGoalPath_;
 	AlignWithPegCommand *alignWithPegCommand_;	// unused
 	WaitingCommand *waitingCommand_;
 	GearCommand *gearCommand_;	// unused

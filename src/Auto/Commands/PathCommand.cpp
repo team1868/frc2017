@@ -1,13 +1,13 @@
 #include <Auto/Commands/PathCommand.h>
 #include "CANTalon.h"
 
-const double WHEELBASE_WIDTH = 30.8 / 12.0;  ////////// TO CHANGE
+const double WHEELBASE_WIDTH = 30.8 / 12.0;
 const double WHEEL_DIAMETER = 3.5 / 12.0;    // in ft
 const double TIME_STEP = 0.01;               // in s
-const double MAX_VELOCITY = 5.5;             // in ft/s  (changed from 15) -- probably more close to 12
+const double MAX_VELOCITY = 6.0;             // in ft/s  (changed from 15) -- probably more close to 12
 const double MAX_ACCELERATION = 8.0;         // in ft/(s^2)
 const double MAX_JERK = 20.0;                // in ft/(s^3) (changed from 60)
-const double TICKS_PER_REV = 1024.0;
+const int TICKS_PER_REV = 1024;
 
 /* if starting w gear mech side (backwards):
  * +x is backwards, +y is right, +heading is counterclockwise
@@ -271,12 +271,29 @@ void PathCommand::Init() {
 	rightEncoderFollower_ = (EncoderFollower*)malloc(sizeof(EncoderFollower));
 	rightEncoderFollower_->last_error = 0; rightEncoderFollower_->segment = 0; rightEncoderFollower_->finished = 0;     // Just in case!
 
+	double lPFac = robot_->pini_->getf("MOTION PROFILE PID", "lPFac", 1.0);
+	double lIFac = robot_->pini_->getf("MOTION PROFILE PID", "lIFac", 0.0);
+	double lDFac = robot_->pini_->getf("MOTION PROFILE PID", "lDFac", 0.0);
+	double lVFac = robot_->pini_->getf("MOTION PROFILE PID", "lVFac", 1.0);
+	double lAFac = robot_->pini_->getf("MOTION PROFILE PID", "lAFac", 0.0);
+
+	double rPFac = robot_->pini_->getf("MOTION PROFILE PID", "rPFac", 1.0);
+	double rIFac = robot_->pini_->getf("MOTION PROFILE PID", "rIFac", 0.0);
+	double rDFac = robot_->pini_->getf("MOTION PROFILE PID", "rDFac", 0.0);
+	double rVFac = robot_->pini_->getf("MOTION PROFILE PID", "rVFac", 1.0);
+	double rAFac = robot_->pini_->getf("MOTION PROFILE PID", "rAFac", 0.0);
+
 	leftEncoderConfig_ = { robot_->GetDriveEncoderValue(RobotModel::kLeftWheels), TICKS_PER_REV, WHEEL_DIAMETER * M_PI,      // Position, Ticks per Rev, Wheel Circumference
-	                         1.0, 0.0, 0.0, 1.0 / MAX_VELOCITY, 0.0};          // Kp, Ki, Kd and Kv, Ka
+	                         lPFac, lIFac, lDFac, lVFac / MAX_VELOCITY, lAFac};          // Kp, Ki, Kd and Kv, Ka
 
 	rightEncoderConfig_ = { robot_->GetDriveEncoderValue(RobotModel::kRightWheels), TICKS_PER_REV, WHEEL_DIAMETER * M_PI,      // Position, Ticks per Rev, Wheel Circumference
-	                         1.0, 0.0, 0.0, 1.0 / MAX_VELOCITY, 0.0};          // Kp, Ki, Kd and Kv, Ka
+	                         rPFac, rIFac, rDFac, rVFac / MAX_VELOCITY, rAFac};          // Kp, Ki, Kd and Kv, Ka
 
+	// To make sure SRX's encoder is updating the RoboRIO fast enough
+	robot_->leftMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
+	robot_->leftSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
+	robot_->rightMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
+	robot_->rightSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
@@ -302,7 +319,13 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 }
 
 bool PathCommand::IsDone() {
-
+	if ((leftEncoderFollower_->finished == 1) && (rightEncoderFollower_->finished == 1)) {
+		isDone_ = true;
+		return true;
+	} else {
+		isDone_ = false;
+		return false;
+	}
 }
 
 void PathCommand::ClearMotionProfile() {

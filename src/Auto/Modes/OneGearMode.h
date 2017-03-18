@@ -4,7 +4,7 @@
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Commands/AutoCommand.h"
 #include <Auto/Commands/AlignWithPegCommand.h>
-#include <Auto/Commands/PathCommand_OLD.h>
+#include <Auto/Commands/PathCommand.h>
 #include "Auto/PIDInputSource.h"
 #include "RobotModel.h"
 
@@ -19,7 +19,7 @@ public:
 private:
 	RobotModel *robot_;
 	AutoCommand *firstCommand_;
-	PathCommand_OLD *liftPath_;
+	PathCommand *liftPath_;
 	AlignWithPegCommand *alignWithPegCommand_;
 
 	NavXPIDSource *navXSource_;
