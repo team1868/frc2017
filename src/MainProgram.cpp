@@ -37,8 +37,6 @@ public:
 		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
 		autoController_ = new AutoController();
 
-
-
 		robot_->ZeroNavXYaw();
 		Wait(1.0);
 		navXSource_->ResetAccumulatedYaw();

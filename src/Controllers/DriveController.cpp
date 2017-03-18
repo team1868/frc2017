@@ -9,7 +9,6 @@ DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl, 
 	anglePIDOutput_ = new AnglePIDOutput();
 	alignWithPegStarted_ = false;
 
-
 	// TODO THIS SHOULD READ FROM INI FILE (IN A SEPARATE HEADER)
 	pFac_ = 0.01;
 	iFac_ = 0.0;
@@ -98,7 +97,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				nextState_ = kAlignWithPeg;
 			} else {
 				nextState_ = kTeleopDrive;
-		}
+			}
 			break;
 	}
 
