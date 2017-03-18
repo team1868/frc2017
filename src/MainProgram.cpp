@@ -45,20 +45,32 @@ public:
 		robot_->SetHighGear();
 	}
 
-	// TODO PUT INI FILE HERE
-	// TODO switches for auto
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
 		robot_->SetHighGear();
 		robot_->SetGearMech(true);
 
-		// TODO move this into AutoController
+		// TODO move this to autocontroller? meh
 
 		int kAutoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
 		enum autoModes {
 			kBlank, kDriveStraight, kLeftLift, kMiddleLift, kRightLift, kLeftLiftAndShoot, kRightLiftAndShoot
 		};
+
+		/* ------------------ AUTO MODES ------------------ (TO IMPLEMENT SOME)
+		 * 0 BLANK
+		 *
+		 * 1 DRIVE STRAIGHT (uses DriveStraightCommand)
+		 *
+		 * 2 LEFT LIFT (mp + vision)
+		 * 3 MIDDLE LIFT (mp + vision)
+		 * 4 RIGHT LIFT (mp + vision)
+		 *
+		 * 5 LEFT LIFT (mp + vision) AND SHOOT (mp + vision)
+		 * 6 RIGHT LIFT (mp + vision) AND SHOOT (mp + vision)
+		 * ------------------------------------------------
+		 */
 
 		AutoMode *autoMode;
 
@@ -86,7 +98,6 @@ public:
 			//autoMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_, true);
 			break;
 		}
-
 		autoController_->SetAutonomousMode(autoMode);
 		autoController_->Init();
 	}

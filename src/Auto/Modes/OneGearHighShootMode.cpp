@@ -10,11 +10,11 @@ OneGearHighShootMode::OneGearHighShootMode(RobotModel *robot, SuperstructureCont
 	firstCommand_ = NULL;
 
 	if (isLeft) {
-		liftPath_ = new PathCommand(robot_, PathCommand::kLeftLift);
-		highGoalPath_ = new PathCommand(robot_, PathCommand::kHighGoalAfterLeftLift);
+		liftPath_ = new PathCommand_OLD(robot_, PathCommand_OLD::kLeftLift);
+		highGoalPath_ = new PathCommand_OLD(robot_, PathCommand_OLD::kHighGoalAfterLeftLift);
 	} else {
-		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
-		highGoalPath_ = new PathCommand(robot_, PathCommand::kHighGoalAfterRightLift);
+		liftPath_ = new PathCommand_OLD(robot_, PathCommand_OLD::kRightLift);
+		highGoalPath_ = new PathCommand_OLD(robot_, PathCommand_OLD::kHighGoalAfterRightLift);
 	}
 
 	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
