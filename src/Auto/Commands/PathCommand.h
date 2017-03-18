@@ -33,6 +33,9 @@ public:
 
 	void ClearMotionProfile();
 
+	double leftError;
+	double rightError;
+
 private:
 	RobotModel *robot_;
 	Path path_;

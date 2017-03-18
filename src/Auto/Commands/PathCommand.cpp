@@ -3,9 +3,9 @@
 
 const double WHEELBASE_WIDTH = 30.8 / 12.0;
 const double WHEEL_DIAMETER = 3.5 / 12.0;    // in ft
-const double TIME_STEP = 0.01;               // in s
+const double TIME_STEP = 0.02;               // in s
 const double MAX_VELOCITY = 6.0;             // in ft/s  (changed from 15) -- probably more close to 12
-const double MAX_ACCELERATION = 8.0;         // in ft/(s^2)
+const double MAX_ACCELERATION = 4.0;         // in ft/(s^2)
 const double MAX_JERK = 20.0;                // in ft/(s^3) (changed from 60)
 const int TICKS_PER_REV = 1024;
 
@@ -40,6 +40,7 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 	p4_r_ = 0.0;
 
 	pointLength_ = 0;
+	trajectoryLength_ = 0;
 
 	leftTrajectory_ = NULL;
 	rightTrajectory_ = NULL;
@@ -47,7 +48,11 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 	leftEncoderFollower_ = NULL;
 	rightEncoderFollower_ = NULL;
 
-	trajectoryLength_ = 0;
+	leftEncoderPosition_ = 0;
+	rightEncoderPosition_ = 0;
+
+	leftError = 0.0;
+	rightError = 0.0;
 }
 
 void PathCommand::Init() {
@@ -221,15 +226,25 @@ void PathCommand::Init() {
 	}
 
 	Waypoint *points = (Waypoint*)malloc(sizeof(Waypoint) * pointLength_);
-	Waypoint p1 = { p1_x_, p1_y_, p1_r_ };
-	Waypoint p2 = { p2_x_, p2_y_, p2_r_ };
-	Waypoint p3 = { p3_x_, p3_y_, p3_r_ };
-	Waypoint p4 = { p4_x_, p4_y_, p4_r_ };
+	if (pointLength_ >= 1) {
+		Waypoint p1 = { p1_x_, p1_y_, p1_r_ };
+		points[0] = p1;
+	}
 
-	points[0] = p1;
-	points[1] = p2;
-	points[2] = p3;
-	points[3] = p4;
+	if (pointLength_ >= 2) {
+		Waypoint p2 = { p2_x_, p2_y_, p2_r_ };
+		points[1] = p2;
+	}
+
+	if (pointLength_ >= 3) {
+		Waypoint p3 = { p3_x_, p3_y_, p3_r_ };
+		points[2] = p3;
+	}
+
+	if (pointLength_ >= 4 ) {
+		Waypoint p4 = { p4_x_, p4_y_, p4_r_ };
+		points[3] = p4;
+	}
 
 	TrajectoryCandidate candidate;
 
@@ -245,6 +260,9 @@ void PathCommand::Init() {
 	pathfinder_prepare(points, pointLength_, FIT_HERMITE_CUBIC, PATHFINDER_SAMPLES_HIGH, TIME_STEP, MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK, &candidate);
 
 	trajectoryLength_ = candidate.length;
+
+	printf("trajectory length in init: %i\n", trajectoryLength_);
+
 	Segment *trajectory = (Segment*)malloc(sizeof(Segment) * trajectoryLength_);
 
 	pathfinder_generate(&candidate, trajectory);
@@ -254,7 +272,7 @@ void PathCommand::Init() {
 
 	pathfinder_modify_tank(trajectory, trajectoryLength_, leftTrajectory_, rightTrajectory_, WHEELBASE_WIDTH);
 
-//	free(trajectory);
+	free(trajectory);
 
 	leftEncoderFollower_ = (EncoderFollower*)malloc(sizeof(EncoderFollower));
 	leftEncoderFollower_->last_error = 0; leftEncoderFollower_->segment = 0; leftEncoderFollower_->finished = 0;     // Just in case!
@@ -288,9 +306,19 @@ void PathCommand::Init() {
 	robot_->leftSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->rightMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->rightSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
+
+	printf("AT THE END OF PATH COMMAND INIT\n");
 }
 
 void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
+
+	leftError = get_error(leftEncoderFollower_);
+	rightError = get_error(rightEncoderFollower_);
+	SmartDashboard::PutNumber("Left Error", leftError);
+	SmartDashboard::PutNumber("Right Error", rightError);
+	SmartDashboard::PutNumber("Left Velocity", robot_->leftMaster_->GetSpeed());
+	SmartDashboard::PutNumber("Right Velocity", robot_->rightMaster_->GetSpeed());
+
 	// Arg 1: The EncoderConfig
 	// Arg 2: The EncoderFollower for this side
 	// Arg 3: The Trajectory generated from `pathfinder_modify_tank`
@@ -298,36 +326,33 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	// Arg 5: The current value of your encoder
 
 	printf("IN PATH UPDATE!!!!!\n");
-	printf("trajectory length: %i\n", trajectoryLength_);
+	printf("trajectory length in update: %i\n", trajectoryLength_);
 	printf("leftEncoderPosition: %i\n", leftEncoderPosition_);
 
-//	double l = pathfinder_follow_encoder(leftEncoderConfig_, leftEncoderFollower_, leftTrajectory_, trajectoryLength_, leftEncoderPosition_);
-//	double r = pathfinder_follow_encoder(rightEncoderConfig_, rightEncoderFollower_, rightTrajectory_, trajectoryLength_, rightEncoderPosition_);
-//
-//	// -- using l and r from the previous code block -- //
-//	double gyro_heading = robot_->GetNavXYaw();
-//	double desired_heading = r2d(leftEncoderFollower_->heading);
-//
-//	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
-//
-//	double turn = 0.8 * (-1.0/80.0) * angle_difference;
-//
-//	robot_->SetDriveValues(RobotModel::kLeftWheels, l + turn);
-//	robot_->SetDriveValues(RobotModel::kRightWheels, r - turn);
+	double l = pathfinder_follow_encoder(leftEncoderConfig_, leftEncoderFollower_, leftTrajectory_, trajectoryLength_, leftEncoderPosition_);
+	double r = pathfinder_follow_encoder(rightEncoderConfig_, rightEncoderFollower_, rightTrajectory_, trajectoryLength_, rightEncoderPosition_);
+
+	// -- using l and r from the previous code block -- //
+	double gyro_heading = robot_->GetNavXYaw();
+	double desired_heading = r2d(leftEncoderFollower_->heading);
+
+	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
+
+	double turn = 0.8 * (-1.0/80.0) * angle_difference;
+
+	robot_->SetDriveValues(RobotModel::kLeftWheels, l); // + turn);
+	robot_->SetDriveValues(RobotModel::kRightWheels, r); // - turn);
 }
 
 bool PathCommand::IsDone() {
-//	if ((leftEncoderFollower_->finished == 1) && (rightEncoderFollower_->finished == 1)) {
-//		isDone_ = true;
-//		return true;
-//	} else {
-//		isDone_ = false;
-//		return false;
-//	}
-}
-
-void PathCommand::ClearMotionProfile() {
-
+	if ((leftEncoderFollower_->finished == 1) && (rightEncoderFollower_->finished == 1)) {
+		printf("DONE WITH PATH COMMAND\n");
+		isDone_ = true;
+		return true;
+	} else {
+		isDone_ = false;
+		return false;
+	}
 }
 
 PathCommand::~PathCommand() {

@@ -41,20 +41,18 @@ public:
 		Wait(1.0);
 		navXSource_->ResetAccumulatedYaw();
 
-		CameraServer::GetInstance()->StartAutomaticCapture();
+		//CameraServer::GetInstance()->StartAutomaticCapture();
 //		gearCamera = CameraServer::GetInstance()->StartAutomaticCapture(1);		// Starting camera
 //		climbCamera = CameraServer::GetInstance()->StartAutomaticCapture(0);
 //		server = CameraServer::GetInstance()->GetServer();
-		robot_->SetHighGear();
+		// TODO move this to autocontroller? meh
 	}
 
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-		robot_->SetHighGear();
+		robot_->SetLowGear();
 		robot_->SetGearMech(true);
-
-		// TODO move this to autocontroller? meh
 
 		int kAutoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
 		enum autoModes {
@@ -113,7 +111,7 @@ public:
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
 
-	//	Logger::LogState(robot_);
+		Logger::LogState(robot_);
 	}
 
 	void TeleopInit() {

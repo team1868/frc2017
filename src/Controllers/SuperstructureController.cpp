@@ -16,7 +16,7 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	expectedFlywheelMotorOutput_ = 0.7; // Tune value
 	feederMotorOutput_ = 0.85;
 	climberMotorOutput_ = 0.9;
-	intakeMotorOutput_ = 0.7; // postive for comp
+	intakeMotorOutput_ = 0.4; // postive for comp
 	flywheelStartTime_ = 0.0;
 
 	pFac_ = 0.0;
@@ -59,7 +59,7 @@ void SuperstructureController::Reset() {
 	robot_->SetClimberOutput(0.0);
 
 	feederMotorOutput_ = -fabs(feederMotorOutput_);
-	intakeMotorOutput_ = fabs(intakeMotorOutput_); // positive for comp
+	intakeMotorOutput_ = -fabs(intakeMotorOutput_); // positive for comp
 
 	flywheelStarted_ = false;
 	flywheelStartTime_ = 0.0;

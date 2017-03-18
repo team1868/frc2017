@@ -7,7 +7,7 @@ std::ofstream Logger::logAction;
 void Logger::LogState(RobotModel* robot) {
 	if (!logData.is_open()) {
 		logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.txt")).c_str()), std::ofstream::out | std::ofstream::app);
-		logData << "Time, LeftError, RightError, LeftVelocity, Right Velocity, NavXAngle" << "\r\n";
+		logData << "Time, LeftMoProError, RightMoProError, LeftError, RightError, LeftVelocity, Right Velocity, NavXAngle" << "\r\n";
 	}
 
 	logData << robot->GetTime() << ", " <<
