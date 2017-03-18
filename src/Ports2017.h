@@ -106,6 +106,7 @@ static const int HIGH_LOW_GEAR_BUTTON_PORT				= 3;
 static const int ARCADE_DRIVE_BUTTON_PORT				= 6;
 static const int QUICK_TURN_BUTTON_PORT					= 2;
 static const int BRAKE_BUTTON_PORT						= 2;
+static const int ALIGN_WITH_PEG_BUTTON_PORT 			= 5;  //TODO Change port
 
 //Superstructure controller button ports
 static const int FLYWHEEL_SWITCH_PORT					= 9;

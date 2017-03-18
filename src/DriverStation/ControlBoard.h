@@ -43,6 +43,10 @@ public:
 	 * @return true if quick turn is desired
 	 */
 	bool GetQuickTurnDesired();
+	/**
+	 * @returns true if align with peg is desired in Teleop :)
+	 */
+	bool GetAlignWithPegDesired();
 
 	//Superstructure button accessors
 	bool GetFlywheelDesired();
@@ -64,7 +68,7 @@ private:
 	double flywheelVelAdjust_;
 
 	// Bool values for drive
-	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_;
+	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, alignWithPegDesired_;
 	// Bool values for superstructure
 	bool flywheelDesired_, intakeDesired_, climberDesired_, reverseIntakeDesired_, reverseFeederDesired_, gearMechOutDesired_, cameraSwitchDesired_,
 		gearCameraDesired_;
@@ -73,7 +77,7 @@ private:
 	Joystick *leftJoy_, *rightJoy_, *operatorJoy_, *operatorJoyB_;
 
 	// Buttons for drive
-	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_;
+	ButtonReader *driveDirectionButton_, *gearShiftButton_, *arcadeDriveButton_, *quickTurnButton_, *alignWithPegButton_;
 
 	// Buttons for superstructure
 	ButtonReader *flywheelSwitch_, *intakeSwitch_, *climberSwitch_, *reverseIntakeButton_, *reverseFeederButton_, *gearMechOutButton_,

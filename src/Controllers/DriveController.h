@@ -6,6 +6,7 @@
 #include "DriverStation/ControlBoard.h"
 #include "Auto/PIDInputSource.h"
 #include "Auto/PIDOutputSource.h"
+#include "Auto/Commands/AlignWithPegCommand.h"
 
 class DriveController {
 public:
@@ -14,7 +15,7 @@ public:
 	 * @param robot a RobotModel
 	 * @param humanControl a ControlBoard
 	 */
-	DriveController(RobotModel* robot, ControlBoard *humanControl, NavXPIDSource *navX);
+	DriveController(RobotModel* robot, ControlBoard *humanControl, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoderSource);
 	~DriveController();
 
 	void Reset();
@@ -35,8 +36,14 @@ public:
 
 	void PrintDriveValues();
 
+	//auto mutator
+	void SetAlignWithPegDesired(bool desired);
+
+	//accessor
+	bool GetAlignWithPegDesired();
+
 	enum DriveState {
-		kInitialize, kTeleopDrive
+		kInitialize, kTeleopDrive, kAlignWithPeg
 	};
 
 private:
@@ -84,9 +91,11 @@ private:
 	// For DriveStraightPID in teleop
 	PIDController *driveStraightPIDController_;
 	NavXPIDSource *navXSource_;
+	AlignWithPegCommand *pegCommand_;
+	TalonEncoderPIDSource *talonEncoderSource_;
 	AnglePIDOutput *anglePIDOutput_;
 
-	bool isDriveStraightStarted_;
+	bool isDriveStraightStarted_, alignWithPegStarted_;
 	double desiredAngle_;
 	double angleOutput_;
 	double pFac_, iFac_, dFac_;

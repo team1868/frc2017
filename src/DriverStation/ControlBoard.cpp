@@ -18,6 +18,8 @@ ControlBoard::ControlBoard() {
 	gearShiftButton_ = new ButtonReader(rightJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
 	arcadeDriveButton_ = new ButtonReader(operatorJoy_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
+	alignWithPegButton_ = new ButtonReader(rightJoy_, ALIGN_WITH_PEG_BUTTON_PORT); //Subject to change
+
 
 	// Buttons for superstructure
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
@@ -28,11 +30,13 @@ ControlBoard::ControlBoard() {
 	gearMechOutButton_ = new ButtonReader(operatorJoyB_, GEAR_MECH_OUT_BUTTON_PORT);
 	gearSwitchButton_ = new ButtonReader(operatorJoyB_, CAMERA_SWITCH_BUTTON_PORT);
 
+
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
 	highGearDesired_ = false;
 	arcadeDriveDesired_ = false;
 	quickTurnDesired_ = false;
+	alignWithPegDesired_= false;
 
 	//Superstructure variables
 	flywheelDesired_ = false;
@@ -59,6 +63,7 @@ void ControlBoard::ReadControls() {
 	arcadeDriveDesired_ = arcadeDriveButton_->IsDown();
 	quickTurnDesired_ = quickTurnButton_->IsDown();
 	highGearDesired_ = !gearShiftButton_->IsDown();
+	alignWithPegDesired_ = alignWithPegButton_->IsDown();
 
 	//Superstructure variables
 	flywheelDesired_ = flywheelSwitch_->IsDown();
@@ -95,10 +100,14 @@ double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
 }
 
 void ControlBoard::ReadAllButtons() {
+	//reading drive buttons
 	driveDirectionButton_->ReadValue();
 	gearShiftButton_->ReadValue();
 	arcadeDriveButton_->ReadValue();
 	quickTurnButton_->ReadValue();
+	alignWithPegButton_->ReadValue();
+
+	//reading superstructure buttons
 	flywheelSwitch_->ReadValue();
 	intakeSwitch_->ReadValue();
 	climberSwitch_->ReadValue();
@@ -125,6 +134,11 @@ bool ControlBoard::GetArcadeDriveDesired() {
 // Returns true if quick turn is desired
 bool ControlBoard::GetQuickTurnDesired() {
 	return quickTurnDesired_;
+}
+
+//Returns true if align with peg is desired in teleop
+bool ControlBoard::GetAlignWithPegDesired() {
+	return alignWithPegDesired_;
 }
 
 bool ControlBoard::GetFlywheelDesired() {

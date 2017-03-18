@@ -1,11 +1,14 @@
 #include "Controllers/DriveController.h"
 #include "WPILib.h"
 
-DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl, NavXPIDSource *navX) {
+DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoderSource) {
 	robot_ = robot;
 	humanControl_ = humanControl;
 	navXSource_ = navX;
+	talonEncoderSource_ = talonEncoderSource;
 	anglePIDOutput_ = new AnglePIDOutput();
+	alignWithPegStarted_ = false;
+
 
 	// TODO THIS SHOULD READ FROM INI FILE (IN A SEPARATE HEADER)
 	pFac_ = 0.01;
@@ -22,6 +25,8 @@ DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl, 
 	driveStraightPIDController_->SetContinuous(false);
 	driveStraightPIDController_->SetAbsoluteTolerance(2.0);
 
+	pegCommand_ = NULL;
+
 	currState_ = kInitialize;
 	nextState_ = kInitialize;
 }
@@ -35,7 +40,11 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 
 	switch (currState_) {
 		case (kInitialize):
+			if (humanControl_->GetAlignWithPegDesired()) {
+				nextState_ = kAlignWithPeg;
+			} else {
 			nextState_ = kTeleopDrive;
+			}
 			break;
 		case (kTeleopDrive) :
 			robot_->SetPercentVBusDriveMode();
@@ -68,7 +77,28 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				ArcadeDrive(rightJoyX, leftJoyY);		// Default to arcade drive
 			}
 
-			nextState_ = kTeleopDrive;
+			if (humanControl_->GetAlignWithPegDesired()) {
+				nextState_ = kAlignWithPeg;
+			} else {
+				nextState_ = kTeleopDrive;
+			}
+			break;
+		case (kAlignWithPeg) :
+			pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_);
+			if (!alignWithPegStarted_){
+				pegCommand_->Init();
+				alignWithPegStarted_ = true;
+			}
+
+			if (!pegCommand_->IsDone()){
+				pegCommand_->Update(currTimeSec, deltaTimeSec);
+			}
+
+			if (humanControl_->GetAlignWithPegDesired()) {
+				nextState_ = kAlignWithPeg;
+			} else {
+				nextState_ = kTeleopDrive;
+		}
 			break;
 	}
 
