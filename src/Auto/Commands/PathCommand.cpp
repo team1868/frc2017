@@ -22,16 +22,7 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 	path_ = path;
 
 	isDone_ = false;
-//
-//	leftPFac_ = 0.0;
-//	leftIFac_ = 0.0;
-//	leftDFac_ = 0.0;
-//	leftFFac_ = 0.0;
-//
-//	rightPFac_ = 0.0;
-//	rightIFac_ = 0.0;
-//	rightDFac_ = 0.0;
-//	rightFFac_ = 0.0;
+
 	p1_x_ = 0.0;
 	p1_y_ = 0.0;
 	p1_r_ = 0.0;
@@ -79,7 +70,7 @@ void PathCommand::Init() {
 			p4_y_ = robot_->pini_->getf("LEFT LIFT WAYPOINTS", "p4_y", 0.0);
 			p4_r_ = robot_->pini_->getf("LEFT LIFT WAYPOINTS", "p4_r", 0.0);
 
-			pointLength_ = robot_->pini_->getf("LEFT LIFT WAYPOINTS", "pointLength", 0.0);
+			pointLength_ = robot_->pini_->geti("LEFT LIFT WAYPOINTS", "pointLength", 0);
 
 //			leftPFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lPFac", 0.0);
 //			leftIFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lIFac", 0.0);
@@ -283,10 +274,13 @@ void PathCommand::Init() {
 	double rVFac = robot_->pini_->getf("MOTION PROFILE PID", "rVFac", 1.0);
 	double rAFac = robot_->pini_->getf("MOTION PROFILE PID", "rAFac", 0.0);
 
-	leftEncoderConfig_ = { robot_->GetDriveEncoderValue(RobotModel::kLeftWheels), TICKS_PER_REV, WHEEL_DIAMETER * M_PI,      // Position, Ticks per Rev, Wheel Circumference
+	leftEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kLeftWheels);
+
+	leftEncoderConfig_ = { leftEncoderPosition_, TICKS_PER_REV, WHEEL_DIAMETER * M_PI,      // Position, Ticks per Rev, Wheel Circumference
 	                         lPFac, lIFac, lDFac, lVFac / MAX_VELOCITY, lAFac};          // Kp, Ki, Kd and Kv, Ka
 
-	rightEncoderConfig_ = { robot_->GetDriveEncoderValue(RobotModel::kRightWheels), TICKS_PER_REV, WHEEL_DIAMETER * M_PI,      // Position, Ticks per Rev, Wheel Circumference
+	rightEncoderPosition_ = robot_->GetDriveEncoderValue(RobotModel::kRightWheels);
+	rightEncoderConfig_ = { rightEncoderPosition_, TICKS_PER_REV, WHEEL_DIAMETER * M_PI,      // Position, Ticks per Rev, Wheel Circumference
 	                         rPFac, rIFac, rDFac, rVFac / MAX_VELOCITY, rAFac};          // Kp, Ki, Kd and Kv, Ka
 
 	// To make sure SRX's encoder is updating the RoboRIO fast enough
@@ -302,30 +296,34 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	// Arg 3: The Trajectory generated from `pathfinder_modify_tank`
 	// Arg 4: The Length of the Trajectory (length used in Segment seg[length];)
 	// Arg 5: The current value of your encoder
-	double l = pathfinder_follow_encoder(leftEncoderConfig_, leftEncoderFollower_, leftTrajectory_, trajectoryLength_, robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
-	double r = pathfinder_follow_encoder(rightEncoderConfig_, rightEncoderFollower_, rightTrajectory_, trajectoryLength_, robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 
-	// -- using l and r from the previous code block -- //
-	double gyro_heading = robot_->GetNavXYaw();
-	double desired_heading = r2d(leftEncoderFollower_->heading);
+	printf("IN PATH UPDATE!!!!!\n");
+	printf("trajectory length: %i\n", trajectoryLength_);
+	printf("leftEncoderPosition: %i\n", leftEncoderPosition_);
 
-	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
-
-	double turn = 0.8 * (-1.0/80.0) * angle_difference;
-
-	robot_->SetDriveValues(RobotModel::kLeftWheels, l + turn);
-	robot_->SetDriveValues(RobotModel::kRightWheels, r - turn);
-
+//	double l = pathfinder_follow_encoder(leftEncoderConfig_, leftEncoderFollower_, leftTrajectory_, trajectoryLength_, leftEncoderPosition_);
+//	double r = pathfinder_follow_encoder(rightEncoderConfig_, rightEncoderFollower_, rightTrajectory_, trajectoryLength_, rightEncoderPosition_);
+//
+//	// -- using l and r from the previous code block -- //
+//	double gyro_heading = robot_->GetNavXYaw();
+//	double desired_heading = r2d(leftEncoderFollower_->heading);
+//
+//	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
+//
+//	double turn = 0.8 * (-1.0/80.0) * angle_difference;
+//
+//	robot_->SetDriveValues(RobotModel::kLeftWheels, l + turn);
+//	robot_->SetDriveValues(RobotModel::kRightWheels, r - turn);
 }
 
 bool PathCommand::IsDone() {
-	if ((leftEncoderFollower_->finished == 1) && (rightEncoderFollower_->finished == 1)) {
-		isDone_ = true;
-		return true;
-	} else {
-		isDone_ = false;
-		return false;
-	}
+//	if ((leftEncoderFollower_->finished == 1) && (rightEncoderFollower_->finished == 1)) {
+//		isDone_ = true;
+//		return true;
+//	} else {
+//		isDone_ = false;
+//		return false;
+//	}
 }
 
 void PathCommand::ClearMotionProfile() {

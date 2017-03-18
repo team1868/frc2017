@@ -57,6 +57,9 @@ private:
 
 	int pointLength_;
 	bool isDone_;
+
+	int leftEncoderPosition_;
+	int rightEncoderPosition_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_PATHCOMMAND_H_ */

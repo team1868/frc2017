@@ -100,11 +100,11 @@ Checklist:
 
 Changing the INI File
 ========
-ssh admin@10.18.68.2    ---> this is the static IP of the roboRIO
+- ssh admin@roborio-1868-frc.local or admin@10.18.68.2 (if set on roboRIO)
 --->password is empty (just hit return)
-cd /home/lvuser
-ls  ---> lists files
-vi robot.ini
+- cd /home/lvuser
+- ls  ---> lists files
+- vi robot.ini
 ---> you can modify this file by typing "i" (for insert). When you're done, hit escape and then ":wq" (saves and quits)
 
 ------------------------------------------------------------
