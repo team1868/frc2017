@@ -16,6 +16,7 @@ public:
 	virtual bool GetHighGearDesired() = 0;
 	virtual bool GetArcadeDriveDesired() = 0;
 	virtual bool GetQuickTurnDesired() = 0;
+	virtual bool GetAlignWithPegDesired() = 0;
 
 	// Superstructure controller button accessors
 	virtual bool GetFlywheelDesired() = 0;

@@ -6,6 +6,8 @@
 #include "Auto/Modes/AutoMode.h"
 #include "Auto/Modes/OneGearMode.h"
 #include "Auto/Modes/OneGearHighShootMode.h"
+#include "Logger.h"
+#include <string.h>
 
 class MainProgram : public IterativeRobot {
 	RobotModel *robot_;
@@ -27,12 +29,15 @@ public:
 		ResetTimerVariables();
 		robot_ = new RobotModel();
 		humanControl_ = new ControlBoard();
-		driveController_ = new DriveController(robot_, humanControl_, navXSource_);
-		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
-		autoController_ = new AutoController();
 
 		navXSource_ = new NavXPIDSource(robot_);
 		talonEncoderSource_ = new TalonEncoderPIDSource(robot_);
+
+		driveController_ = new DriveController(robot_, humanControl_, navXSource_, talonEncoderSource_);
+		superstructureController_ = new SuperstructureController(robot_, humanControl_);		// TODO
+		autoController_ = new AutoController();
+
+
 
 		robot_->ZeroNavXYaw();
 		Wait(1.0);
@@ -98,6 +103,7 @@ public:
 		}
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
+		Logger::LogState(robot_);
 	}
 
 	void TeleopInit() {
@@ -118,6 +124,8 @@ public:
 			SmartDashboard::PutString("Camera", "Climb");
 //			server.SetSource(climbCamera);
 		}
+		//Logs state of robot
+		Logger::LogState(robot_);
 	}
 
 	void TestInit() {
@@ -142,6 +150,7 @@ public:
 
 		SmartDashboard::PutNumber("LeftJoy Y", humanControl_->GetJoystickValue(ControlBoard::kLeftJoy, ControlBoard::kY));
 		SmartDashboard::PutNumber("RightJoy X", humanControl_->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kX));
+
 	}
 
 private:
