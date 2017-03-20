@@ -70,7 +70,7 @@ private:
 	Compressor *compressor_;
 	DoubleSolenoid *gearShiftSolenoid_;
 	Solenoid *gearMechSolenoid_;
-	Encoder *flywheelEncoder_;
+	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_;
 	DigitalInput *distanceSensor_;
 
 	bool gearInRobot_, distSensorCurr_, distSensorLast_;

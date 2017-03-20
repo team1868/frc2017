@@ -70,7 +70,14 @@ static const int DISTANCE_SENSOR_PWM_PORT				= -1;
 static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 1;
 static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 2;
 
+static const int LEFT_DRIVE_ENCODER_A_PWM_PORT			= 3;
+static const int LEFT_DRIVE_ENCODER_B_PWM_PORT			= 4;
+
+static const int RIGHT_DRIVE_ENCODER_A_PWM_PORT			= 5;
+static const int RIGHT_DRIVE_ENCODER_B_PWM_PORT			= 6;
+
 static const int DISTANCE_SENSOR_PWM_PORT				= -1;
+
 #endif
 
 #if KOP_BOT
