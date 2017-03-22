@@ -4,10 +4,10 @@
 const double WHEELBASE_WIDTH = 30.8 / 12.0;
 const double WHEEL_DIAMETER = 3.5 / 12.0;    // in ft
 const double TIME_STEP = 0.02;               // in s
-const double MAX_VELOCITY = 6.0;             // in ft/s  (changed from 15) -- probably more close to 12
+const double MAX_VELOCITY = 13.0;             // in ft/s  (changed from 15) -- probably more close to 12
 const double MAX_ACCELERATION = 4.0;         // in ft/(s^2)
 const double MAX_JERK = 20.0;                // in ft/(s^3) (changed from 60)
-const int TICKS_PER_REV = 1024;
+const int TICKS_PER_REV = 256;
 
 /* if starting w gear mech side (backwards):
  * +x is backwards, +y is right, +heading is counterclockwise
@@ -272,7 +272,12 @@ void PathCommand::Init() {
 
 	pathfinder_modify_tank(trajectory, trajectoryLength_, leftTrajectory_, rightTrajectory_, WHEELBASE_WIDTH);
 
-	free(trajectory);
+//	free(trajectory);
+	for (int i = 0; i < trajectoryLength_; i++) {
+		cout << "position: " << trajectory->position << endl;
+		cout << "velocity: " << trajectory->velocity << endl;
+		cout << "heading: " << trajectory->heading << endl;
+	}
 
 	leftEncoderFollower_ = (EncoderFollower*)malloc(sizeof(EncoderFollower));
 	leftEncoderFollower_->last_error = 0; leftEncoderFollower_->segment = 0; leftEncoderFollower_->finished = 0;     // Just in case!
@@ -307,6 +312,8 @@ void PathCommand::Init() {
 	robot_->rightMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->rightSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 
+//	free(trajectory);
+//	free(points);
 	printf("AT THE END OF PATH COMMAND INIT\n");
 }
 
@@ -330,6 +337,7 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	printf("IN PATH UPDATE!!!!!\n");
 	printf("trajectory length in update: %i\n", trajectoryLength_);
 	printf("leftEncoderPosition: %i\n", leftEncoderPosition_);
+	printf("rightEncoderPosition: %i\n", rightEncoderPosition_);
 
 	double l = pathfinder_follow_encoder(leftEncoderConfig_, leftEncoderFollower_, leftTrajectory_, trajectoryLength_, leftEncoderPosition_);
 	double r = pathfinder_follow_encoder(rightEncoderConfig_, rightEncoderFollower_, rightTrajectory_, trajectoryLength_, rightEncoderPosition_);
@@ -337,10 +345,11 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	// -- using l and r from the previous code block -- //
 	double gyro_heading = robot_->GetNavXYaw();
 	double desired_heading = r2d(leftEncoderFollower_->heading);
-
 	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
+	double turn = 0.8 * (-1.0/80.0) * angle_difference;			// CHECK THIS (why -1??)
 
-	double turn = 0.8 * (-1.0/80.0) * angle_difference;
+	SmartDashboard::PutNumber("Left output", l);
+	SmartDashboard::PutNumber("Right output", r);
 
 	robot_->SetDriveValues(RobotModel::kLeftWheels, l); // + turn);
 	robot_->SetDriveValues(RobotModel::kRightWheels, r); // - turn);
@@ -350,6 +359,13 @@ bool PathCommand::IsDone() {
 	if ((leftEncoderFollower_->finished == 1) && (rightEncoderFollower_->finished == 1)) {
 		printf("DONE WITH PATH COMMAND\n");
 		isDone_ = true;
+
+//		// free stuff
+//		free(leftEncoderFollower_);
+//		free(rightEncoderFollower_);
+//		free(leftTrajectory_);
+//		free(rightTrajectory_);
+
 		return true;
 	} else {
 		isDone_ = false;

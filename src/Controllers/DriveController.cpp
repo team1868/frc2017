@@ -110,8 +110,10 @@ void DriveController::PrintDriveValues() {
 	SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 	SmartDashboard::PutNumber("Left drive distance", robot_->GetLeftDistance());
 	SmartDashboard::PutNumber("Right drive distance", robot_->GetRightDistance());
-	SmartDashboard::PutNumber("Left drive encoder value", robot_->leftMaster_->GetEncPosition());
-	SmartDashboard::PutNumber("Right drive encoder value", robot_->rightMaster_->GetEncPosition());
+//	SmartDashboard::PutNumber("Left drive encoder value", robot_->leftMaster_->GetEncPosition());
+//	SmartDashboard::PutNumber("Right drive encoder value", robot_->rightMaster_->GetEncPosition());
+	SmartDashboard::PutNumber("Left drive encoder value", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+	SmartDashboard::PutNumber("Right drive encoder value", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 }
 
 void DriveController::ArcadeDrive(double myX, double myY) {

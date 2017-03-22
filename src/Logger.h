@@ -1,10 +1,3 @@
-/*
- * Logger.h
- *
- *  Created on: Mar 17, 2017
- *      Author: human
- */
-
 #ifndef LOGGER_H_
 #define LOGGER_H_
 

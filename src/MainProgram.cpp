@@ -115,12 +115,14 @@ public:
 	}
 
 	void TeleopInit() {
+		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 		ResetControllers();
 		robot_->SetHighGear();
 		robot_->SetPercentVBusDriveMode();		// THIS SHOULD ALREADY BE IN RESET CONTROLLERS
 	}
 
 	void TeleopPeriodic() {
+//		robot_->SetDriveValues(RobotModel::kAllWheels, 1.0);
 		humanControl_->ReadControls();
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
@@ -158,7 +160,6 @@ public:
 
 		SmartDashboard::PutNumber("LeftJoy Y", humanControl_->GetJoystickValue(ControlBoard::kLeftJoy, ControlBoard::kY));
 		SmartDashboard::PutNumber("RightJoy X", humanControl_->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kX));
-
 	}
 
 private:
