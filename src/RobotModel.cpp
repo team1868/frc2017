@@ -38,10 +38,10 @@ RobotModel::RobotModel() {
 //	leftMaster_->ConfigEncoderCodesPerRev(ENCODER_COUNT_PER_ROTATION);
 //	leftMaster_->SetPosition(0);
 
-	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_A_PWM_PORT, LEFT_DRIVE_ENCODER_B_PWM_PORT, false);		// TODO check if true or false
+	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_A_PWM_PORT, LEFT_DRIVE_ENCODER_B_PWM_PORT, true);		// TODO check if true or false
 	leftDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
-	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_A_PWM_PORT, RIGHT_DRIVE_ENCODER_B_PWM_PORT, true);		// TODO check if true or false
+	rightDriveEncoder_ = new Encoder(RIGHT_DRIVE_ENCODER_A_PWM_PORT, RIGHT_DRIVE_ENCODER_B_PWM_PORT, false);		// TODO check if true or false
 	rightDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
 	// TODO add practice bot

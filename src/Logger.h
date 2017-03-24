@@ -12,7 +12,7 @@
 class Logger {
 public:
 	// log state: records the physical state of the robot and human control
-	static void LogState(RobotModel* robot);
+	static void LogState(RobotModel* robot, double deltaTimeSec);
 	/* with time stamp */
 
 	// log action: records higher-level processes
@@ -34,6 +34,7 @@ public:
 
 private:
 	static std::ofstream logData, logAction;
+	static double lastLeftDistance_, lastRightDistance_;
 };
 
 #endif /* SRC_LOGGER_H_ */

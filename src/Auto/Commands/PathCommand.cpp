@@ -5,8 +5,8 @@ const double WHEELBASE_WIDTH = 30.8 / 12.0;
 const double WHEEL_DIAMETER = 3.5 / 12.0;    // in ft
 const double TIME_STEP = 0.02;               // in s
 const double MAX_VELOCITY = 13.0;             // in ft/s  (changed from 15) -- probably more close to 12
-const double MAX_ACCELERATION = 4.0;         // in ft/(s^2)
-const double MAX_JERK = 20.0;                // in ft/(s^3) (changed from 60)
+const double MAX_ACCELERATION = 30.0;         // in ft/(s^2)
+const double MAX_JERK = 60.0;                // in ft/(s^3) (changed from 60)
 const int TICKS_PER_REV = 256;
 
 /* if starting w gear mech side (backwards):
@@ -311,6 +311,18 @@ void PathCommand::Init() {
 	robot_->leftSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->rightMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->rightSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
+
+	FILE *fp_traj = fopen("/home/lvuser/trajectory.csv", "w");
+	pathfinder_serialize_csv(fp_traj, trajectory, trajectoryLength_);
+	fclose(fp_traj);
+
+	FILE *fp_leftTraj = fopen("/home/lvuser/left_trajectory.csv", "w");
+	pathfinder_serialize_csv(fp_leftTraj, leftTrajectory_, trajectoryLength_);
+	fclose(fp_leftTraj);
+
+	FILE *fp_rightTraj = fopen("/home/lvuser/right_trajectory.csv", "w");
+	pathfinder_serialize_csv(fp_rightTraj, rightTrajectory_, trajectoryLength_);
+	fclose(fp_rightTraj);
 
 //	free(trajectory);
 //	free(points);

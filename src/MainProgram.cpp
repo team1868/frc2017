@@ -111,7 +111,7 @@ public:
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
 
-		Logger::LogState(robot_);
+		Logger::LogState(robot_, deltaTimeSec_);
 	}
 
 	void TeleopInit() {
@@ -135,7 +135,7 @@ public:
 //			server.SetSource(climbCamera);
 		}
 		// Logs state of robot
-		Logger::LogState(robot_);
+		Logger::LogState(robot_, deltaTimeSec_);
 	}
 
 	void TestInit() {

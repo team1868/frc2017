@@ -4,24 +4,33 @@
 std::ofstream Logger::logData;
 std::ofstream Logger::logAction;
 
-void Logger::LogState(RobotModel* robot) {
+double Logger::lastLeftDistance_;
+double Logger::lastRightDistance_;
+
+void Logger::LogState(RobotModel* robot, double deltaTimeSec) {
 	if (!logData.is_open()) {
-		logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.txt")).c_str()), std::ofstream::out | std::ofstream::app);
-		logData << "Time, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftMoProError, RightMoProError, LeftError, RightError, LeftVelocity, Right Velocity, NavXAngle" << "\r\n";
+		logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+		logData << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftVelocity, Right Velocity, NavXAngle" << "\r\n";
 	}
 
 	logData << robot->GetTime() << ", " <<
+			   deltaTimeSec << ", " <<
 			   robot->GetDriveEncoderValue(RobotModel::kLeftWheels) << ", " <<
 			   robot->GetDriveEncoderValue(RobotModel::kRightWheels) << ", " <<
 			   robot->GetLeftDistance() << ", " <<
 			   robot->GetRightDistance() << ", " <<
-			   robot->leftMaster_->GetClosedLoopError() << ", "  <<
-			   robot->rightMaster_->GetClosedLoopError() << ", " <<
-			   robot->leftMaster_->GetSpeed() << ", " <<
-			   robot->rightMaster_->GetSpeed() << ", " <<
+			   (robot->GetLeftDistance() - lastLeftDistance_) / deltaTimeSec << ", " <<
+			   (robot->GetRightDistance() - lastRightDistance_) / deltaTimeSec << ", " <<
+//			   robot->leftMaster_->GetClosedLoopError() << ", "  <<
+//			   robot->rightMaster_->GetClosedLoopError() << ", " <<
+//			   robot->leftMaster_->GetSpeed() << ", " <<
+//			   robot->rightMaster_->GetSpeed() << ", " <<
 			   robot->GetNavXYaw() << "\r\n";
 
 	logData.flush();
+
+	lastLeftDistance_ = robot->GetLeftDistance();
+	lastRightDistance_ = robot->GetRightDistance();
 }
 /* format:
  * robotmodel state / controlboard state
