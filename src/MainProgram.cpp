@@ -111,7 +111,7 @@ public:
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
 
-		Logger::LogState(robot_, deltaTimeSec_);
+		//Logger::LogState(robot_, deltaTimeSec_);
 	}
 
 	void TeleopInit() {

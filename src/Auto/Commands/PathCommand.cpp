@@ -4,8 +4,8 @@
 const double WHEELBASE_WIDTH = 30.8 / 12.0;
 const double WHEEL_DIAMETER = 3.5 / 12.0;    // in ft
 const double TIME_STEP = 0.02;               // in s
-const double MAX_VELOCITY = 13.0;             // in ft/s  (changed from 15) -- probably more close to 12
-const double MAX_ACCELERATION = 30.0;         // in ft/(s^2)
+const double MAX_VELOCITY = 12.0;             // in ft/s  (changed from 15) -- probably more close to 12
+const double MAX_ACCELERATION = 8.0;         // in ft/(s^2)
 const double MAX_JERK = 60.0;                // in ft/(s^3) (changed from 60)
 const int TICKS_PER_REV = 256;
 
@@ -337,8 +337,8 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	rightError = get_error(rightEncoderFollower_);
 	SmartDashboard::PutNumber("Left Error", leftError);
 	SmartDashboard::PutNumber("Right Error", rightError);
-	SmartDashboard::PutNumber("Left Velocity", robot_->leftMaster_->GetSpeed());
-	SmartDashboard::PutNumber("Right Velocity", robot_->rightMaster_->GetSpeed());
+//	SmartDashboard::PutNumber("Left Velocity", robot_->leftMaster_->GetSpeed());
+//	SmartDashboard::PutNumber("Right Velocity", robot_->rightMaster_->GetSpeed());
 
 	// Arg 1: The EncoderConfig
 	// Arg 2: The EncoderFollower for this side
@@ -358,18 +358,51 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	double gyro_heading = robot_->GetNavXYaw();
 	double desired_heading = r2d(leftEncoderFollower_->heading);
 	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
-	double turn = 0.8 * (-1.0/80.0) * angle_difference;			// CHECK THIS (why -1??)
+	double turn = 0.75 * (-1.0/80.0) * angle_difference;			// CHECK THIS (why -1??)
 
 	SmartDashboard::PutNumber("Left output", l);
 	SmartDashboard::PutNumber("Right output", r);
 
-	robot_->SetDriveValues(RobotModel::kLeftWheels, l); // + turn);
-	robot_->SetDriveValues(RobotModel::kRightWheels, r); // - turn);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, l + turn);
+	robot_->SetDriveValues(RobotModel::kRightWheels, r - turn);
+
+	if (!logData_.is_open()) {
+		logData_.open(Logger::GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_moprolog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+		logData_ << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftExpectedDistance, RightExpectedDistance, LeftVelocity, Right Velocity, "
+				 << "LeftExpectedVelocity, RightExpectedVelocity, LeftError, RightError, LeftOutput, RightOutput, Turn, NavXAngle" << "\r\n";
+	}
+
+	logData_ << robot_->GetTime() << ", " <<
+			   deltaTimeSec << ", " <<
+			   robot_->GetDriveEncoderValue(RobotModel::kLeftWheels) << ", " <<
+			   robot_->GetDriveEncoderValue(RobotModel::kRightWheels) << ", " <<
+			   robot_->GetLeftDistance() << ", " <<
+			   robot_->GetRightDistance() << ", " <<
+			   get_expected_position(leftEncoderFollower_) << ", " <<
+			   get_expected_position(rightEncoderFollower_) << ", " <<
+			   (robot_->GetLeftDistance() - lastLeftDistance_) / deltaTimeSec << ", " <<
+			   (robot_->GetRightDistance() - lastRightDistance_) / deltaTimeSec << ", " <<
+			   get_expected_velocity(leftEncoderFollower_) << ", " <<
+			   get_expected_velocity(rightEncoderFollower_) << ", " <<
+			   leftError << ", " <<
+			   rightError << ", " <<
+			   l << ", " <<
+			   r << ", " <<
+			   turn << ", " <<
+			   robot_->GetNavXYaw() << "\r\n";
+
+	logData_.flush();
+
+	lastLeftDistance_ = robot_->GetLeftDistance();
+	lastRightDistance_ = robot_->GetRightDistance();
 }
 
 bool PathCommand::IsDone() {
 	if ((leftEncoderFollower_->finished == 1) && (rightEncoderFollower_->finished == 1)) {
 		printf("DONE WITH PATH COMMAND\n");
+		robot_->SetDriveValues(RobotModel::kLeftWheels, 0.0);
+		robot_->SetDriveValues(RobotModel::kRightWheels, 0.0);
+
 		isDone_ = true;
 
 //		// free stuff

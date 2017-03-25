@@ -14,6 +14,9 @@
 extern "C" {
 #include <pathfinder/pathfinder.h>
 }
+#include <fstream>
+#include <string>
+#include "Logger.h"
 
 class PathCommand : public AutoCommand {
 public:
@@ -63,6 +66,10 @@ private:
 
 	int leftEncoderPosition_;
 	int rightEncoderPosition_;
+
+	double lastLeftDistance_, lastRightDistance_;
+
+	std::ofstream logData_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_PATHCOMMAND_H_ */

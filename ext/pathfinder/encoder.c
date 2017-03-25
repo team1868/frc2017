@@ -17,6 +17,10 @@ double pathfinder_follow_encoder2(EncoderConfig c, EncoderFollower *follower, Se
     double distance_covered = ((double)encoder_tick - (double)c.initial_position) /  ((double)c.ticks_per_revolution);
     distance_covered = distance_covered * c.wheel_circumference;
     
+    follower->position = distance_covered;
+    follower->expected_position = s.position;
+    follower->expected_velocity = s.velocity;
+
     if (follower->segment < trajectory_length) {
         follower->finished = 0;
         double error = s.position - distance_covered;
@@ -42,4 +46,16 @@ double pathfinder_follow_encoder2(EncoderConfig c, EncoderFollower *follower, Se
 
 double get_error(EncoderFollower *follower) {
 	return follower->last_error;
+}
+
+double get_position(EncoderFollower *follower) {
+	return follower->expected_position;
+}
+
+double get_expected_position(EncoderFollower *follower) {
+	return follower->expected_position;
+}
+
+double get_expected_velocity(EncoderFollower *follower) {
+	return follower->expected_velocity;
 }

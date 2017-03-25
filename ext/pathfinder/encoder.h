@@ -10,14 +10,16 @@ typedef struct {
 } EncoderConfig;
 
 typedef struct {
-    double last_error, heading, output;
+    double last_error, heading, output, position, velocity, expected_position, expected_velocity;
     int segment, finished;
 } EncoderFollower;
 
 double pathfinder_follow_encoder(EncoderConfig c, EncoderFollower *follower, Segment *trajectory, int trajectory_length, int encoder_tick);
-
 double pathfinder_follow_encoder2(EncoderConfig c, EncoderFollower *follower, Segment segment, int trajectory_length, int encoder_tick);
 
 double get_error(EncoderFollower *follower);
+double get_position(EncoderFollower *follower);
+double get_expected_position(EncoderFollower *follower);
+double get_expected_velocity(EncoderFollower *follower);
 
 #endif
