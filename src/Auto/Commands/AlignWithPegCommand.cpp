@@ -4,6 +4,10 @@ using namespace std;
 
 AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource) {
 	printf("in beginning of alignwithpegcommand\n");
+
+	visionLog_.open("/home/lvuser/vision_log.csv");
+
+	/*
 	angleContext_ = new zmq::context_t(1);
 	distanceContext_ = new zmq::context_t(1);
 
@@ -14,6 +18,7 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 	distanceSubscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
 	angleSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "ANGLE", 1);
 	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
+	*/
 
 	robot_ = robot;
 	navXSource_ = navXSource;
@@ -64,23 +69,27 @@ void AlignWithPegCommand::Init() {
 }
 
 void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
+/*
 	string angleAddress = s_recv (*angleSubscriber_);
 	string angleContents = s_recv (*angleSubscriber_);
 
 	string distanceAddress = s_recv (*distanceSubscriber_);
 	string distanceContents = s_recv (*distanceSubscriber_);
+*/
 
 	switch (currState_) {
 		case (kPivotToAngleInit) :
 
 			printf("In kPivotToAngleInit\n");
-			// Get angle from Jetson
+/*			// Get angle from Jetson
 			if (angleAddress == "ANGLE") {
 				desiredPivotDeltaAngle_ = stod(angleContents);
 				printf("ANGLE: %f\n", desiredPivotDeltaAngle_);
 			} else {
 				printf("angle address: %s\n", angleAddress.c_str());
 			}
+*/
+			ReadUpdateFromJetson();
 
 			if (fabs(desiredPivotDeltaAngle_) > 3.0) {
 //			if (numTimesInkPivotToAngleInit < 3) {
@@ -149,6 +158,50 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 bool AlignWithPegCommand::IsDone() {
 	return isDone_;
+}
+
+void AlignWithPegCommand::ReadUpdateFromJetson() {
+	// GET LAST LINE
+	string lastLine;
+	if (visionLog_.is_open()) {
+		visionLog_.seekg(-1, ios_base::end); // go to one spot before the EOF
+
+		bool keepLooping = true;
+		while (keepLooping) {
+			char ch;
+			visionLog_.get(ch);                   // Get current byte's data
+
+			if ((int) visionLog_.tellg() <= 1) { // If the data was at or before the 0th byte
+				visionLog_.seekg(0);      // The first line is the last line
+				keepLooping = false;                // So stop there
+			} else if (ch == '\n') {            // If the data was a newline
+				keepLooping = false;        // Stop at the current position.
+			} else {  // If the data was neither a newline nor at the 0 byte
+				visionLog_.seekg(-2, ios_base::cur); // Move to the front of that data, then to the front of the data before it
+			}
+		}
+
+		getline(visionLog_, lastLine);              // Read the current line
+		cout << "Result: " << lastLine << '\n';     // Display it
+
+		visionLog_.close();
+	} else {
+		// ERROR
+	}
+
+	// PARSING STUFF HERE
+	stringstream ss(lastLine);
+	vector<string> result;
+
+	while(ss.good()) {
+		string substr;
+		getline( ss, substr, ',' );
+		result.push_back( substr );
+	}
+
+	double duration = stod(result.at(0));		// do something w this
+	desiredPivotDeltaAngle_ = stod(result.at(1));
+	desiredDistance_ = stod(result.at(2));
 }
 
 AlignWithPegCommand::~AlignWithPegCommand() {
