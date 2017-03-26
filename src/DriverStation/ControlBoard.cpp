@@ -28,6 +28,9 @@ ControlBoard::ControlBoard() {
 	reverseFeederButton_ = new ButtonReader(operatorJoyB_, REVERSE_FEEDER_BUTTON_PORT);
 	gearMechOutButton_ = new ButtonReader(operatorJoyB_, GEAR_MECH_OUT_BUTTON_PORT);
 	gearSwitchButton_ = new ButtonReader(operatorJoyB_, CAMERA_SWITCH_BUTTON_PORT);
+	gearIntakeUpButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_UP_BUTTON_PORT);
+	gearIntakeDownButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_DOWN_BUTTON_PORT);
+	deployGearButton_ = new ButtonReader(operatorJoyB_, DEPLOY_GEAR_BUTTON_PORT);
 
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
@@ -44,6 +47,9 @@ ControlBoard::ControlBoard() {
 	reverseFeederDesired_ = false;
 	gearMechOutDesired_ = false;
 	flywheelVelAdjust_ = 0.0;
+	gearIntakeUpDesired_ = false;
+	gearIntakeDownDesired_ = false;
+	deployGearDesired_ = false;
 
 	cameraSwitchDesired_ = false;
 	gearCameraDesired_ = true;
@@ -72,6 +78,9 @@ void ControlBoard::ReadControls() {
 	gearMechOutDesired_ = gearMechOutButton_->WasJustPressed();
 	flywheelVelAdjust_ = operatorJoy_->GetZ();
 	cameraSwitchDesired_ = gearSwitchButton_->WasJustPressed();
+	gearIntakeUpDesired_ = gearIntakeUpButton_->WasJustPressed();
+	gearIntakeDownDesired_ = gearIntakeDownButton_->WasJustPressed();
+	deployGearDesired_ = gearIntakeDownButton_->WasJustPressed();
 
 }
 
@@ -112,6 +121,10 @@ void ControlBoard::ReadAllButtons() {
 	reverseIntakeButton_->ReadValue();
 	reverseFeederButton_->ReadValue();
 	gearMechOutButton_->ReadValue();
+	gearIntakeUpButton_->ReadValue();
+	gearIntakeDownButton_->ReadValue();
+	deployGearButton_->ReadValue();
+
 }
 
 // Returns true if reverse drive is desired
@@ -165,6 +178,18 @@ bool ControlBoard::GetGearMechOutDesired() {
 
 double ControlBoard::GetFlywheelVelAdjust() {
 	return flywheelVelAdjust_;
+}
+
+bool ControlBoard::GetGearIntakeUpDesired() {
+	return gearIntakeUpDesired_;
+}
+
+bool ControlBoard::GetGearIntakeDownDesired() {
+	return gearIntakeDownDesired_;
+}
+
+bool ControlBoard::GetDeployGearDesired() {
+	return deployGearDesired_;
 }
 
 bool ControlBoard::GetGearCameraDesired() {
