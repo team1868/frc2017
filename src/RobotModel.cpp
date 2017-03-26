@@ -83,7 +83,9 @@ RobotModel::RobotModel() {
 
 	// Set brake mode
 	leftMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	leftSlave_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
 	rightMaster_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	rightSlave_->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
 
 	gearShiftSolenoid_ = new DoubleSolenoid(GEAR_SHIFT_SOLENOID_PORT_FORWARD, GEAR_SHIFT_SOLENOID_PORT_REVERSE);
 

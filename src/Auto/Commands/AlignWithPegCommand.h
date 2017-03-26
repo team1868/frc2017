@@ -82,7 +82,7 @@ private:
 	int numTimesInkPivotToAngleInit;
 	int numTimesInkDriveStraightInit;
 
-	ifstream visionLog_;
+	//ifstream visionLog_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_ALIGNWITHPEGCOMMAND_H_ */

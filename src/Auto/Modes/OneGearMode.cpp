@@ -13,7 +13,7 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	double desiredAngle = 0.0;
 
 	if (autoMode_ == 2) {
-		desiredDistance = -6.0;		// CHANGE THESE NUMBERS (MAYBE PUT IN INI??)
+		desiredDistance = -7.5;		// CHANGE THESE NUMBERS (MAYBE PUT IN INI??)
 		desiredAngle = -60.0;
 //		liftPath_ = new PathCommand(robot_, PathCommand::kLeftLift);
 	} else if (autoMode_ == 3) {
@@ -21,7 +21,7 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 		desiredAngle = 0.0;
 //		liftPath_ = new PathCommand(robot_, PathCommand::kMiddleLift);
 	} else if (autoMode_ == 4) {
-		desiredDistance = -6.0;
+		desiredDistance = -7.5;
 		desiredAngle = 60.0;
 //		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
 	} else {
@@ -46,7 +46,7 @@ void OneGearMode::CreateQueue() {
 
 	if (autoMode_ == 2 || autoMode_ == 4) {
 		driveStraightCommand_->SetNextCommand(pivotCommand_);
-		pivotCommand_->SetNextCommand(alignWithPegCommand_);
+		//pivotCommand_->SetNextCommand(alignWithPegCommand_);
 	}
 
 	currentCommand = firstCommand_;
