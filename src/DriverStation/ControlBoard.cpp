@@ -18,8 +18,7 @@ ControlBoard::ControlBoard() {
 	gearShiftButton_ = new ButtonReader(rightJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
 	arcadeDriveButton_ = new ButtonReader(operatorJoy_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
-	alignWithPegButton_ = new ButtonReader(rightJoy_, ALIGN_WITH_PEG_BUTTON_PORT); //Subject to change
-
+	alignWithPegButton_ = new ButtonReader(operatorJoyB_, ALIGN_WITH_PEG_BUTTON_PORT); //Subject to change
 
 	// Buttons for superstructure
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
@@ -29,7 +28,6 @@ ControlBoard::ControlBoard() {
 	reverseFeederButton_ = new ButtonReader(operatorJoyB_, REVERSE_FEEDER_BUTTON_PORT);
 	gearMechOutButton_ = new ButtonReader(operatorJoyB_, GEAR_MECH_OUT_BUTTON_PORT);
 	gearSwitchButton_ = new ButtonReader(operatorJoyB_, CAMERA_SWITCH_BUTTON_PORT);
-
 
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
@@ -63,7 +61,7 @@ void ControlBoard::ReadControls() {
 	arcadeDriveDesired_ = arcadeDriveButton_->IsDown();
 	quickTurnDesired_ = quickTurnButton_->IsDown();
 	highGearDesired_ = !gearShiftButton_->IsDown();
-	alignWithPegDesired_ = alignWithPegButton_->IsDown();
+	alignWithPegDesired_ = alignWithPegButton_->WasJustPressed();
 
 	//Superstructure variables
 	flywheelDesired_ = flywheelSwitch_->IsDown();

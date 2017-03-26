@@ -5,7 +5,7 @@ const double WHEELBASE_WIDTH = 30.8 / 12.0;
 const double WHEEL_DIAMETER = 3.5 / 12.0;    // in ft
 const double TIME_STEP = 0.02;               // in s
 const double MAX_VELOCITY = 12.0;             // in ft/s  (changed from 15) -- probably more close to 12
-const double MAX_ACCELERATION = 8.0;         // in ft/(s^2)
+const double MAX_ACCELERATION = 4.0;         // in ft/(s^2)
 const double MAX_JERK = 60.0;                // in ft/(s^3) (changed from 60)
 const int TICKS_PER_REV = 256;
 
@@ -53,6 +53,11 @@ PathCommand::PathCommand(RobotModel *robot, Path path) {
 
 	leftError = 0.0;
 	rightError = 0.0;
+
+	lastLeftDistance_ = 0.0;
+	lastRightDistance_ = 0.0;
+
+	initialAngle_ = 0.0;
 }
 
 void PathCommand::Init() {
@@ -227,22 +232,22 @@ void PathCommand::Init() {
 
 	Waypoint *points = (Waypoint*)malloc(sizeof(Waypoint) * pointLength_);
 	if (pointLength_ >= 1) {
-		Waypoint p1 = { p1_x_, p1_y_, p1_r_ };
+		Waypoint p1 = { p1_x_, p1_y_, d2r(p1_r_) };
 		points[0] = p1;
 	}
 
 	if (pointLength_ >= 2) {
-		Waypoint p2 = { p2_x_, p2_y_, p2_r_ };
+		Waypoint p2 = { p2_x_, p2_y_, d2r(p2_r_) };
 		points[1] = p2;
 	}
 
 	if (pointLength_ >= 3) {
-		Waypoint p3 = { p3_x_, p3_y_, p3_r_ };
+		Waypoint p3 = { p3_x_, p3_y_, d2r(p3_r_) };
 		points[2] = p3;
 	}
 
 	if (pointLength_ >= 4 ) {
-		Waypoint p4 = { p4_x_, p4_y_, p4_r_ };
+		Waypoint p4 = { p4_x_, p4_y_, d2r(p4_r_) };
 		points[3] = p4;
 	}
 
@@ -307,6 +312,7 @@ void PathCommand::Init() {
 	                         rPFac, rIFac, rDFac, rVFac / MAX_VELOCITY, rAFac};          // Kp, Ki, Kd and Kv, Ka
 
 	// To make sure SRX's encoder is updating the RoboRIO fast enough
+	// we could take this out
 	robot_->leftMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->leftSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->rightMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
@@ -323,6 +329,8 @@ void PathCommand::Init() {
 	FILE *fp_rightTraj = fopen("/home/lvuser/right_trajectory.csv", "w");
 	pathfinder_serialize_csv(fp_rightTraj, rightTrajectory_, trajectoryLength_);
 	fclose(fp_rightTraj);
+
+	initialAngle_ = robot_->GetNavXYaw();
 
 //	free(trajectory);
 //	free(points);
@@ -355,21 +363,29 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	double r = pathfinder_follow_encoder(rightEncoderConfig_, rightEncoderFollower_, rightTrajectory_, trajectoryLength_, rightEncoderPosition_);
 
 	// -- using l and r from the previous code block -- //
-	double gyro_heading = robot_->GetNavXYaw();
+	double gyro_heading = robot_->GetNavXYaw() - initialAngle_;
+
 	double desired_heading = r2d(leftEncoderFollower_->heading);
+	if (desired_heading >= 180.0) {
+		desired_heading -= 360.0;
+	}
+
 	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
-	double turn = 0.75 * (-1.0/80.0) * angle_difference;			// CHECK THIS (why -1??)
+	double turn = 1.0 * (1.0/80.0) * angle_difference;			// CHECK THIS (why -1??)
 
 	SmartDashboard::PutNumber("Left output", l);
 	SmartDashboard::PutNumber("Right output", r);
 
-	robot_->SetDriveValues(RobotModel::kLeftWheels, l + turn);
-	robot_->SetDriveValues(RobotModel::kRightWheels, r - turn);
+//	robot_->SetDriveValues(RobotModel::kLeftWheels, l + turn);
+//	robot_->SetDriveValues(RobotModel::kRightWheels, r - turn);
+
+	robot_->SetDriveValues(RobotModel::kLeftWheels, l);
+	robot_->SetDriveValues(RobotModel::kRightWheels, r);
 
 	if (!logData_.is_open()) {
 		logData_.open(Logger::GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_moprolog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
 		logData_ << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftExpectedDistance, RightExpectedDistance, LeftVelocity, Right Velocity, "
-				 << "LeftExpectedVelocity, RightExpectedVelocity, LeftError, RightError, LeftOutput, RightOutput, Turn, NavXAngle" << "\r\n";
+				 << "LeftExpectedVelocity, RightExpectedVelocity, LeftError, RightError, LeftOutput, RightOutput, Turn, NavXAngle, ExpectedHeading, ExpectedHeading_Edited" << "\r\n";
 	}
 
 	logData_ << robot_->GetTime() << ", " <<
@@ -389,7 +405,9 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 			   l << ", " <<
 			   r << ", " <<
 			   turn << ", " <<
-			   robot_->GetNavXYaw() << "\r\n";
+			   gyro_heading << ", " <<
+			   r2d(leftEncoderFollower_->heading) << ", " <<
+			   desired_heading << "\r\n";
 
 	logData_.flush();
 

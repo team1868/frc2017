@@ -69,6 +69,8 @@ private:
 
 	double lastLeftDistance_, lastRightDistance_;
 
+	double initialAngle_;
+
 	std::ofstream logData_;
 };
 

@@ -42,9 +42,11 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			if (humanControl_->GetAlignWithPegDesired()) {
 				nextState_ = kAlignWithPeg;
 			} else {
-			nextState_ = kTeleopDrive;
+				nextState_ = kTeleopDrive;
 			}
+
 			break;
+
 		case (kTeleopDrive) :
 			robot_->SetPercentVBusDriveMode();
 
@@ -62,7 +64,12 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				robot_->SetLowGear();
 			}
 
-			if (humanControl_->GetQuickTurnDesired()) {
+			nextState_ = kTeleopDrive;
+
+			if (humanControl_->GetAlignWithPegDesired()) {
+				printf("Going to alignwithpeg\n");
+				nextState_ = kAlignWithPeg;
+			} else if (humanControl_->GetQuickTurnDesired()) {
 				printf("Quick turning\n");
 				QuickTurn(rightJoyX);
 			} else if (humanControl_->GetArcadeDriveDesired()) {
@@ -75,29 +82,25 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				printf("SOMETHING IS WRONG\n");
 				ArcadeDrive(rightJoyX, leftJoyY);		// Default to arcade drive
 			}
-
-			if (humanControl_->GetAlignWithPegDesired()) {
-				nextState_ = kAlignWithPeg;
-			} else {
-				nextState_ = kTeleopDrive;
-			}
 			break;
+
 		case (kAlignWithPeg) :
-			pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_);
 			if (!alignWithPegStarted_){
+				pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_);
 				pegCommand_->Init();
 				alignWithPegStarted_ = true;
+				nextState_ = kAlignWithPeg;
 			}
 
 			if (!pegCommand_->IsDone()){
 				pegCommand_->Update(currTimeSec, deltaTimeSec);
-			}
-
-			if (humanControl_->GetAlignWithPegDesired()) {		// DOES THIS WORK WE SHOULD CHECK
 				nextState_ = kAlignWithPeg;
 			} else {
+				alignWithPegStarted_ = false;
 				nextState_ = kTeleopDrive;
 			}
+
+			printf("IN ALIGN WITH PEG COMMAND\n");
 			break;
 	}
 
