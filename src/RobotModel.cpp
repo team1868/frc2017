@@ -97,6 +97,8 @@ RobotModel::RobotModel() {
 	feederMotor_ = new Victor(FEEDER_MOTOR_PWM_PORT);
 	intakeMotor_ = new Victor(INTAKE_MOTOR_PWM_PORT);
 	climberMotor_ = new Victor(CLIMBER_MOTOR_PWM_PORT);
+	gearPivotMotor_ = new Victor(GEAR_PIVOT_MOTOR_PWM_PORT);
+	gearIntakeMotor_ = new Victor(GEAR_INTAKE_MOTOR_PWN_PORT);
 
 	flywheelEncoder_ = new Encoder(FLYWHEEL_ENCODER_A_PWM_PORT, FLYWHEEL_ENCODER_B_PWM_PORT, false);
 	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate);
@@ -105,6 +107,7 @@ RobotModel::RobotModel() {
 	gearMechSolenoid_ = new Solenoid(PNEUMATICS_CONTROL_MODULE_ID, GEAR_MECHANISM_SOLENOID_PORT);
 
 	distanceSensor_ = new DigitalInput(DISTANCE_SENSOR_PWM_PORT);
+	limitSwitch_ = new DigitalInput(LIMIT_SWITCH_PWM_PORT);
 
 	gearInRobot_ = false;
 	distSensorCurr_ = false;
@@ -236,6 +239,21 @@ void RobotModel::SetIntakeOutput(double output) {
 	intakeMotor_->Set(output);
 }
 
+double RobotModel::GetGearIntakeOutput() {
+	return gearIntakeMotor_->Get();
+}
+
+void RobotModel::SetGearIntakeOutput(double output) {
+	gearIntakeMotor_->Set(output);
+}
+
+double RobotModel::GetGearPivotOutput() {
+	return gearPivotMotor_->Get();
+}
+void RobotModel::SetGearPivotOutput(double output) {
+	gearPivotMotor_->Set(output);
+}
+
 Encoder* RobotModel::GetFlywheelEncoder() {
 	return flywheelEncoder_;
 }
@@ -274,6 +292,10 @@ void RobotModel::GearUpdate() {
 
 void RobotModel::SetGearMech(bool dir) {
 	gearMechSolenoid_->Set(dir);
+}
+
+bool RobotModel::GetLimitSwitchState() {
+	return limitSwitch_->Get();
 }
 
 RobotModel::~RobotModel() {

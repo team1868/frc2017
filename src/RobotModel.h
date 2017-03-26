@@ -48,6 +48,12 @@ public:
 	double GetIntakeOutput();
 	void SetIntakeOutput(double output);
 
+	double GetGearIntakeOutput();
+	void SetGearIntakeOutput(double output);
+
+	double GetGearPivotOutput();
+	void SetGearPivotOutput(double output);
+
 	Encoder* GetFlywheelEncoder();
 	Victor* GetFlywheelMotor();
 	double GetFlywheelMotorOutput();
@@ -56,6 +62,8 @@ public:
 	void SetGearInRobot(bool gearInRobot);
 	void GearUpdate();
 	void SetGearMech(bool dir);
+
+	bool GetLimitSwitchState();
 	/* ------------------------------------------------------  */
 
 	Ini *pini_;
@@ -66,12 +74,12 @@ private:
 	Timer *timer_;
 	AHRS *navX_;
 
-	Victor *flywheelMotor_, *feederMotor_, *climberMotor_, *intakeMotor_;
+	Victor *flywheelMotor_, *feederMotor_, *climberMotor_, *intakeMotor_, *gearPivotMotor_, *gearIntakeMotor_;
 	Compressor *compressor_;
 	DoubleSolenoid *gearShiftSolenoid_;
 	Solenoid *gearMechSolenoid_;
 	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_;
-	DigitalInput *distanceSensor_;
+	DigitalInput *distanceSensor_, *limitSwitch_;
 
 	bool gearInRobot_, distSensorCurr_, distSensorLast_;
 };
