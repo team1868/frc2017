@@ -11,6 +11,7 @@
 #include <chrono>
 #include <thread>
 #include <memory>
+#include <fstream>
 #include <iostream>
 #ifndef _WIN32
 #include <unistd.h>
@@ -19,6 +20,8 @@
 
 #define sleep(n)    Sleep(n)
 #endif
+
+using namespace std;
 
 class AlignWithPegCommand : public AutoCommand {
 public:
@@ -44,11 +47,16 @@ public:
 	virtual ~AlignWithPegCommand();
 
 private:
-	zmq::context_t *angleContext_; //(1);
-	zmq::socket_t *angleSubscriber_;
+//	zmq::context_t *angleContext_; //(1);
+//	zmq::socket_t *angleSubscriber_;
+//
+//	zmq::context_t *distanceContext_; //(1);
+//	zmq::socket_t *distanceSubscriber_;
 
-	zmq::context_t *distanceContext_; //(1);
-	zmq::socket_t *distanceSubscriber_;
+	zmq::context_t *context_;
+	zmq::socket_t *subscriber_;
+
+//	void ReadUpdateFromJetson();
 
 	RobotModel *robot_;
 
@@ -74,6 +82,8 @@ private:
 
 	int numTimesInkPivotToAngleInit;
 	int numTimesInkDriveStraightInit;
+
+	//ifstream visionLog_;
 };
 
 #endif /* SRC_AUTO_COMMANDS_ALIGNWITHPEGCOMMAND_H_ */

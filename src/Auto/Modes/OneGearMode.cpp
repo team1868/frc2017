@@ -7,15 +7,32 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	firstCommand_ = NULL;
 
 	// TODO CHANGE
-	int autoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
+	autoMode_ = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
 
-	if (autoMode == 2) {
-		liftPath_ = new PathCommand(robot_, PathCommand::kLeftLift);
-	} else if (autoMode == 3) {
-		liftPath_ = new PathCommand(robot_, PathCommand::kMiddleLift);
-	} else if (autoMode == 4) {
-		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
+	double desiredDistance = 0.0;
+	double desiredAngle = 0.0;
+
+	if (autoMode_ == 2) {
+		desiredDistance = -7.5;		// CHANGE THESE NUMBERS (MAYBE PUT IN INI??)
+		desiredAngle = -60.0;
+//		liftPath_ = new PathCommand(robot_, PathCommand::kLeftLift);
+	} else if (autoMode_ == 3) {
+		desiredDistance = -6.0;
+		desiredAngle = 0.0;
+//		liftPath_ = new PathCommand(robot_, PathCommand::kMiddleLift);
+	} else if (autoMode_ == 4) {
+		desiredDistance = -7.5;
+		desiredAngle = 60.0;
+//		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
+	} else {
+		// SOMETHING IS WRONG print something
 	}
+
+	angleOutput_ = new AnglePIDOutput();
+	distanceOutput_ = new DistancePIDOutput();
+
+	driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_, robot_, desiredDistance);
+	pivotCommand_ = new PivotCommand(robot_, desiredAngle, false, navXSource_);
 
 	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
 
@@ -24,7 +41,14 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 
 void OneGearMode::CreateQueue() {
 	printf("Creating queue\n");
-	firstCommand_ = liftPath_;
+//	firstCommand_ = liftPath_;
+	firstCommand_ = driveStraightCommand_;
+
+	if (autoMode_ == 2 || autoMode_ == 4) {
+		driveStraightCommand_->SetNextCommand(pivotCommand_);
+		pivotCommand_->SetNextCommand(alignWithPegCommand_);
+	}
+
 	currentCommand = firstCommand_;
 }
 

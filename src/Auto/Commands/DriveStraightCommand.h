@@ -1,13 +1,14 @@
 #ifndef SRC_DRIVESTRAIGHTCOMMAND_H_
 #define SRC_DRIVESTRAIGHTCOMMAND_H_
 
-#include <Auto/PIDOutputSource.h>
 #include "WPILib.h"
 #include <math.h>
 #include "RobotModel.h"
+#include "Auto/Commands/AutoCommand.h"
 #include "Auto/PIDInputSource.h"
+#include "Auto/PIDOutputSource.h"
 
-class DriveStraightCommand {
+class DriveStraightCommand : public AutoCommand {
 public:
 	DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,

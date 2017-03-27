@@ -70,19 +70,20 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	if ((anglePID_->OnTarget()) && (distancePID_->OnTarget())) {
 		anglePID_->Reset();
 		distancePID_->Reset();
-		isDone_= true;
 
 		// To ensure that the wheels are off
 		leftMotorOutput_ = 0.0;
 		rightMotorOutput_ = 0.0;
+
+		isDone_= true;
 	} else {
 		// Getting the output values from the PID Controllers and send them to motor outputs
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
 
 		// TODO might want to check
-		rightMotorOutput_ = dOutput - rOutput;
-		leftMotorOutput_ = dOutput + rOutput;
+		rightMotorOutput_ = dOutput + rOutput;
+		leftMotorOutput_ = dOutput - rOutput;
 
 //		rightMotorOutput_ = dOutput;
 //		leftMotorOutput_ = dOutput;
