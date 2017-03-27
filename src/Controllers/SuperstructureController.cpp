@@ -121,6 +121,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			}
 
 			if (humanControl_->GetClimberDesired()) {
+				printf("IN CLIMBER!!!!!\n");
 				robot_->SetClimberOutput(climberMotorOutput_);
 			} else {
 				robot_->SetClimberOutput(0.0);

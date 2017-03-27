@@ -46,7 +46,7 @@ void OneGearMode::CreateQueue() {
 
 	if (autoMode_ == 2 || autoMode_ == 4) {
 		driveStraightCommand_->SetNextCommand(pivotCommand_);
-		//pivotCommand_->SetNextCommand(alignWithPegCommand_);
+		pivotCommand_->SetNextCommand(alignWithPegCommand_);
 	}
 
 	currentCommand = firstCommand_;

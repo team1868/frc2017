@@ -7,18 +7,20 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 
 //	visionLog_.open("/tmp/vision_log.txt");
 
-	/*
-	angleContext_ = new zmq::context_t(1);
-	distanceContext_ = new zmq::context_t(1);
+//	angleContext_ = new zmq::context_t(1);
+//	distanceContext_ = new zmq::context_t(1);
+	context_ = new zmq::context_t(1);
 
-	angleSubscriber_ = new zmq::socket_t(*angleContext_, ZMQ_SUB);
-	angleSubscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
+//	angleSubscriber_ = new zmq::socket_t(*angleContext_, ZMQ_SUB);
+//	angleSubscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
+//
+//	distanceSubscriber_ = new zmq::socket_t(*distanceContext_, ZMQ_SUB);
+//	distanceSubscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
+//	angleSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "ANGLE", 1);
+//	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
 
-	distanceSubscriber_ = new zmq::socket_t(*distanceContext_, ZMQ_SUB);
-	distanceSubscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
-	angleSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "ANGLE", 1);
-	distanceSubscriber_->setsockopt( ZMQ_SUBSCRIBE, "DISTANCE", 1);
-	*/
+	subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
+	subscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
 
 	robot_ = robot;
 	navXSource_ = navXSource;
@@ -58,7 +60,6 @@ void AlignWithPegCommand::Init() {
 //	currState_ = kDriveStraightInit;
 //	nextState_ = kDriveStraightInit;
 
-
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
 
@@ -69,67 +70,93 @@ void AlignWithPegCommand::Init() {
 }
 
 void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
-/*
-	string angleAddress = s_recv (*angleSubscriber_);
-	string angleContents = s_recv (*angleSubscriber_);
-
-	string distanceAddress = s_recv (*distanceSubscriber_);
-	string distanceContents = s_recv (*distanceSubscriber_);
-*/
-
-	switch (currState_) {
-		case (kPivotToAngleInit) :
-
-			printf("In kPivotToAngleInit\n");
-/*			// Get angle from Jetson
-			if (angleAddress == "ANGLE") {
-				desiredPivotDeltaAngle_ = stod(angleContents);
-				printf("ANGLE: %f\n", desiredPivotDeltaAngle_);
-			} else {
-				printf("angle address: %s\n", angleAddress.c_str());
-			}
-*/
-			ReadUpdateFromJetson();
-
-			if (fabs(desiredPivotDeltaAngle_) > 3.0) {
-//			if (numTimesInkPivotToAngleInit < 3) {
-//				numTimesInkPivotToAngleInit++;
-//				nextState_ = kPivotToAngleInit;
-//			} else if (fabs(desiredPivotDeltaAngle_) > 3.0) {		// 2 degree threshold
-				// CHECK -DESIREDPIVOTDELTAANGLE_
-				// negative because jetson returns angle wrong way
-				printf("ANGLE FOR PIVOT COMMAND: %f\n", -desiredPivotDeltaAngle_);
-				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navXSource_);
-				pivotCommand_->Init();
-				nextState_ = kPivotToAngleUpdate;
-			} else {
-				//nextState_ = kDriveStraightInit;
-				isDone_ = true;
-			}
-			break;
-
-		case (kPivotToAngleUpdate) :
-			printf("in kPivotToAngleUpdate\n");
-			if (!pivotCommand_->IsDone()) {
-				pivotCommand_->Update(currTimeSec, deltaTimeSec);
-				nextState_ = kPivotToAngleUpdate;
-			} else {
-//				nextState_ = kDriveStraightInit;
-				isDone_ = true;
-			}
-			break;
-
-		case (kDriveStraightInit) :
-//			// Get distance from Jetson
-//			if (distanceAddress == "DISTANCE") {
-//				desiredDistance_ = stod(distanceContents);		// IN INCHES
-//				printf("DISTANCE: %f\n", desiredDistance_);
-//			}
+//	string angleAddress = s_recv (*angleSubscriber_);
+//	string angleContents = s_recv (*angleSubscriber_);
 //
-//			if (numTimesInkDriveStraightInit < 3) {
-//				numTimesInkDriveStraightInit++;
+//	string distanceAddress = s_recv (*distanceSubscriber_);
+//	string distanceContents = s_recv (*distanceSubscriber_);
+
+	zmq::message_t message;
+	int tosses = 0;
+
+	while((subscriber_->recv(&message,ZMQ_NOBLOCK)) == 0) {
+		tosses += 1;
+	}
+
+	string contents(static_cast<char*>(message.data()), message.size());
+
+	stringstream ss(contents);
+	vector<string> result;
+
+	while(ss.good()) {
+		string substr;
+		getline( ss, substr, ' ' );
+		result.push_back( substr );
+	}
+
+	desiredPivotDeltaAngle_ = stod(result.at(0));
+	desiredDistance_ = stod(result.at(1));
+
+	SmartDashboard::PutNumber("Subscriber Tosses", tosses);
+	SmartDashboard::PutNumber("Vision pivot delta angle", desiredPivotDeltaAngle_);
+	SmartDashboard::PutNumber("Vision desired distance", desiredDistance_);
+
+//	switch (currState_) {
+//		case (kPivotToAngleInit) :
+//
+//			printf("In kPivotToAngleInit\n");
+//
+////			// Get angle from Jetson
+////			if (angleAddress == "ANGLE") {
+////				desiredPivotDeltaAngle_ = stod(angleContents);
+////				printf("ANGLE: %f\n", desiredPivotDeltaAngle_);
+////			} else {
+////				printf("angle address: %s\n", angleAddress.c_str());
+////			}
+//
+////			ReadUpdateFromJetson();
+//
+//			if (fabs(desiredPivotDeltaAngle_) > 3.0) {
+////			if (numTimesInkPivotToAngleInit < 3) {
+////				numTimesInkPivotToAngleInit++;
+////				nextState_ = kPivotToAngleInit;
+////			} else if (fabs(desiredPivotDeltaAngle_) > 3.0) {		// 2 degree threshold
+//				// CHECK -DESIREDPIVOTDELTAANGLE_
+//				// negative because jetson returns angle wrong way
+//				printf("ANGLE FOR PIVOT COMMAND: %f\n", -desiredPivotDeltaAngle_);
+//				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navXSource_);
+//				pivotCommand_->Init();
+//				nextState_ = kPivotToAngleUpdate;
+//			} else {
 //				nextState_ = kDriveStraightInit;
-//			} else if (fabs(desiredDistance_) > 2.0/12.0) {	// 2 in threshold
+////				isDone_ = true;
+//			}
+//			break;
+//
+//		case (kPivotToAngleUpdate) :
+//			printf("in kPivotToAngleUpdate\n");
+//			if (!pivotCommand_->IsDone()) {
+//				pivotCommand_->Update(currTimeSec, deltaTimeSec);
+//				nextState_ = kPivotToAngleUpdate;
+//			} else {
+//				nextState_ = kDriveStraightInit;
+////				isDone_ = true;
+//			}
+//			break;
+//
+//		case (kDriveStraightInit) :
+////			// Get distance from Jetson
+////			if (distanceAddress == "DISTANCE") {
+////				desiredDistance_ = stod(distanceContents);		// IN INCHES
+////				printf("DISTANCE: %f\n", desiredDistance_);
+////			} else {
+////				printf("distance address: %s\n", distanceAddress.c_str());
+////			}
+////
+////			if (numTimesInkDriveStraightInit < 3) {
+////				numTimesInkDriveStraightInit++;
+////				nextState_ = kDriveStraightInit;
+//			if (fabs(desiredDistance_) > 2.0/12.0) {	// 2 in threshold
 //				printf("DISTANCE FOR COMMAND: %f\n", desiredDistance_);
 //				// Jetson returns in inches, so /12.0
 //				// Subtract 10 inches bc of length of peg
@@ -141,9 +168,9 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 //			} else {
 //				isDone_ = true;
 //			}
-			break;
-
-		case (kDriveStraightUpdate) :
+//			break;
+//
+//		case (kDriveStraightUpdate) :
 //			if (!driveStraightCommand_->IsDone()) {
 //				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
 //				nextState_ = kDriveStraightUpdate;
@@ -151,73 +178,73 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 //				isDone_ = true;
 //				// no next state
 //			}
-			break;
-	}
-	currState_ = nextState_;
+//			break;
+//	}
+//	currState_ = nextState_;
 }
 
 bool AlignWithPegCommand::IsDone() {
 	return isDone_;
 }
 
-void AlignWithPegCommand::ReadUpdateFromJetson() {
-	// GET LAST LINE
-	string lastLine;
-//	getline(visionLog_, lastLine);
-
-//	if (visionLog_.is_open()) {
-//		visionLog_.seekg(-1, ios_base::end); // go to one spot before the EOF
+//void AlignWithPegCommand::ReadUpdateFromJetson() {
+//	// GET LAST LINE
+//	string lastLine;
+////	getline(visionLog_, lastLine);
 //
-//		bool keepLooping = true;
-//		while (keepLooping) {
-//			char ch;
-//			visionLog_.get(ch);                   // Get current byte's data
+////	if (visionLog_.is_open()) {
+////		visionLog_.seekg(-1, ios_base::end); // go to one spot before the EOF
+////
+////		bool keepLooping = true;
+////		while (keepLooping) {
+////			char ch;
+////			visionLog_.get(ch);                   // Get current byte's data
+////
+////			if ((int) visionLog_.tellg() <= 1) { // If the data was at or before the 0th byte
+////				visionLog_.seekg(0);      // The first line is the last line
+////				keepLooping = false;                // So stop there
+////			} else if (ch == '\n') {            // If the data was a newline
+////				keepLooping = false;        // Stop at the current position.
+////			} else {  // If the data was neither a newline nor at the 0 byte
+////				visionLog_.seekg(-2, ios_base::cur); // Move to the front of that data, then to the front of the data before it
+////			}
+////		}
+////
+////		getline(visionLog_, lastLine);              // Read the current line
+////	lastLine = to_string(system("cat /tmp/vision_log.txt"));
 //
-//			if ((int) visionLog_.tellg() <= 1) { // If the data was at or before the 0th byte
-//				visionLog_.seekg(0);      // The first line is the last line
-//				keepLooping = false;                // So stop there
-//			} else if (ch == '\n') {            // If the data was a newline
-//				keepLooping = false;        // Stop at the current position.
-//			} else {  // If the data was neither a newline nor at the 0 byte
-//				visionLog_.seekg(-2, ios_base::cur); // Move to the front of that data, then to the front of the data before it
-//			}
-//		}
-//
-//		getline(visionLog_, lastLine);              // Read the current line
-//	lastLine = to_string(system("cat /tmp/vision_log.txt"));
-
-	array<char, 128> buffer;
-	//string result;
-	shared_ptr<FILE> pipe(popen("cat /tmp/vision_log.txt", "r"), pclose);
-	if (!pipe) throw std::runtime_error("popen() failed!");
-	while (!feof(pipe.get())) {
-		if (fgets(buffer.data(), 128, pipe.get()) != NULL)
-			lastLine += buffer.data();
-	}
-
-//	lastLine = to_string(path);
-
-	cout << "Result: " << lastLine << '\n';     // Display it
-
-//	visionLog_.close();
-//	} else {
-//		// ERROR
+//	array<char, 128> buffer;
+//	//string result;
+//	shared_ptr<FILE> pipe(popen("cat /tmp/vision_log.txt", "r"), pclose);
+//	if (!pipe) throw std::runtime_error("popen() failed!");
+//	while (!feof(pipe.get())) {
+//		if (fgets(buffer.data(), 128, pipe.get()) != NULL)
+//			lastLine += buffer.data();
 //	}
-
-//	 PARSING STUFF HERE
-	stringstream ss(lastLine);
-	vector<string> result;
-
-	while(ss.good()) {
-		string substr;
-		getline( ss, substr, ',' );
-		result.push_back( substr );
-	}
-
-	double duration = stod(result.at(0));		// do something w this
-	desiredPivotDeltaAngle_ = stod(result.at(1));
-	desiredDistance_ = stod(result.at(2));
-}
+//
+////	lastLine = to_string(path);
+//
+//	cout << "Result: " << lastLine << '\n';     // Display it
+//
+////	visionLog_.close();
+////	} else {
+////		// ERROR
+////	}
+//
+////	 PARSING STUFF HERE
+//	stringstream ss(lastLine);
+//	vector<string> result;
+//
+//	while(ss.good()) {
+//		string substr;
+//		getline( ss, substr, ',' );
+//		result.push_back( substr );
+//	}
+//
+//	double duration = stod(result.at(0));		// do something w this
+//	desiredPivotDeltaAngle_ = stod(result.at(1));
+//	desiredDistance_ = stod(result.at(2));
+//}
 
 AlignWithPegCommand::~AlignWithPegCommand() {
 
