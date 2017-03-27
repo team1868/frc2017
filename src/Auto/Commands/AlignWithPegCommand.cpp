@@ -21,6 +21,7 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 
 	subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
 	subscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
+	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "MESSAGE", 1);
 
 	robot_ = robot;
 	navXSource_ = navXSource;
@@ -75,6 +76,14 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 //
 //	string distanceAddress = s_recv (*distanceSubscriber_);
 //	string distanceContents = s_recv (*distanceSubscriber_);
+
+	printf("hello world\n");
+
+	string address = s_recv(*subscriber_);
+//	string contents = s_recv (*subscriber_);
+
+//	cout << "address " << address << endl;
+//	cout << "contents " << contents << endl;
 
 	zmq::message_t message;
 	int tosses = 0;
