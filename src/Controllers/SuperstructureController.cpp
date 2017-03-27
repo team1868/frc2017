@@ -10,20 +10,26 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	robot_ = myRobot;
 	humanControl_ = myHumanControl;
 
+	// Flywheel variables
 	adjustedFlywheelVelocity_ = 0.0;
 	desiredFlywheelVelocity_ = 11.5; // ft/sec, tune value
 	// TODO put all this in the ini file
 	// TODO add dial for changing velocity
 	expectedFlywheelMotorOutput_ = 0.7; // Tune value
 	feederMotorOutput_ = 0.85;
-	climberMotorOutput_ = 0.9;
-	intakeMotorOutput_ = 0.4; // postive for comp
-	gearIntakeMotorOutput_ = 0.75;
-	gearPivotMotorOutput_ = 0.75;
 	flywheelStartTime_ = 0.0;
+	intakeMotorOutput_ = 0.4; // postive for comp
+
+	// Climber variables
+	climberMotorOutput_ = 0.9;
+
+	// Gear intake mech variables
+	gearIntakeMotorOutput_ = 0.75;
+	gearPivotMotorOutput_ = 0.4;
 	gearPivotDownTimeStarted_ = 0.0;
 	gearOuttakeTimeStarted_ = 0.0;
 
+	// Setting up flywheel PID Controller
 	pFac_ = 0.0;
 	iFac_ = 0.0;
 	dFac_ = 0.0;
@@ -37,12 +43,7 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	flywheelController_->SetAbsoluteTolerance(2.0);
 	flywheelController_->SetContinuous(false);
 
-	gearMechPos_ = false;
-	gearPivotPosition_ = true; // True is up, false is down
-	gearPivotDownStarted_ = false;
-	gearOuttakeStarted_ = false;
-
-	flywheelStarted_ = false;
+	isFlywheelStarted_ = false;
 	flywheelStartTime_ = 0.0;
 
 	autoFlywheelDesired_ = false;
@@ -52,6 +53,12 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 
 	autoIntakeTime_ = 0.0;
 	autoIntakeStartTime_ = 0.0;
+
+	// Initializing variables for gear intake mech
+	gearMechPos_ = false;	// True is in, false is out
+	isGearPivotPositionUp_ = true; // True is up, false is down
+	isGearPivotDownStarted_ = false;
+	isGearOuttakeStarted_ = false;
 
 	currState_ = kInit;
 	nextState_ = kInit;
@@ -71,16 +78,16 @@ void SuperstructureController::Reset() {
 	feederMotorOutput_ = -fabs(feederMotorOutput_);
 	intakeMotorOutput_ = -fabs(intakeMotorOutput_); // positive for comp
 
-	flywheelStarted_ = false;
-	gearPivotDownStarted_ = false;
-	gearOuttakeStarted_ = false;
+	isFlywheelStarted_ = false;
+	isGearPivotDownStarted_ = false;
+	isGearOuttakeStarted_ = false;
 
 	flywheelStartTime_ = 0.0;
 	gearPivotDownTimeStarted_ = 0.0;
 	gearOuttakeTimeStarted_ = 0.0;
 
 	gearMechPos_ = false;
-	gearPivotPosition_ = true;
+	isGearPivotPositionUp_ = true;
 
 	autoFlywheelDesired_ = false;
 	autoTimeIntakeDesired_ = false;
@@ -100,17 +107,17 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 
 	switch(currState_) {
 	case kInit:
-		SmartDashboard::PutString("State", "kInit");
-		flywheelController_->Disable();
-		robot_->SetIntakeOutput(0.0);
-		robot_->SetFeederOutput(0.0);
-		robot_->SetClimberOutput(0.0);
-		robot_->SetGearPivotOutput(0.0);
-		robot_->SetGearIntakeOutput(0.0);
-		gearMechPos_ = false;
-		gearPivotPosition_ = true;
-		nextState_ = kIdle;
-		break;
+			SmartDashboard::PutString("State", "kInit");
+			flywheelController_->Disable();
+			robot_->SetIntakeOutput(0.0);
+			robot_->SetFeederOutput(0.0);
+			robot_->SetClimberOutput(0.0);
+			robot_->SetGearPivotOutput(0.0);
+			robot_->SetGearIntakeOutput(0.0);
+			gearMechPos_ = false;
+			isGearPivotPositionUp_ = true;
+			nextState_ = kIdle;
+			break;
 	case kIdle:
 		SmartDashboard::PutString("State", "kIdle");
 		nextState_ = kIdle;
@@ -132,11 +139,11 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			nextState_ = kFeederAndFlywheel;
 		}
 
-		if (gearPivotPosition_ && !robot_->GetLimitSwitchState()) {
+		if (isGearPivotPositionUp_ && !robot_->GetLimitSwitchState()) {	// If the robot thinks the gear intake mech is up but the limit switch doesn't think so
 			nextState_ = kGearIntakeMoveUp;
 		}
 
-		if (!gearPivotPosition_) {
+		if (!isGearPivotPositionUp_) {	// If gear intake mech is down, run the gear intake motor
 			robot_->SetGearIntakeOutput(gearIntakeMotorOutput_);
 		} else {
 			robot_->SetGearIntakeOutput(0.0);
@@ -159,91 +166,96 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 		break;
 	case kFeederAndFlywheel:
-		SmartDashboard::PutString("State", "kFeederAndFlywheel");
-		SmartDashboard::PutNumber("Flywheel Output", robot_->GetFlywheelMotorOutput());
-		SmartDashboard::PutNumber("Flywheel Error", flywheelController_->GetError());
-		SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
-		SmartDashboard::PutNumber("Flywheel Distance", robot_->GetFlywheelEncoder()->GetDistance());
-		SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());
+			SmartDashboard::PutString("State", "kFeederAndFlywheel");
+			SmartDashboard::PutNumber("Flywheel Output", robot_->GetFlywheelMotorOutput());
+			SmartDashboard::PutNumber("Flywheel Error", flywheelController_->GetError());
+			SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
+			SmartDashboard::PutNumber("Flywheel Distance", robot_->GetFlywheelEncoder()->GetDistance());
+			SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());
 
-		flywheelController_->SetPID(pFac_, iFac_, dFac_, fFac_);
-		if (!flywheelStarted_) {
-			flywheelStartTime_ = robot_->GetTime();
-			flywheelStarted_ = true;
-			nextState_ = kFeederAndFlywheel;
-		} else if (robot_->GetTime() - flywheelStartTime_ < FLYWHEEL_FEEDER_DIFF_TIME) {
-			nextState_ = kFeederAndFlywheel;
-			printf("time - flywheelStartTime: %f\n", robot_->GetTime() - flywheelStartTime_);
-		} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
-			printf("IN FEEDER\n");
-			robot_->SetFeederOutput(feederMotorOutput_);
+			flywheelController_->SetPID(pFac_, iFac_, dFac_, fFac_);
+			if (!isFlywheelStarted_) {
+				flywheelStartTime_ = robot_->GetTime();
+				isFlywheelStarted_ = true;
+				nextState_ = kFeederAndFlywheel;
+			} else if (robot_->GetTime() - flywheelStartTime_ < FLYWHEEL_FEEDER_DIFF_TIME) {
+				nextState_ = kFeederAndFlywheel;
+				printf("time - flywheelStartTime: %f\n", robot_->GetTime() - flywheelStartTime_);
+			} else if (humanControl_->GetFlywheelDesired() || autoFlywheelDesired_) {
+				printf("IN FEEDER\n");
+				robot_->SetFeederOutput(feederMotorOutput_);
 //				robot_->SetIntakeOutput(intakeMotorOutput_);
 			nextState_ = kFeederAndFlywheel;
 		} else {
 			robot_->SetFeederOutput(0.0);
 //				robot_->SetIntakeOutput(0.0);
-			flywheelController_->Disable();
-			flywheelStarted_ = false;
-			nextState_ = kIdle;
-		}
-		break;
-	case kGearIntakeMoveDown:
-		if (!gearPivotDownStarted_) {
-			if (!gearPivotPosition_) {
+				flywheelController_->Disable();
+				isFlywheelStarted_ = false;
 				nextState_ = kIdle;
-			} else {
-				gearPivotDownTimeStarted_ = robot_->GetTime();
-				robot_->SetGearPivotOutput(gearPivotMotorOutput_);
-				gearPivotDownStarted_ = true;
-				nextState_ = kGearIntakeMoveDown;
 			}
-		} else if (robot_->GetTime() - gearPivotDownTimeStarted_ < GEAR_PIVOT_DOWN_TIME) {
-			robot_->SetGearPivotOutput(gearPivotMotorOutput_);
-			nextState_ = kGearIntakeMoveDown;
-		} else {
-			robot_->SetGearPivotOutput(0.0);
-			gearPivotDownStarted_ = false;
-			gearPivotPosition_ = false;
-			nextState_ = kIdle;
-		}
-		break;
-	case kGearIntakeMoveUp:
-		if (robot_->GetLimitSwitchState()) {
-			gearPivotPosition_ = true;
-			robot_->SetGearPivotOutput(0.0);
-			nextState_ = kIdle;
-		} else {
-			robot_->SetGearPivotOutput(-gearPivotMotorOutput_);
-			nextState_ = kGearIntakeMoveUp;
-		}
-		break;
-	case kDeployGear:
-		robot_->SetGearIntakeOutput(-gearIntakeMotorOutput_);
-		if (!gearOuttakeStarted_) {
-			gearOuttakeStarted_ = true;
-			gearOuttakeTimeStarted_ = robot_->GetTime();
-			nextState_ = kDeployGear;
-		} else if (robot_->GetTime() - gearOuttakeTimeStarted_ < GEAR_OUTTAKE_TIME) {
-			nextState_ = kDeployGear;
-		} else {
-			if (!gearPivotDownStarted_) {
-				gearPivotDownTimeStarted_ = robot_->GetTime();
-				robot_->SetGearPivotOutput(gearPivotMotorOutput_);
-				gearPivotDownStarted_ = true;
-				nextState_ = kDeployGear;
+			break;
+	case kGearIntakeMoveDown:	// TODO do we need a sensor to figure out whether the intake is truly down?
+			if (!isGearPivotDownStarted_) {
+				if (!isGearPivotPositionUp_) {	// If the gear intake is down
+					nextState_ = kIdle;
+				} else {	// If the gear intake is not down, start the motors
+					gearPivotDownTimeStarted_ = robot_->GetTime();
+					robot_->SetGearPivotOutput(gearPivotMotorOutput_);
+					isGearPivotDownStarted_ = true;
+					nextState_ = kGearIntakeMoveDown;
+				}
 			} else if (robot_->GetTime() - gearPivotDownTimeStarted_ < GEAR_PIVOT_DOWN_TIME) {
 				robot_->SetGearPivotOutput(gearPivotMotorOutput_);
-				nextState_ = kDeployGear;
-			} else {
+				SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearIntakeEncoder()->Get());
+				nextState_ = kGearIntakeMoveDown;
+			} else {	// When the gear intake going down is finished
+				SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearIntakeEncoder()->Get());
 				robot_->SetGearPivotOutput(0.0);
-				robot_->SetGearIntakeOutput(0.0);
-				gearPivotDownStarted_ = false;
-				gearOuttakeStarted_ = false;
-				gearPivotPosition_ = false;
+				isGearPivotDownStarted_ = false;
+				isGearPivotPositionUp_ = false;
 				nextState_ = kIdle;
 			}
-		}
-		break;
+			break;
+	case kGearIntakeMoveUp:
+			if (robot_->GetLimitSwitchState()) {	// If the limit switch detects that it is at its angular position
+				isGearPivotPositionUp_ = true;
+				robot_->SetGearPivotOutput(0.0);
+				robot_->GetGearIntakeEncoder()->Reset();
+				SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearIntakeEncoder()->Get());
+				nextState_ = kIdle;
+			} else {	// If it is not in position (aka still down)
+				robot_->SetGearPivotOutput(-gearPivotMotorOutput_);
+				SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearIntakeEncoder()->Get());
+				nextState_ = kGearIntakeMoveUp;
+			}
+			break;
+	case kDeployGear:
+			robot_->SetGearIntakeOutput(-gearIntakeMotorOutput_);
+			if (!isGearOuttakeStarted_) {		// If just started deploying gear
+				isGearOuttakeStarted_ = true;
+				gearOuttakeTimeStarted_ = robot_->GetTime();
+				nextState_ = kDeployGear;
+			} else if (robot_->GetTime() - gearOuttakeTimeStarted_ < GEAR_OUTTAKE_TIME) {	// Outtake gear for a set time
+				nextState_ = kDeployGear;
+			} else {
+				if (!isGearPivotDownStarted_) {	// If the gear intake mech just starting moving down
+					gearPivotDownTimeStarted_ = robot_->GetTime();
+					robot_->SetGearPivotOutput(gearPivotMotorOutput_);
+					isGearPivotDownStarted_ = true;
+					nextState_ = kDeployGear;
+				} else if (robot_->GetTime() - gearPivotDownTimeStarted_ < GEAR_PIVOT_DOWN_TIME) {
+					robot_->SetGearPivotOutput(gearPivotMotorOutput_);
+					nextState_ = kDeployGear;
+				} else {	// If the gear intake mech finished deploying
+					robot_->SetGearPivotOutput(0.0);
+					robot_->SetGearIntakeOutput(0.0);
+					isGearPivotDownStarted_ = false;
+					isGearOuttakeStarted_ = false;
+					isGearPivotPositionUp_ = false;
+					nextState_ = kIdle;
+				}
+			}
+			break;
 	case kTimeIntake:
 		SmartDashboard::PutString("State", "kTimeIntake");
 		if (!autoStartedIntake_) {

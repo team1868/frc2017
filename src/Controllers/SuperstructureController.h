@@ -42,11 +42,17 @@ private:
 	uint32_t currState_;
 	uint32_t nextState_;
 
+	// Flywheel variables
 	double expectedFlywheelVelocity_, adjustedFlywheelVelocity_, desiredFlywheelVelocity_, expectedFlywheelMotorOutput_, feederMotorOutput_,
-		   climberMotorOutput_, intakeMotorOutput_, flywheelStartTime_, gearIntakeMotorOutput_, gearPivotMotorOutput_,
-		   gearPivotDownTimeStarted_, gearOuttakeTimeStarted_;
+		flywheelStartTime_,  intakeMotorOutput_;
 
-	bool flywheelStarted_, gearMechPos_, gearPivotPosition_, gearPivotDownStarted_, gearOuttakeStarted_;
+	// Climber variables
+	double climberMotorOutput_;
+
+	// Gear intake mech variables
+	double gearIntakeMotorOutput_, gearPivotMotorOutput_, gearPivotDownTimeStarted_, gearOuttakeTimeStarted_;
+
+	bool isFlywheelStarted_, gearMechPos_, isGearPivotPositionUp_, isGearPivotDownStarted_, isGearOuttakeStarted_;
 
 	// Auto variables
 	bool autoFlywheelDesired_, autoTimeIntakeDesired_, autoStartedIntake_, autoFinishedIntake_;
