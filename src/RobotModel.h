@@ -48,6 +48,7 @@ public:
 	double GetIntakeOutput();
 	void SetIntakeOutput(double output);
 
+	Encoder* GetGearIntakeEncoder();
 	double GetGearIntakeOutput();
 	void SetGearIntakeOutput(double output);
 
@@ -78,7 +79,7 @@ private:
 	Compressor *compressor_;
 	DoubleSolenoid *gearShiftSolenoid_;
 	Solenoid *gearMechSolenoid_;
-	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_;
+	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_, *gearIntakeMechEncoder_;
 	DigitalInput *distanceSensor_, *limitSwitch_;
 
 	bool gearInRobot_, distSensorCurr_, distSensorLast_;
