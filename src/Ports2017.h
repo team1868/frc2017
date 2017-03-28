@@ -83,10 +83,10 @@ static const int LEFT_DRIVE_ENCODER_B_PWM_PORT			= 6;
 static const int RIGHT_DRIVE_ENCODER_A_PWM_PORT			= 3;
 static const int RIGHT_DRIVE_ENCODER_B_PWM_PORT			= 4;
 
-static const int DISTANCE_SENSOR_PWM_PORT				= 9;
-static const int LIMIT_SWITCH_PWM_PORT					= -1;
+//static const int DISTANCE_SENSOR_PWM_PORT				= 9;
 static const int GEAR_INTAKE_MECH_ENCODER_A_PWM_PORT	= 7;	// Arbitrary values
 static const int GEAR_INTAKE_MECH_ENCODER_B_PWM_PORT	= 8;
+static const int LIMIT_SWITCH_PWM_PORT					= 9;
 
 #endif
 
@@ -125,7 +125,7 @@ static const int HIGH_LOW_GEAR_BUTTON_PORT				= 3;
 static const int ARCADE_DRIVE_BUTTON_PORT				= 6;
 static const int QUICK_TURN_BUTTON_PORT					= 2;
 static const int BRAKE_BUTTON_PORT						= 2;
-static const int ALIGN_WITH_PEG_BUTTON_PORT 			= 5;  //TODO Change port
+static const int ALIGN_WITH_PEG_BUTTON_PORT 			= -1;  //TODO Change port
 
 //Superstructure controller button ports
 static const int FLYWHEEL_SWITCH_PORT					= 9;

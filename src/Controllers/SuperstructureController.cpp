@@ -195,6 +195,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 		break;
 	case kGearIntakeMoveDown:	// TODO do we need a sensor to figure out whether the intake is truly down?
+		SmartDashboard::PutString("State", "kGearIntakeMoveDown");
 		if (!isGearPivotDownStarted_) {
 			if (!isGearPivotPositionUp_) {	// If the gear intake is down
 				nextState_ = kIdle;
@@ -217,6 +218,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 		break;
 	case kGearIntakeMoveUp:
+		SmartDashboard::PutString("State", "kGearIntakeMoveUp");
 		if (robot_->GetLimitSwitchState()) {	// If the limit switch detects that it is at its angular position
 			isGearPivotPositionUp_ = true;
 			robot_->SetGearPivotOutput(0.0);
@@ -230,6 +232,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		}
 		break;
 	case kDeployGear:
+		SmartDashboard::PutString("State", "kDeployGear");
 		robot_->SetGearIntakeOutput(-gearIntakeMotorOutput_);
 		if (!isGearOuttakeStarted_) {		// If just started deploying gear
 			isGearOuttakeStarted_ = true;

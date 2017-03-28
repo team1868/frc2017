@@ -42,6 +42,7 @@ public:
 	 * @param deltaTimeSec a double that contains update interval
 	 */
 	void Update(double currTimeSec, double deltaTimeSec);
+	void ReadFromJetson();
 	void RefreshIni();
 	bool IsDone();
 	virtual ~AlignWithPegCommand();

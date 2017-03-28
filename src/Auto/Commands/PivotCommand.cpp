@@ -62,7 +62,7 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Delta setpoint", pivotPID_->GetDeltaSetpoint());
 	SmartDashboard::PutBoolean("Is done", isDone_);
 
-	bool timeOut = (robot_->GetTime() - pivotCommandStartTime_ > 3.0);		// TODO test
+	bool timeOut = (robot_->GetTime() - pivotCommandStartTime_ > 1.5);		// TODO test
 
 	SmartDashboard::PutBoolean("Timed out", timeOut);
 

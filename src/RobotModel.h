@@ -80,7 +80,7 @@ private:
 	DoubleSolenoid *gearShiftSolenoid_;
 	Solenoid *gearMechSolenoid_;
 	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_, *gearIntakeMechEncoder_;
-	DigitalInput *distanceSensor_, *limitSwitch_;
+	DigitalInput *limitSwitch_;
 
 	bool gearInRobot_, distSensorCurr_, distSensorLast_;
 };

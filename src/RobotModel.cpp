@@ -110,7 +110,7 @@ RobotModel::RobotModel() {
 
 	gearMechSolenoid_ = new Solenoid(PNEUMATICS_CONTROL_MODULE_ID, GEAR_MECHANISM_SOLENOID_PORT);
 
-	distanceSensor_ = new DigitalInput(DISTANCE_SENSOR_PWM_PORT);
+	//distanceSensor_ = new DigitalInput(DISTANCE_SENSOR_PWM_PORT);
 	limitSwitch_ = new DigitalInput(LIMIT_SWITCH_PWM_PORT);
 
 	gearInRobot_ = false;
@@ -285,17 +285,17 @@ void RobotModel::SetGearInRobot(bool gearInRobot) {
 // TODO put distance sensor on robot and test this!
 void RobotModel::GearUpdate() {
 	distSensorLast_ = distSensorCurr_;
-	distSensorCurr_ = distanceSensor_->Get();	// Boolean
+//	distSensorCurr_ = distanceSensor_->Get();	// Boolean
 
 	if (distSensorLast_ && !distSensorCurr_) {
 		gearInRobot_ = !gearInRobot_;
 	}
 
-	if (gearInRobot_) {
-		printf("Gear is in robot\n");
-	} else {
-		printf("Gear is NOT in robot\n");
-	}
+//	if (gearInRobot_) {
+//		printf("Gear is in robot\n");
+//	} else {
+//		printf("Gear is NOT in robot\n");
+//	}
 }
 
 void RobotModel::SetGearMech(bool dir) {
