@@ -28,6 +28,7 @@ ControlBoard::ControlBoard() {
 	reverseFeederButton_ = new ButtonReader(operatorJoyB_, REVERSE_FEEDER_BUTTON_PORT);
 	gearMechOutButton_ = new ButtonReader(operatorJoyB_, GEAR_MECH_OUT_BUTTON_PORT);
 	gearSwitchButton_ = new ButtonReader(operatorJoyB_, CAMERA_SWITCH_BUTTON_PORT);
+	gearIntakeSwitch_ = new ButtonReader(operatorJoy_, GEAR_INTAKE_BUTTON_PORT);
 	gearIntakeUpButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_UP_BUTTON_PORT);
 	gearIntakeDownButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_DOWN_BUTTON_PORT);
 	deployGearButton_ = new ButtonReader(operatorJoyB_, DEPLOY_GEAR_BUTTON_PORT);
@@ -50,6 +51,7 @@ ControlBoard::ControlBoard() {
 	gearIntakeUpDesired_ = false;
 	gearIntakeDownDesired_ = false;
 	deployGearDesired_ = false;
+	gearIntakeDesired_ = false;
 
 	cameraSwitchDesired_ = false;
 	gearCameraDesired_ = true;
@@ -78,10 +80,12 @@ void ControlBoard::ReadControls() {
 	gearMechOutDesired_ = gearMechOutButton_->WasJustPressed();
 	flywheelVelAdjust_ = operatorJoy_->GetZ();
 	cameraSwitchDesired_ = gearSwitchButton_->WasJustPressed();
-	gearIntakeUpDesired_ = gearIntakeUpButton_->WasJustPressed();
-	gearIntakeDownDesired_ = gearIntakeDownButton_->WasJustPressed();
+//	gearIntakeUpDesired_ = gearIntakeUpButton_->WasJustPressed();
+//	gearIntakeDownDesired_ = gearIntakeDownButton_->WasJustPressed();
+	gearIntakeUpDesired_ = gearIntakeUpButton_->IsDown();		// TO CHANGE
+	gearIntakeDownDesired_ = gearIntakeDownButton_->IsDown();
 	deployGearDesired_ = gearIntakeDownButton_->WasJustPressed();
-
+	gearIntakeDesired_ = gearIntakeSwitch_->IsDown();
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -124,7 +128,7 @@ void ControlBoard::ReadAllButtons() {
 	gearIntakeUpButton_->ReadValue();
 	gearIntakeDownButton_->ReadValue();
 	deployGearButton_->ReadValue();
-
+	gearIntakeSwitch_->ReadValue();
 }
 
 // Returns true if reverse drive is desired
@@ -188,8 +192,12 @@ bool ControlBoard::GetGearIntakeDownDesired() {
 	return gearIntakeDownDesired_;
 }
 
-bool ControlBoard::GetDeployGearDesired() {
+bool ControlBoard::GetGearDeployDesired() {
 	return deployGearDesired_;
+}
+
+bool ControlBoard::GetGearIntakeDesired() {
+	return gearIntakeDesired_;
 }
 
 bool ControlBoard::GetGearCameraDesired() {

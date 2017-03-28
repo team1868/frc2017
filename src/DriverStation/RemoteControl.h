@@ -27,9 +27,11 @@ public:
 	virtual bool GetGearMechOutDesired() = 0;
 	virtual double GetFlywheelVelAdjust() = 0;
 	virtual bool GetGearCameraDesired() = 0;
+
 	virtual bool GetGearIntakeUpDesired() = 0;
 	virtual bool GetGearIntakeDownDesired() = 0;
-	virtual bool GetDeployGearDesired() = 0;
+	virtual bool GetGearDeployDesired() = 0;
+	virtual bool GetGearIntakeDesired() = 0;
 
 	virtual ~RemoteControl() {}
 };

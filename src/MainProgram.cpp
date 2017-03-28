@@ -127,6 +127,8 @@ public:
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
 		SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearIntakeEncoder()->Get());
+		SmartDashboard::PutNumber("Gear Mech Limit Switch", robot_->GetLimitSwitchState());
+
 
 		if(humanControl_->GetGearCameraDesired()) {
 			SmartDashboard::PutString("Camera", "Gear");

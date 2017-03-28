@@ -50,9 +50,11 @@ private:
 	double climberMotorOutput_;
 
 	// Gear intake mech variables
-	double gearIntakeMotorOutput_, gearPivotMotorOutput_, gearPivotDownTimeStarted_, gearOuttakeTimeStarted_;
-
-	bool isFlywheelStarted_, gearMechPos_, isGearPivotPositionUp_, isGearPivotDownStarted_, isGearOuttakeStarted_;
+	double gearIntakeMotorOutput_, gearOuttakeMotorOutput_, gearPivotMotorOutput_, gearDownTicks_;
+	//gearPivotDownTimeStarted_, gearOuttakeTimeStarted_;
+//
+//	bool gearMechPos_, isGearPivotPositionUp_, isGearPivotDownStarted_, isGearOuttakeStarted_;
+	bool isFlywheelStarted_;
 
 	// Auto variables
 	bool autoFlywheelDesired_, autoTimeIntakeDesired_, autoStartedIntake_, autoFinishedIntake_;
