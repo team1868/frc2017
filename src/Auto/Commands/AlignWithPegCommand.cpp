@@ -58,6 +58,10 @@ void AlignWithPegCommand::Init() {
 	subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
 	subscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
 	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "MESSAGE", 0);
+//	subscriber_->setsockopt(ZMQ_CONFLATE, "MESSAGE", 0);
+	int confl = 1;
+	subscriber_->setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
+//	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
 	desiredPivotDeltaAngle_ = 0.0;
 	desiredDistance_ = 0.0;
@@ -140,46 +144,46 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				pivotCommand_->Update(currTimeSec, deltaTimeSec);
 				nextState_ = kPivotToAngleUpdate;
 			} else {
-				nextState_ = kDriveStraightInit;
-//				isDone_ = true;
-			}
-			break;
-
-		case (kDriveStraightInit) :
-//			// Get distance from Jetson
-//			if (distanceAddress == "DISTANCE") {
-//				desiredDistance_ = stod(distanceContents);		// IN INCHES
-//				printf("DISTANCE: %f\n", desiredDistance_);
-//			} else {
-//				printf("distance address: %s\n", distanceAddress.c_str());
-//			}
-//
-//			if (numTimesInkDriveStraightInit < 3) {
-//				numTimesInkDriveStraightInit++;
 //				nextState_ = kDriveStraightInit;
-			if (fabs(desiredDistance_) > 2.0/12.0) {	// 2 in threshold
-				printf("DISTANCE FOR COMMAND: %f\n", desiredDistance_);
-				// Jetson returns in inches, so /12.0
-				// Subtract 10 inches bc of length of peg
-				// negative because technically driving backwards
-				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-						robot_, -(desiredDistance_ - 10.0)/12.0);	// converting to feet
-				driveStraightCommand_->Init();
-				nextState_ = kDriveStraightUpdate;
-			} else {
 				isDone_ = true;
 			}
 			break;
 
-		case (kDriveStraightUpdate) :
-			if (!driveStraightCommand_->IsDone()) {
-				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
-				nextState_ = kDriveStraightUpdate;
-			} else {
-				isDone_ = true;
-				// no next state
-			}
-			break;
+//		case (kDriveStraightInit) :
+////			// Get distance from Jetson
+////			if (distanceAddress == "DISTANCE") {
+////				desiredDistance_ = stod(distanceContents);		// IN INCHES
+////				printf("DISTANCE: %f\n", desiredDistance_);
+////			} else {
+////				printf("distance address: %s\n", distanceAddress.c_str());
+////			}
+////
+////			if (numTimesInkDriveStraightInit < 3) {
+////				numTimesInkDriveStraightInit++;
+////				nextState_ = kDriveStraightInit;
+//			if (fabs(desiredDistance_) > 2.0/12.0) {	// 2 in threshold
+//				printf("DISTANCE FOR COMMAND: %f\n", desiredDistance_);
+//				// Jetson returns in inches, so /12.0
+//				// Subtract 10 inches bc of length of peg
+//				// negative because technically driving backwards
+//				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
+//						robot_, -(desiredDistance_ - 10.0)/12.0);	// converting to feet
+//				driveStraightCommand_->Init();
+//				nextState_ = kDriveStraightUpdate;
+//			} else {
+//				isDone_ = true;
+//			}
+//			break;
+//
+//		case (kDriveStraightUpdate) :
+//			if (!driveStraightCommand_->IsDone()) {
+//				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
+//				nextState_ = kDriveStraightUpdate;
+//			} else {
+//				isDone_ = true;
+//				// no next state
+//			}
+//			break;
 	}
 	currState_ = nextState_;
 }
@@ -252,14 +256,15 @@ bool AlignWithPegCommand::IsDone() {
 //}
 
 void AlignWithPegCommand::ReadFromJetson() {
-	zmq::message_t message;
-	int tosses = 0;
-
-	while((subscriber_->recv(&message,ZMQ_NOBLOCK)) == 0) {
-		tosses += 1;
-	}
-
-	string contents(static_cast<char*>(message.data()), message.size());
+//	zmq::message_t message;
+//	int tosses = 0;
+//
+//	while((subscriber_->recv(&message,ZMQ_NOBLOCK)) == 0) {
+//		tosses += 1;
+//	}
+//
+//	string contents(static_cast<char*>(message.data()), message.size());
+	string contents = s_recv(*subscriber_);
 
 	stringstream ss(contents);
 	vector<string> result;
@@ -273,7 +278,7 @@ void AlignWithPegCommand::ReadFromJetson() {
 	desiredPivotDeltaAngle_ = stod(result.at(0));
 	desiredDistance_ = stod(result.at(1));
 
-	SmartDashboard::PutNumber("Subscriber Tosses", tosses);
+//	SmartDashboard::PutNumber("Subscriber Tosses", tosses);
 }
 
 AlignWithPegCommand::~AlignWithPegCommand() {

@@ -50,7 +50,7 @@ public:
 
 	//Superstructure button accessors
 	bool GetFlywheelDesired();
-	bool GetGearIntakeDesired();
+//	bool GetGearIntakeDesired();
 	bool GetIntakeDesired();
 	bool GetClimberDesired();
 	bool GetReverseIntakeDesired();
@@ -61,6 +61,10 @@ public:
 	bool GetGearIntakeUpDesired();
 	bool GetGearIntakeDownDesired();
 	bool GetGearDeployDesired();
+	bool GetGearIntakeDesired();
+	bool GetGearOuttakeDesired();
+	bool GetGearIntakeAdjustUpDesired();
+	bool GetGearIntakeAdjustDownDesired();
 
 	virtual ~ControlBoard();
 
@@ -75,7 +79,8 @@ private:
 	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, alignWithPegDesired_;
 	// Bool values for superstructure
 	bool flywheelDesired_, intakeDesired_, climberDesired_, reverseIntakeDesired_, reverseFeederDesired_, gearMechOutDesired_, cameraSwitchDesired_,
-		gearCameraDesired_, gearIntakeDesired_, gearIntakeUpDesired_, gearIntakeDownDesired_, deployGearDesired_;
+		gearCameraDesired_, gearIntakeUpDesired_, gearIntakeDownDesired_, gearDeployDesired_, gearIntakeDesired_, gearOuttakeDesired_,
+		gearIntakeAdjustUpDesired_, gearIntakeAdjustDownDesired_;
 
 	// Joysticks
 	Joystick *leftJoy_, *rightJoy_, *operatorJoy_, *operatorJoyB_;
@@ -85,7 +90,8 @@ private:
 
 	// Buttons for superstructure
 	ButtonReader *flywheelSwitch_, *intakeSwitch_, *climberSwitch_, *reverseIntakeButton_, *reverseFeederButton_, *gearMechOutButton_,
-				*gearIntakeSwitch_, *gearSwitchButton_, *gearIntakeUpButton_, *gearIntakeDownButton_, *deployGearButton_;
+				 *gearSwitchButton_, *gearIntakeUpButton_, *gearIntakeDownButton_, *gearDeployButton_, *gearIntakeButton_,
+				 *gearOuttakeButton_, *gearIntakeAdjustUpButton_, *gearIntakeAdjustDownButton_;
 
 	void ReadAllButtons();
 };

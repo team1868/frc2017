@@ -48,7 +48,8 @@ public:
 	double GetIntakeOutput();
 	void SetIntakeOutput(double output);
 
-	Encoder* GetGearIntakeEncoder();
+	Encoder* GetGearPivotEncoder();
+	Victor* GetGearPivotMotor();
 	double GetGearIntakeOutput();
 	void SetGearIntakeOutput(double output);
 
@@ -79,7 +80,7 @@ private:
 	Compressor *compressor_;
 	DoubleSolenoid *gearShiftSolenoid_;
 	Solenoid *gearMechSolenoid_;
-	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_, *gearIntakeMechEncoder_;
+	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_, *gearPivotEncoder_;
 	DigitalInput *limitSwitch_;
 
 	bool gearInRobot_, distSensorCurr_, distSensorLast_;

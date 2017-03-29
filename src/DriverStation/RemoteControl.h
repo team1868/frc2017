@@ -32,7 +32,9 @@ public:
 	virtual bool GetGearIntakeDownDesired() = 0;
 	virtual bool GetGearDeployDesired() = 0;
 	virtual bool GetGearIntakeDesired() = 0;
-
+	virtual bool GetGearOuttakeDesired() = 0;
+	virtual bool GetGearIntakeAdjustUpDesired() = 0;
+	virtual bool GetGearIntakeAdjustDownDesired() = 0;
 	virtual ~RemoteControl() {}
 };
 

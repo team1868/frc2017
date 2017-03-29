@@ -18,7 +18,7 @@ ControlBoard::ControlBoard() {
 	gearShiftButton_ = new ButtonReader(rightJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
 	arcadeDriveButton_ = new ButtonReader(operatorJoy_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
-	alignWithPegButton_ = new ButtonReader(operatorJoyB_, ALIGN_WITH_PEG_BUTTON_PORT); //Subject to change
+	alignWithPegButton_ = new ButtonReader(rightJoy_, ALIGN_WITH_PEG_BUTTON_PORT); //Subject to change
 
 	// Buttons for superstructure
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);
@@ -28,10 +28,13 @@ ControlBoard::ControlBoard() {
 	reverseFeederButton_ = new ButtonReader(operatorJoyB_, REVERSE_FEEDER_BUTTON_PORT);
 	gearMechOutButton_ = new ButtonReader(operatorJoyB_, GEAR_MECH_OUT_BUTTON_PORT);
 	gearSwitchButton_ = new ButtonReader(operatorJoyB_, CAMERA_SWITCH_BUTTON_PORT);
-	gearIntakeSwitch_ = new ButtonReader(operatorJoy_, GEAR_INTAKE_BUTTON_PORT);
 	gearIntakeUpButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_UP_BUTTON_PORT);
 	gearIntakeDownButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_DOWN_BUTTON_PORT);
-	deployGearButton_ = new ButtonReader(operatorJoyB_, DEPLOY_GEAR_BUTTON_PORT);
+	gearDeployButton_ = new ButtonReader(operatorJoyB_, DEPLOY_GEAR_BUTTON_PORT);
+	gearIntakeButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_BUTTON_PORT);
+	gearOuttakeButton_ = new ButtonReader(operatorJoyB_, GEAR_OUTTAKE_BUTTON_PORT);
+	gearIntakeAdjustUpButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_ADJUST_UP_BUTTON_PORT);
+	gearIntakeAdjustDownButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_ADJUST_DOWN_BUTTON_PORT);
 
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
@@ -48,10 +51,15 @@ ControlBoard::ControlBoard() {
 	reverseFeederDesired_ = false;
 	gearMechOutDesired_ = false;
 	flywheelVelAdjust_ = 0.0;
+
 	gearIntakeUpDesired_ = false;
 	gearIntakeDownDesired_ = false;
-	deployGearDesired_ = false;
+	gearDeployDesired_ = false;
 	gearIntakeDesired_ = false;
+	//gearIntakeDesired_ = false;
+	gearOuttakeDesired_ = false;
+	gearIntakeAdjustUpDesired_ = false;
+	gearIntakeAdjustDownDesired_ = false;
 
 	cameraSwitchDesired_ = false;
 	gearCameraDesired_ = true;
@@ -82,10 +90,14 @@ void ControlBoard::ReadControls() {
 	cameraSwitchDesired_ = gearSwitchButton_->WasJustPressed();
 //	gearIntakeUpDesired_ = gearIntakeUpButton_->WasJustPressed();
 //	gearIntakeDownDesired_ = gearIntakeDownButton_->WasJustPressed();
-	gearIntakeUpDesired_ = gearIntakeUpButton_->IsDown();		// TO CHANGE
-	gearIntakeDownDesired_ = gearIntakeDownButton_->IsDown();
-	deployGearDesired_ = gearIntakeDownButton_->WasJustPressed();
-	gearIntakeDesired_ = gearIntakeSwitch_->IsDown();
+
+	gearIntakeUpDesired_ = gearIntakeUpButton_->WasJustPressed();
+	gearIntakeDownDesired_ = gearIntakeDownButton_->WasJustPressed();
+	gearDeployDesired_ = gearDeployButton_->WasJustPressed();
+	gearIntakeDesired_ = gearIntakeButton_->IsDown();
+	gearOuttakeDesired_ = gearOuttakeButton_->IsDown();
+	gearIntakeAdjustUpDesired_ = gearIntakeAdjustUpButton_->IsDown();
+	gearIntakeAdjustDownDesired_ = gearIntakeAdjustDownButton_->IsDown();
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -127,8 +139,11 @@ void ControlBoard::ReadAllButtons() {
 	gearMechOutButton_->ReadValue();
 	gearIntakeUpButton_->ReadValue();
 	gearIntakeDownButton_->ReadValue();
-	deployGearButton_->ReadValue();
-	gearIntakeSwitch_->ReadValue();
+	gearDeployButton_->ReadValue();
+	gearIntakeButton_->ReadValue();
+	gearOuttakeButton_->ReadValue();
+	gearIntakeAdjustUpButton_->ReadValue();
+	gearIntakeAdjustDownButton_->ReadValue();
 }
 
 // Returns true if reverse drive is desired
@@ -193,11 +208,23 @@ bool ControlBoard::GetGearIntakeDownDesired() {
 }
 
 bool ControlBoard::GetGearDeployDesired() {
-	return deployGearDesired_;
+	return gearDeployDesired_;
 }
 
 bool ControlBoard::GetGearIntakeDesired() {
 	return gearIntakeDesired_;
+}
+
+bool ControlBoard::GetGearOuttakeDesired() {
+	return gearOuttakeDesired_;
+}
+
+bool ControlBoard::GetGearIntakeAdjustUpDesired() {
+	return gearIntakeAdjustUpDesired_;
+}
+
+bool ControlBoard::GetGearIntakeAdjustDownDesired() {
+	return gearIntakeAdjustDownDesired_;
 }
 
 bool ControlBoard::GetGearCameraDesired() {

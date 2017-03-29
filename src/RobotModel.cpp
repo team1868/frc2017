@@ -106,7 +106,9 @@ RobotModel::RobotModel() {
 	flywheelEncoder_->SetPIDSourceType(PIDSourceType::kRate);
 	flywheelEncoder_->SetDistancePerPulse(FLYWHEEL_DIAMETER * M_PI / (ENCODER_COUNT_PER_ROTATION * EDGES_PER_ENCODER_COUNT));	// TODO tune velocity PID
 
-	gearIntakeMechEncoder_ = new Encoder(GEAR_INTAKE_MECH_ENCODER_A_PWM_PORT, GEAR_INTAKE_MECH_ENCODER_B_PWM_PORT, false);
+	gearPivotEncoder_ = new Encoder(GEAR_INTAKE_MECH_ENCODER_A_PWM_PORT, GEAR_INTAKE_MECH_ENCODER_B_PWM_PORT, true);
+	gearPivotEncoder_->SetPIDSourceType(PIDSourceType::kDisplacement);
+	gearPivotEncoder_->SetDistancePerPulse(1.0);
 
 	gearMechSolenoid_ = new Solenoid(PNEUMATICS_CONTROL_MODULE_ID, GEAR_MECHANISM_SOLENOID_PORT);
 
@@ -243,8 +245,12 @@ void RobotModel::SetIntakeOutput(double output) {
 	intakeMotor_->Set(output);
 }
 
-Encoder *RobotModel::GetGearIntakeEncoder() {
-	return gearIntakeMechEncoder_;
+Encoder *RobotModel::GetGearPivotEncoder() {
+	return gearPivotEncoder_;
+}
+
+Victor* RobotModel::GetGearPivotMotor() {
+	return gearPivotMotor_;
 }
 
 double RobotModel::GetGearIntakeOutput() {

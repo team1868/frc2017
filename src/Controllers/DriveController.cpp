@@ -57,26 +57,26 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			rightJoyX = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX);
 
 			if (humanControl_->GetHighGearDesired()) {
-				printf("Set high gear\n");
+				//printf("Set high gear\n");
 				robot_->SetHighGear();
 			} else {
-				printf("Set low gear\n");
+				//printf("Set low gear\n");
 				robot_->SetLowGear();
 			}
 
 			nextState_ = kTeleopDrive;
 
 			if (humanControl_->GetAlignWithPegDesired()) {
-				printf("Going to alignwithpeg\n");
+				//printf("Going to alignwithpeg\n");
 				nextState_ = kAlignWithPeg;
 			} else if (humanControl_->GetQuickTurnDesired()) {
-				printf("Quick turning\n");
+				//printf("Quick turning\n");
 				QuickTurn(rightJoyX);
 			} else if (humanControl_->GetArcadeDriveDesired()) {
-				printf("Arcade driving\n");
+				//printf("Arcade driving\n");
 				ArcadeDrive(rightJoyX, leftJoyY);
 			} else if (!humanControl_->GetArcadeDriveDesired()){
-				printf("Tank driving\n");
+				//printf("Tank driving\n");
 				TankDrive(leftJoyY, rightJoyY);
 			} else {
 				printf("SOMETHING IS WRONG\n");

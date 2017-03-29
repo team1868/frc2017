@@ -33,8 +33,8 @@ public:
 	};
 
 private:
-	RobotModel* robot_;
-	RemoteControl* humanControl_;
+	RobotModel *robot_;
+	RemoteControl *humanControl_;
 
 	PIDController *flywheelController_;
 	PIDController *gearPositionController_;
@@ -50,7 +50,7 @@ private:
 	double climberMotorOutput_;
 
 	// Gear intake mech variables
-	double gearIntakeMotorOutput_, gearOuttakeMotorOutput_, gearPivotMotorOutput_, gearDownTicks_;
+	double gearIntakeMotorOutput_, gearOuttakeMotorOutput_, gearPivotMotorOutput_, gearDownTicks_, gearDeployTicks_;
 	//gearPivotDownTimeStarted_, gearOuttakeTimeStarted_;
 //
 //	bool gearMechPos_, isGearPivotPositionUp_, isGearPivotDownStarted_, isGearOuttakeStarted_;

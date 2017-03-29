@@ -126,9 +126,14 @@ public:
 		humanControl_->ReadControls();
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
-		SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearIntakeEncoder()->Get());
+		SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearPivotEncoder()->Get());
 		SmartDashboard::PutNumber("Gear Mech Limit Switch", robot_->GetLimitSwitchState());
+		SmartDashboard::PutNumber("Gear Pivot Output", robot_->GetGearPivotMotor()->Get());
 
+//		// for testing purposes, to take out
+//		if (!robot_->GetLimitSwitchState()) {
+//			robot_->GetGearIntakeEncoder()->Reset();
+//		}
 
 		if(humanControl_->GetGearCameraDesired()) {
 			SmartDashboard::PutString("Camera", "Gear");
