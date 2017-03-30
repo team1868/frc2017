@@ -84,6 +84,8 @@ private:
 	int numTimesInkPivotToAngleInit;
 	int numTimesInkDriveStraightInit;
 
+	double timeStartForVision_;
+
 	//ifstream visionLog_;
 };
 

@@ -54,13 +54,17 @@ void AlignWithPegCommand::RefreshIni() {
 }
 
 void AlignWithPegCommand::Init() {
+	timeStartForVision_ = robot_->GetTime();
+
 	context_ = new zmq::context_t(1);
 	subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
 	subscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
-	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "MESSAGE", 0);
-//	subscriber_->setsockopt(ZMQ_CONFLATE, "MESSAGE", 0);
+
 	int confl = 1;
 	subscriber_->setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
+	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "MESSAGE", 0);
+
+//	subscriber_->setsockopt(ZMQ_CONFLATE, "MESSAGE", 0);
 //	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
 	desiredPivotDeltaAngle_ = 0.0;
@@ -118,7 +122,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 //			ReadUpdateFromJetson();
 
-			if (fabs(lastDesiredAngle - desiredPivotDeltaAngle_) > 1.0) {
+			if (fabs(lastDesiredAngle - desiredPivotDeltaAngle_) > 2.0) {
 				nextState_ = kPivotToAngleInit;
 			} else if (fabs(desiredPivotDeltaAngle_) > 2.0) {
 //			if (numTimesInkPivotToAngleInit < 3) {
@@ -127,11 +131,16 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 //			} else if (fabs(desiredPivotDeltaAngle_) > 3.0) {		// 2 degree threshold
 				// CHECK -DESIREDPIVOTDELTAANGLE_
 				// negative because jetson returns angle wrong way
+				printf("vision done at: %f\n", robot_->GetTime() - timeStartForVision_);
+
 				printf("ANGLE FOR PIVOT COMMAND: %f\n", -desiredPivotDeltaAngle_);
 				pivotCommand_ = new PivotCommand(robot_, -desiredPivotDeltaAngle_, false, navXSource_);
+				printf("pivotCommand constructed: %f\n", robot_->GetTime() - timeStartForVision_);
 				pivotCommand_->Init();
+				printf("pivotCommand inited: %f\n", robot_->GetTime() - timeStartForVision_);
 				nextState_ = kPivotToAngleUpdate;
 			} else {
+				printf("vision done at: %f\n", robot_->GetTime() - timeStartForVision_);
 				printf("ANGLE THAT WAS GOOD: %f\n", -desiredPivotDeltaAngle_);
 				nextState_ = kDriveStraightInit;
 //				isDone_ = true;

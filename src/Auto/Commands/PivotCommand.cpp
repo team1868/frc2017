@@ -16,6 +16,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	} else {
 		desiredDeltaAngle_ = desiredAngle;
 	}
+
 	isDone_ = false;
 
 	robot_ = robot;
@@ -23,8 +24,9 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 
 	pivotCommandStartTime_ = robot_->GetTime();
 
-	GetIniValues();
-	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
+//	GetIniValues();
+	// TODO ADD BACK IN !!!
+	pivotPID_ = new PIDController(0.09, 0.0, 0.06, navXSource_, talonOutput_);
 }
 
 void PivotCommand::GetIniValues() {
