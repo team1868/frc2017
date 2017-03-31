@@ -70,7 +70,7 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	gearPositionController_->SetContinuous(false);
 
 	// Initializing variables for gear intake mech
-//	gearMechPos_ = false;	// True is in, false is out
+	gearMechPos_ = false;	// True is in, false is out
 //	isGearPivotPositionUp_ = true; // True is up, false is down
 //	isGearPivotDownStarted_ = false;
 //	isGearOuttakeStarted_ = false;
@@ -101,7 +101,7 @@ void SuperstructureController::Reset() {
 //	gearPivotDownTimeStarted_ = 0.0;
 //	gearOuttakeTimeStarted_ = 0.0;
 
-//	gearMechPos_ = false;
+	gearMechPos_ = false;
 //	isGearPivotPositionUp_ = true;
 
 	autoFlywheelDesired_ = false;
@@ -121,10 +121,10 @@ void SuperstructureController::Reset() {
 
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 	SetOutputs();
-//	if (humanControl_->GetGearMechOutDesired()) {
-////		gearMechPos_ = !gearMechPos_;
-////		robot_->SetGearMech(gearMechPos_);
-//	}
+	if (humanControl_->GetGearMechOutDesired()) {
+		gearMechPos_ = !gearMechPos_;
+		robot_->SetGearMech(gearMechPos_);
+	}
 
 	switch(currState_) {
 	case kInit:
@@ -135,7 +135,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		robot_->SetClimberOutput(0.0);
 		robot_->SetGearPivotOutput(0.0);
 		robot_->SetGearIntakeOutput(0.0);
-//		gearMechPos_ = false;
+		gearMechPos_ = false;
 //		isGearPivotPositionUp_ = true;
 		gearPositionController_->Reset();
 		gearPositionController_->Disable();
@@ -203,7 +203,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			gearPositionController_->Disable();
 			printf("GetGearIntakeAdjustUpDesired\n");
 			robot_->SetGearPivotOutput(-gearPivotMotorOutput_);
-		} else if (humanControl_->GetGearIntakeAdjustDownDesired()) {
+		} else if (humanControl_->GetGearIntakeAdjustDownDesired() && robot_->GetLimitSwitchState()) {
 			gearPositionController_->Reset();
 			gearPositionController_->Disable();
 			printf("GetGearIntakeAdjustDownDesired\n");
@@ -212,7 +212,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetGearPivotOutput(0.0);
 		}
 
-		if (humanControl_->GetGearIntakeDownDesired()) {
+		if (humanControl_->GetGearIntakeDownDesired() && robot_->GetLimitSwitchState()) {
 			gearPositionController_->Reset();
 			gearPositionController_->Disable();
 			nextState_ = kGearIntakeMoveDown;

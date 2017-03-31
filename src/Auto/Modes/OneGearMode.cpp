@@ -40,11 +40,17 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 
 void OneGearMode::CreateQueue() {
 	printf("Creating queue\n");
-//	firstCommand_ = driveStraightCommand_;
-//
+
+	firstCommand_ = driveStraightCommand_;
+
+	if (autoMode_ == 2 || autoMode_ == 4) {
+		driveStraightCommand_->SetNextCommand(pivotCommand_);
+		pivotCommand_->SetNextCommand(alignWithPegCommand_);
+	}
+
 //	driveStraightCommand_->SetNextCommand(pivotCommand_);
 //	pivotCommand_->SetNextCommand(alignWithPegCommand_);
-	firstCommand_ = alignWithPegCommand_;
+//	firstCommand_ = alignWithPegCommand_;
 	currentCommand = firstCommand_;
 }
 

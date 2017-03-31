@@ -46,6 +46,7 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 	nextState_ = kDriveStraightInit;
 
 	numTimesInkDriveStraightInit = 0;
+	timeStartForVision_ = 0.0;
 	printf("in alignWithPegCommand constructor\n");
 }
 
@@ -62,6 +63,7 @@ void AlignWithPegCommand::Init() {
 
 	int confl = 1;
 	subscriber_->setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
+	subscriber_->setsockopt(ZMQ_RCVTIMEO, 1000);
 	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "MESSAGE", 0);
 
 //	subscriber_->setsockopt(ZMQ_CONFLATE, "MESSAGE", 0);
@@ -158,41 +160,41 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 			}
 			break;
 
-//		case (kDriveStraightInit) :
-////			// Get distance from Jetson
-////			if (distanceAddress == "DISTANCE") {
-////				desiredDistance_ = stod(distanceContents);		// IN INCHES
-////				printf("DISTANCE: %f\n", desiredDistance_);
-////			} else {
-////				printf("distance address: %s\n", distanceAddress.c_str());
-////			}
-////
-////			if (numTimesInkDriveStraightInit < 3) {
-////				numTimesInkDriveStraightInit++;
-////				nextState_ = kDriveStraightInit;
-//			if (fabs(desiredDistance_) > 2.0/12.0) {	// 2 in threshold
-//				printf("DISTANCE FOR COMMAND: %f\n", desiredDistance_);
-//				// Jetson returns in inches, so /12.0
-//				// Subtract 10 inches bc of length of peg
-//				// negative because technically driving backwards
-//				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-//						robot_, -(desiredDistance_ - 10.0)/12.0);	// converting to feet
-//				driveStraightCommand_->Init();
-//				nextState_ = kDriveStraightUpdate;
+		case (kDriveStraightInit) :
+//			// Get distance from Jetson
+//			if (distanceAddress == "DISTANCE") {
+//				desiredDistance_ = stod(distanceContents);		// IN INCHES
+//				printf("DISTANCE: %f\n", desiredDistance_);
 //			} else {
-//				isDone_ = true;
+//				printf("distance address: %s\n", distanceAddress.c_str());
 //			}
-//			break;
 //
-//		case (kDriveStraightUpdate) :
-//			if (!driveStraightCommand_->IsDone()) {
-//				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
-//				nextState_ = kDriveStraightUpdate;
-//			} else {
-//				isDone_ = true;
-//				// no next state
-//			}
-//			break;
+//			if (numTimesInkDriveStraightInit < 3) {
+//				numTimesInkDriveStraightInit++;
+//				nextState_ = kDriveStraightInit;
+			if (fabs(desiredDistance_) > 2.0/12.0) {	// 2 in threshold
+				printf("DISTANCE FOR COMMAND: %f\n", desiredDistance_);
+				// Jetson returns in inches, so /12.0
+				// Subtract 10 inches bc of length of peg
+				// negative because technically driving backwards
+				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
+						robot_, -(desiredDistance_ - 13.0)/12.0);	// converting to feet
+				driveStraightCommand_->Init();
+				nextState_ = kDriveStraightUpdate;
+			} else {
+				isDone_ = true;
+			}
+			break;
+
+		case (kDriveStraightUpdate) :
+			if (!driveStraightCommand_->IsDone()) {
+				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
+				nextState_ = kDriveStraightUpdate;
+			} else {
+				isDone_ = true;
+				// no next state
+			}
+			break;
 	}
 	currState_ = nextState_;
 }

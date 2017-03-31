@@ -53,7 +53,7 @@ private:
 	double gearIntakeMotorOutput_, gearOuttakeMotorOutput_, gearPivotMotorOutput_, gearDownTicks_, gearDeployTicks_;
 	//gearPivotDownTimeStarted_, gearOuttakeTimeStarted_;
 //
-//	bool gearMechPos_, isGearPivotPositionUp_, isGearPivotDownStarted_, isGearOuttakeStarted_;
+	bool gearMechPos_;// isGearPivotPositionUp_, isGearPivotDownStarted_, isGearOuttakeStarted_;
 	bool isFlywheelStarted_;
 
 	// Auto variables

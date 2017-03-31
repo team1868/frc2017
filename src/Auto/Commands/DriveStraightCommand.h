@@ -35,6 +35,7 @@ private:
 	double desiredDistance_;
 	double desiredTotalAvgDistance_;
 	double leftMotorOutput_, rightMotorOutput_;
+	double maxDriveTime_;
 	bool isDone_;
 };
 
