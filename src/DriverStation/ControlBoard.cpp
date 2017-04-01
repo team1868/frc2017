@@ -14,8 +14,8 @@ ControlBoard::ControlBoard() {
 	rightJoyY_ = 0;
 
 	// Buttons for drive
-	driveDirectionButton_ = new ButtonReader(leftJoy_, DRIVE_DIRECTION_BUTTON_PORT);
-	gearShiftButton_ = new ButtonReader(rightJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
+	driveDirectionButton_ = new ButtonReader(rightJoy_, DRIVE_DIRECTION_BUTTON_PORT);
+	gearShiftButton_ = new ButtonReader(leftJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
 	arcadeDriveButton_ = new ButtonReader(operatorJoy_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
 	alignWithPegButton_ = new ButtonReader(rightJoy_, ALIGN_WITH_PEG_BUTTON_PORT); //Subject to change

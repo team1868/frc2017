@@ -1,6 +1,7 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
+#include "DriverStation/RemoteControl.h"
 #include "RobotModel.h"
 #include <fstream>
 #include <string>
@@ -12,7 +13,7 @@
 class Logger {
 public:
 	// log state: records the physical state of the robot and human control
-	static void LogState(RobotModel* robot, double deltaTimeSec);
+	static void LogState(RobotModel* robot, RemoteControl *myHumanControl, double deltaTimeSec);
 	/* with time stamp */
 
 	// log action: records higher-level processes

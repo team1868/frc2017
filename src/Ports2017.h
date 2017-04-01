@@ -76,9 +76,9 @@ static const int RIGHT_DRIVE_ENCODER_A_PWM_PORT			= 5;
 static const int RIGHT_DRIVE_ENCODER_B_PWM_PORT			= 6;
 
 //static const int DISTANCE_SENSOR_PWM_PORT				= 9;
-static const int GEAR_INTAKE_MECH_ENCODER_A_PWM_PORT	= 7;
-static const int GEAR_INTAKE_MECH_ENCODER_B_PWM_PORT	= 8;
-static const int LIMIT_SWITCH_PWM_PORT					= 9;
+static const int GEAR_INTAKE_MECH_ENCODER_A_PWM_PORT	= 8;
+static const int GEAR_INTAKE_MECH_ENCODER_B_PWM_PORT	= 9;
+static const int LIMIT_SWITCH_PWM_PORT					= 7;
 
 #endif
 

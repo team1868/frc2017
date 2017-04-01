@@ -111,7 +111,7 @@ public:
 		SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 		driveController_->PrintDriveValues();
 
-		//Logger::LogState(robot_, deltaTimeSec_);
+		Logger::LogState(robot_, humanControl_, deltaTimeSec_);
 	}
 
 	void TeleopInit() {
@@ -143,7 +143,7 @@ public:
 //			server.SetSource(climbCamera);
 		}
 		// Logs state of robot
-		Logger::LogState(robot_, deltaTimeSec_);
+		Logger::LogState(robot_, humanControl_, deltaTimeSec_);
 	}
 
 	void TestInit() {
@@ -168,6 +168,11 @@ public:
 
 		SmartDashboard::PutNumber("LeftJoy Y", humanControl_->GetJoystickValue(ControlBoard::kLeftJoy, ControlBoard::kY));
 		SmartDashboard::PutNumber("RightJoy X", humanControl_->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kX));
+
+//		SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearPivotEncoder()->Get());
+//		SmartDashboard::PutNumber("Gear Mech Limit Switch", robot_->GetLimitSwitchState());
+//		SmartDashboard::PutNumber("Gear Pivot Output", robot_->GetGearPivotMotor()->Get());
+
 	}
 
 private:

@@ -71,7 +71,7 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutBoolean("Is Done", (anglePID_->OnTarget()) && (distancePID_->OnTarget()));
 
 	maxDriveTime_ = robot_->GetTime() - maxDriveTime_;
-	if ((anglePID_->OnTarget() && (distancePID_->OnTarget())) || (maxDriveTime_ > 4.0)) {
+	if ((anglePID_->OnTarget() && (distancePID_->OnTarget()))){ //} || (maxDriveTime_ > 4.0)) {
 		anglePID_->Reset();
 		distancePID_->Reset();
 

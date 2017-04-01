@@ -139,8 +139,8 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 //		isGearPivotPositionUp_ = true;
 		gearPositionController_->Reset();
 		gearPositionController_->Disable();
-		nextState_ = kGearIntakeMoveUp;
-//		nextState_ = kIdle;
+//		nextState_ = kGearIntakeMoveUp;
+		nextState_ = kIdle;
 		break;
 	case kIdle:
 		SmartDashboard::PutString("State", "kIdle");

@@ -58,13 +58,17 @@ void AlignWithPegCommand::Init() {
 	timeStartForVision_ = robot_->GetTime();
 
 	context_ = new zmq::context_t(1);
-	subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
-	subscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
 
-	int confl = 1;
-	subscriber_->setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
-	subscriber_->setsockopt(ZMQ_RCVTIMEO, 1000);
-	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "MESSAGE", 0);
+	try {
+		subscriber_ = new zmq::socket_t(*context_, ZMQ_SUB);
+		subscriber_->connect("tcp://10.18.68.15:5563");	// MAKE SURE RIGHT IP
+		int confl = 1;
+		subscriber_->setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
+		subscriber_->setsockopt(ZMQ_RCVTIMEO, 1000);
+		subscriber_->setsockopt(ZMQ_SUBSCRIBE, "MESSAGE", 0);
+	} catch(const zmq::error_t &exc) {
+		std::cerr << exc.what();
+	}
 
 //	subscriber_->setsockopt(ZMQ_CONFLATE, "MESSAGE", 0);
 //	subscriber_->setsockopt(ZMQ_SUBSCRIBE, "", 0);
@@ -275,20 +279,30 @@ void AlignWithPegCommand::ReadFromJetson() {
 //	}
 //
 //	string contents(static_cast<char*>(message.data()), message.size());
-	string contents = s_recv(*subscriber_);
 
-	stringstream ss(contents);
-	vector<string> result;
+	printf("in front of read from jetson\n");
+//	if (subscriber_ != NULL) {
+	try {
+		string contents = s_recv(*subscriber_);
 
-	while(ss.good()) {
-		string substr;
-		getline( ss, substr, ' ' );
-		result.push_back( substr );
+		stringstream ss(contents);
+		vector<string> result;
+
+		while(ss.good()) {
+			string substr;
+			getline( ss, substr, ' ' );
+			result.push_back( substr );
+		}
+
+		desiredPivotDeltaAngle_ = stod(result.at(0));
+		desiredDistance_ = stod(result.at(1));
+//	}
+	} catch (const std::exception &exc) {
+		std::cerr << exc.what();
+		desiredPivotDeltaAngle_ = 0.0;
+		desiredDistance_ = 0.0;
 	}
-
-	desiredPivotDeltaAngle_ = stod(result.at(0));
-	desiredDistance_ = stod(result.at(1));
-
+	printf("in end of read from jetson\n");
 //	SmartDashboard::PutNumber("Subscriber Tosses", tosses);
 }
 

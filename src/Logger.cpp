@@ -7,10 +7,11 @@ std::ofstream Logger::logAction;
 double Logger::lastLeftDistance_;
 double Logger::lastRightDistance_;
 
-void Logger::LogState(RobotModel* robot, double deltaTimeSec) {
+void Logger::LogState(RobotModel* robot, RemoteControl *humanControl, double deltaTimeSec) {
 	if (!logData.is_open()) {
 		logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
-		logData << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftVelocity, Right Velocity, NavXAngle" << "\r\n";
+		logData << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftVelocity, Right Velocity, NavXAngle, " <<
+				"LeftMotorOutput, RightMotorOutput, LeftJoyX, LeftJoyY, RightJoyY, HighGear " << "\r\n";
 	}
 
 	logData << robot->GetTime() << ", " <<
@@ -25,7 +26,13 @@ void Logger::LogState(RobotModel* robot, double deltaTimeSec) {
 //			   robot->rightMaster_->GetClosedLoopError() << ", " <<
 //			   robot->leftMaster_->GetSpeed() << ", " <<
 //			   robot->rightMaster_->GetSpeed() << ", " <<
-			   robot->GetNavXYaw() << "\r\n";
+			   robot->GetNavXYaw() << ", " <<
+			   robot->leftMaster_->Get() << ", " <<
+			   robot->rightMaster_->Get() << ", " <<
+			   humanControl->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kX) << ", " <<
+			   humanControl->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kY) << ", " <<
+			   humanControl->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX) << ", " <<
+			   humanControl->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY) << ", " << "\r\n";
 
 	logData.flush();
 
