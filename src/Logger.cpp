@@ -11,7 +11,7 @@ void Logger::LogState(RobotModel* robot, RemoteControl *humanControl, double del
 	if (!logData.is_open()) {
 		logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
 		logData << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftVelocity, Right Velocity, NavXAngle, " <<
-				"LeftMotorOutput, RightMotorOutput, LeftJoyX, LeftJoyY, RightJoyY, HighGear " << "\r\n";
+				"LeftMotorOutput, RightMotorOutput, LeftJoyX, LeftJoyY, RightJoyX, RightJoyY, HighGear, TotalPower" << "\r\n";
 	}
 
 	logData << robot->GetTime() << ", " <<
@@ -32,7 +32,9 @@ void Logger::LogState(RobotModel* robot, RemoteControl *humanControl, double del
 			   humanControl->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kX) << ", " <<
 			   humanControl->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kY) << ", " <<
 			   humanControl->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX) << ", " <<
-			   humanControl->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY) << ", " << "\r\n";
+			   humanControl->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY) << ", " <<
+			   humanControl->GetHighGearDesired() << ", " <<
+			   robot->GetTotalPower() << ", " << "\r\n";
 
 	logData.flush();
 

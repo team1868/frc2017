@@ -159,8 +159,8 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				pivotCommand_->Update(currTimeSec, deltaTimeSec);
 				nextState_ = kPivotToAngleUpdate;
 			} else {
-//				nextState_ = kDriveStraightInit;
-				isDone_ = true;
+				nextState_ = kDriveStraightInit;
+				//isDone_ = true;
 			}
 			break;
 

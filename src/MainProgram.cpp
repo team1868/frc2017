@@ -51,7 +51,8 @@ public:
 	void AutonomousInit() {
 		ResetTimerVariables();
 		ResetControllers();
-		robot_->SetLowGear();
+		robot_->SetHighGear();
+//		robot_->SetLowGear();
 		robot_->SetGearMech(true);
 
 		int kAutoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
@@ -105,6 +106,7 @@ public:
 
 	void AutonomousPeriodic() {
 		UpdateTimerVariables();
+		robot_->SetHighGear();
 		if (!autoController_->IsDone()) {
 			autoController_->Update(currTimeSec_, deltaTimeSec_);
 		}

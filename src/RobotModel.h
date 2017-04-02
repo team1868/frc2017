@@ -68,6 +68,8 @@ public:
 	bool GetLimitSwitchState();
 	/* ------------------------------------------------------  */
 
+	double GetTotalPower();
+
 	Ini *pini_;
 
 	CANTalon *leftMaster_, *rightMaster_, *leftSlave_, *rightSlave_;	//TODO move to private
@@ -82,7 +84,7 @@ private:
 	Solenoid *gearMechSolenoid_;
 	Encoder *leftDriveEncoder_, *rightDriveEncoder_, *flywheelEncoder_, *gearPivotEncoder_;
 	DigitalInput *limitSwitch_;
-
+	PowerDistributionPanel* pdp_;
 	bool gearInRobot_, distSensorCurr_, distSensorLast_;
 };
 

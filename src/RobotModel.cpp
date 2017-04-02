@@ -22,6 +22,8 @@ RobotModel::RobotModel() {
 	timer_ = new Timer();
 	timer_->Start();
 
+	pdp_ = new PowerDistributionPanel();
+
 	// Initializing the Talons
 	leftMaster_ = new CANTalon(LEFT_DRIVE_MASTER_ID);
 	rightMaster_ = new CANTalon(RIGHT_DRIVE_MASTER_ID);
@@ -310,6 +312,10 @@ void RobotModel::SetGearMech(bool dir) {
 
 bool RobotModel::GetLimitSwitchState() {
 	return limitSwitch_->Get();
+}
+
+double RobotModel::GetTotalPower() {
+	return pdp_->GetTotalPower();
 }
 
 RobotModel::~RobotModel() {

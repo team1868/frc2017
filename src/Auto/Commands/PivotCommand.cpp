@@ -24,9 +24,9 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 
 	pivotCommandStartTime_ = robot_->GetTime();
 
-//	GetIniValues();
+	GetIniValues();
 	// TODO ADD BACK IN !!!
-	pivotPID_ = new PIDController(0.09, 0.0, 0.06, navXSource_, talonOutput_);
+	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
 }
 
 void PivotCommand::GetIniValues() {
@@ -64,7 +64,7 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Delta setpoint", pivotPID_->GetDeltaSetpoint());
 	SmartDashboard::PutBoolean("Is done", isDone_);
 
-	bool timeOut = (robot_->GetTime() - pivotCommandStartTime_ > 1.5);		// TODO test
+	bool timeOut = (robot_->GetTime() - pivotCommandStartTime_ > 3.0);		// TODO test
 
 	SmartDashboard::PutBoolean("Timed out", timeOut);
 
