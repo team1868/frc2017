@@ -7,6 +7,7 @@
 #include "Auto/PIDInputSource.h"
 #include "Auto/PIDOutputSource.h"
 #include "Auto/Commands/AlignWithPegCommand.h"
+#include "Profiler.h"
 
 class DriveController {
 public:

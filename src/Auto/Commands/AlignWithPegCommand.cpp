@@ -55,7 +55,8 @@ void AlignWithPegCommand::RefreshIni() {
 }
 
 void AlignWithPegCommand::Init() {
-	timeStartForVision_ = robot_->GetTime();
+	printf("in alignwithpegcommand init\n");
+	Profiler profiler(robot_, "Align With Peg Init");
 
 	context_ = new zmq::context_t(1);
 
@@ -88,7 +89,6 @@ void AlignWithPegCommand::Init() {
 	numTimesInkPivotToAngleInit = 0;
 	numTimesInkDriveStraightInit = 0;
 
-	printf("in alignwithpegcommand init\n");
 }
 
 void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
@@ -159,8 +159,9 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				pivotCommand_->Update(currTimeSec, deltaTimeSec);
 				nextState_ = kPivotToAngleUpdate;
 			} else {
-				nextState_ = kDriveStraightInit;
-				//isDone_ = true;
+				//nextState_ = kDriveStraightInit;
+
+				isDone_ = true;
 			}
 			break;
 
@@ -279,10 +280,11 @@ void AlignWithPegCommand::ReadFromJetson() {
 //	}
 //
 //	string contents(static_cast<char*>(message.data()), message.size());
-
+	Profiler profilerFromJetson(robot_, "ReadFromJetson");
 	printf("in front of read from jetson\n");
 //	if (subscriber_ != NULL) {
 	try {
+		Profiler profilerInTry(robot_, "ProfilerInTry");
 		string contents = s_recv(*subscriber_);
 
 		stringstream ss(contents);

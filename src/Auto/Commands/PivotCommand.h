@@ -4,6 +4,7 @@
 #include "Auto/Commands/AutoCommand.h"
 #include "Auto/PIDInputSource.h"
 #include "RobotModel.h"
+#include "Profiler.h"
 
 class PivotPIDTalonOutput : public frc::PIDOutput {
 public:

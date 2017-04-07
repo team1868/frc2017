@@ -86,6 +86,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 
 		case (kAlignWithPeg) :
 			if (!alignWithPegStarted_){
+				Profiler startAlignPegProfiler(robot_, "kAlignWithPeg");
 				pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_);
 				pegCommand_->Init();
 				alignWithPegStarted_ = true;

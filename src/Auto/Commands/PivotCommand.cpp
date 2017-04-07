@@ -30,6 +30,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 }
 
 void PivotCommand::GetIniValues() {
+	Profiler profiler(robot_, "Pivot Ini");
 	pFac_ = robot_->pini_->getf("PIVOT PID", "pFac", 0.0);
 	iFac_ = robot_->pini_->getf("PIVOT PID", "iFac", 0.0);
 	dFac_ = robot_->pini_->getf("PIVOT PID", "dFac", 0.0);
@@ -38,6 +39,7 @@ void PivotCommand::GetIniValues() {
 }
 
 void PivotCommand::Init() {
+	Profiler profiler(robot_, "Pivot Init");
 	initYaw_ = navXSource_->PIDGet();
 	pivotPID_->SetSetpoint(initYaw_ + desiredDeltaAngle_);
 	pivotPID_->SetContinuous(false);
