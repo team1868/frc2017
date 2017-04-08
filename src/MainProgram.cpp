@@ -4,6 +4,7 @@
 #include "Controllers/SuperstructureController.h"
 #include "Auto/AutoController.h"
 #include "Auto/Modes/AutoMode.h"
+#include "Auto/Modes/BlankMode.h"
 #include "Auto/Modes/OneGearMode.h"
 #include "Auto/Modes/OneGearHighShootMode.h"
 #include "Logger.h"
@@ -78,8 +79,10 @@ public:
 
 		switch(kAutoMode) {
 		case kBlank :
+			autoMode = new BlankMode();
 			break;
-		case kDriveStraight :
+		case kDriveStraight :	// TODO change this
+			autoMode = new BlankMode();
 			break;
 		case kLeftLift :
 			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
@@ -98,6 +101,7 @@ public:
 			break;
 		default :
 			//autoMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_, true);
+			autoMode = new BlankMode();
 			break;
 		}
 		autoController_->SetAutonomousMode(autoMode);
@@ -156,6 +160,13 @@ public:
 		SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
 		SmartDashboard::PutNumber("Flywheel Distance", robot_->GetFlywheelEncoder()->GetDistance());
 		SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());
+	}
+
+	void DisabledInit() {
+		std::string timestamp = Logger::GetTimeStamp("/home/lvuser/FRC_UserProgram.log");
+		std::string copyCommand = "cp /home/lvuser/FRC_UserProgram.log /U/FRC_UserProgram_ " + timestamp + ".log";
+		//system((char*)copyCommand);
+		system("cp /home/lvuser/FRC_UserProgram.log /U");
 	}
 
 	void DisabledPeriodic() {

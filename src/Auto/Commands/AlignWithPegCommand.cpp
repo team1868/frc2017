@@ -2,7 +2,7 @@
 
 using namespace std;
 
-AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource) {
+AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource, bool isDriveStraightDesired) {
 	printf("in beginning of alignwithpegcommand\n");
 
 //	visionLog_.open("/tmp/vision_log.txt");
@@ -28,6 +28,8 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 	robot_ = robot;
 	navXSource_ = navXSource;
 	talonSource_ = talonSource;
+//	isDriveStraightDesired_ = isDriveStraightDesired;
+	isDriveStraightDesired_ = false;
 
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
@@ -42,8 +44,8 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 
 	numTimesInkPivotToAngleInit = 0;
 
-	currState_ = kDriveStraightInit;
-	nextState_ = kDriveStraightInit;
+	currState_ = kPivotToAngleInit;
+	nextState_ = kPivotToAngleInit;
 
 	numTimesInkDriveStraightInit = 0;
 	timeStartForVision_ = 0.0;
@@ -80,8 +82,6 @@ void AlignWithPegCommand::Init() {
 
 	currState_ = kPivotToAngleInit;
 	nextState_ = kPivotToAngleInit;
-//	currState_ = kDriveStraightInit;
-//	nextState_ = kDriveStraightInit;
 
 	angleOutput_ = new AnglePIDOutput();
 	distanceOutput_ = new DistancePIDOutput();
@@ -103,8 +103,6 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 	//	cout << "address " << address << endl;
 	//	cout << "contents " << contents << endl;
 
-	printf("hello world\n");
-
 	double lastDesiredAngle = desiredPivotDeltaAngle_;
 	double lastDesiredDistance = desiredDistance_;
 
@@ -115,7 +113,6 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	switch (currState_) {
 		case (kPivotToAngleInit) :
-
 			printf("In kPivotToAngleInit\n");
 
 //			// Get angle from Jetson
@@ -147,7 +144,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				nextState_ = kPivotToAngleUpdate;
 			} else {
 				printf("vision done at: %f\n", robot_->GetTime() - timeStartForVision_);
-				printf("ANGLE THAT WAS GOOD: %f\n", -desiredPivotDeltaAngle_);
+				printf("ANGLE THAT WAS GOOD NO PIVOT: %f\n", -desiredPivotDeltaAngle_);
 				nextState_ = kDriveStraightInit;
 //				isDone_ = true;
 			}
@@ -159,13 +156,15 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				pivotCommand_->Update(currTimeSec, deltaTimeSec);
 				nextState_ = kPivotToAngleUpdate;
 			} else {
-				//nextState_ = kDriveStraightInit;
-
-				isDone_ = true;
-			}
+				if (isDriveStraightDesired_) {
+					nextState_ = kDriveStraightInit;
+				} else {
+					isDone_ = true;
+				}			}
 			break;
 
 		case (kDriveStraightInit) :
+			printf("In DriveStraightInit\n");
 //			// Get distance from Jetson
 //			if (distanceAddress == "DISTANCE") {
 //				desiredDistance_ = stod(distanceContents);		// IN INCHES
@@ -192,6 +191,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 
 		case (kDriveStraightUpdate) :
+			printf("In DriveStraightUpdate \n");
 			if (!driveStraightCommand_->IsDone()) {
 				driveStraightCommand_->Update(0.0, 0.0); 	// add timer later
 				nextState_ = kDriveStraightUpdate;
@@ -211,65 +211,6 @@ bool AlignWithPegCommand::IsDone() {
 
 	return isDone_;
 }
-
-//void AlignWithPegCommand::ReadUpdateFromJetson() {
-//	// GET LAST LINE
-//	string lastLine;
-////	getline(visionLog_, lastLine);
-//
-////	if (visionLog_.is_open()) {
-////		visionLog_.seekg(-1, ios_base::end); // go to one spot before the EOF
-////
-////		bool keepLooping = true;
-////		while (keepLooping) {
-////			char ch;
-////			visionLog_.get(ch);                   // Get current byte's data
-////
-////			if ((int) visionLog_.tellg() <= 1) { // If the data was at or before the 0th byte
-////				visionLog_.seekg(0);      // The first line is the last line
-////				keepLooping = false;                // So stop there
-////			} else if (ch == '\n') {            // If the data was a newline
-////				keepLooping = false;        // Stop at the current position.
-////			} else {  // If the data was neither a newline nor at the 0 byte
-////				visionLog_.seekg(-2, ios_base::cur); // Move to the front of that data, then to the front of the data before it
-////			}
-////		}
-////
-////		getline(visionLog_, lastLine);              // Read the current line
-////	lastLine = to_string(system("cat /tmp/vision_log.txt"));
-//
-//	array<char, 128> buffer;
-//	//string result;
-//	shared_ptr<FILE> pipe(popen("cat /tmp/vision_log.txt", "r"), pclose);
-//	if (!pipe) throw std::runtime_error("popen() failed!");
-//	while (!feof(pipe.get())) {
-//		if (fgets(buffer.data(), 128, pipe.get()) != NULL)
-//			lastLine += buffer.data();
-//	}
-//
-////	lastLine = to_string(path);
-//
-//	cout << "Result: " << lastLine << '\n';     // Display it
-//
-////	visionLog_.close();
-////	} else {
-////		// ERROR
-////	}
-//
-////	 PARSING STUFF HERE
-//	stringstream ss(lastLine);
-//	vector<string> result;
-//
-//	while(ss.good()) {
-//		string substr;
-//		getline( ss, substr, ',' );
-//		result.push_back( substr );
-//	}
-//
-//	double duration = stod(result.at(0));		// do something w this
-//	desiredPivotDeltaAngle_ = stod(result.at(1));
-//	desiredDistance_ = stod(result.at(2));
-//}
 
 void AlignWithPegCommand::ReadFromJetson() {
 //	zmq::message_t message;

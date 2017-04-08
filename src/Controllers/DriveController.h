@@ -56,7 +56,7 @@ private:
 	 * @param myX a double rotate value
 	 * @param myY a double thrust value (forwards/backwards)
 	 */
-	void ArcadeDrive(double myX, double myY);
+	void ArcadeDrive(double myX, double myY, double myZ);
 
 	/**
 	 * Senses how much each joystick is pushed and uses values to turn wheels

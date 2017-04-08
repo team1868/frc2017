@@ -33,7 +33,7 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_, robot_, desiredDistance);
 	pivotCommand_ = new PivotCommand(robot_, desiredAngle, false, navXSource_);
 
-	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
+	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_, true);
 
 	printf("in one gear mode constructor\n");
 }

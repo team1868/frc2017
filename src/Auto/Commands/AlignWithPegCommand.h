@@ -29,7 +29,7 @@ public:
 	 * Constructor for AlignWithPegCommand
 	 * @param robot a RobotModel
 	 */
-	AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource);
+	AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource, bool isDriveStraightDesired);
 
 	/**
 	 * Sets pivotCommandIsDone_ to true, sets pivotDeltaAngle_ to 0, and isDone_ to false
@@ -85,6 +85,8 @@ private:
 	int numTimesInkDriveStraightInit;
 
 	double timeStartForVision_;
+
+	bool isDriveStraightDesired_;
 
 	//ifstream visionLog_;
 };

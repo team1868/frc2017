@@ -17,7 +17,7 @@ OneGearHighShootMode::OneGearHighShootMode(RobotModel *robot, SuperstructureCont
 		highGoalPath_ = new PathCommand(robot_, PathCommand::kHighGoalAfterRightLift);
 	}
 
-	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_);
+	alignWithPegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonSource_, true);
 	gearCommand_ = new GearCommand(robot_);
 	waitingCommand_ = new WaitingCommand(2.0);
 

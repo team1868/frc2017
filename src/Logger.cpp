@@ -9,9 +9,12 @@ double Logger::lastRightDistance_;
 
 void Logger::LogState(RobotModel* robot, RemoteControl *humanControl, double deltaTimeSec) {
 	if (!logData.is_open()) {
-		logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+		logData.open(GetTimeStamp((std::string("/U/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+		if (!logData.is_open()) {	// if the USB stick is not detected, write log to roborio
+			logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+		}
 		logData << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftVelocity, Right Velocity, NavXAngle, " <<
-				"LeftMotorOutput, RightMotorOutput, LeftJoyX, LeftJoyY, RightJoyX, RightJoyY, HighGear, TotalPower" << "\r\n";
+				"LeftMotorOutput, RightMotorOutput, LeftJoyX, LeftJoyY, RightJoyX, RightJoyY, HighGear, TotalPower, GearEncoder" << "\r\n";
 	}
 
 	logData << robot->GetTime() << ", " <<
@@ -34,7 +37,8 @@ void Logger::LogState(RobotModel* robot, RemoteControl *humanControl, double del
 			   humanControl->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX) << ", " <<
 			   humanControl->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY) << ", " <<
 			   humanControl->GetHighGearDesired() << ", " <<
-			   robot->GetTotalPower() << ", " << "\r\n";
+			   robot->GetTotalPower() << ", " <<
+			   robot->GetGearPivotEncoder()->Get() << ", " << "\r\n";
 
 	logData.flush();
 
@@ -76,9 +80,15 @@ void Logger::LogAction(RobotModel* robot, const std::string& fileName, int line,
 /* overloaded methods without time stamp */
 void Logger::LogAction(const std::string& fileName, int line, const std::string& stateName,
 			bool state) {
-	if (!logAction.is_open()) {
-		logAction.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_actionlog.txt")).c_str()), std::ofstream::out | std::ofstream::app);
+	if (!logData.is_open()) {
+		logData.open(GetTimeStamp((std::string("/U/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+		if (!logData.is_open()) {	// if the USB stick is not detected, write log to roborio
+			logData.open(GetTimeStamp((std::string("/home/lvuser/%F_%H_%M_datalog.csv")).c_str()), std::ofstream::out | std::ofstream::app);
+		}
+		logData << "Time, DeltaTime, LeftEncoderValue, RightEncoderValue, LeftDistance, RightDistance, LeftVelocity, Right Velocity, NavXAngle, " <<
+				"LeftMotorOutput, RightMotorOutput, LeftJoyX, LeftJoyY, RightJoyX, RightJoyY, HighGear, TotalPower" << "\r\n";
 	}
+
 	logAction << fileName << ", " << line << ", " << stateName << ", " << state << "\r\n";
 	logAction.flush();
 }

@@ -5,7 +5,7 @@ class RemoteControl {
 public:
 	// Joysticks
 	enum Joysticks { kRightJoy, kLeftJoy };
-	enum Axes { kX, kY };
+	enum Axes { kX, kY, kZ };
 
 	// Drive joystick accessors
 	virtual void ReadControls() = 0;

@@ -12,6 +12,7 @@ ControlBoard::ControlBoard() {
 	leftJoyY_ = 0;
 	rightJoyX_ = 0;
 	rightJoyY_ = 0;
+	rightJoyZ_ = 0;
 
 	// Buttons for drive
 	driveDirectionButton_ = new ButtonReader(rightJoy_, DRIVE_DIRECTION_BUTTON_PORT);
@@ -71,6 +72,7 @@ void ControlBoard::ReadControls() {
 	leftJoyY_ = leftJoy_->GetY();
 	rightJoyX_ = rightJoy_->GetX();
 	rightJoyY_ = rightJoy_->GetY();
+	rightJoyZ_ = rightJoy_->GetZ();
 
 	// Drivetrain variables
 	reverseDriveDesired_ = driveDirectionButton_->IsDown();
@@ -108,6 +110,8 @@ double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
 					return rightJoyX_;
 				case(kY):
 					return rightJoyY_;
+				case(kZ):
+					return rightJoyZ_;
 			}
 			break;
 		case(kLeftJoy):
@@ -116,6 +120,8 @@ double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
 					return leftJoyX_;
 				case(kY):
 					return leftJoyY_;
+				case(kZ):
+					return 0;
 			}
 			break;
 	}

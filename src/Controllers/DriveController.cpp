@@ -38,6 +38,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 	PrintDriveValues();
 
 	switch (currState_) {
+
 		case (kInitialize):
 			if (humanControl_->GetAlignWithPegDesired()) {
 				nextState_ = kAlignWithPeg;
@@ -48,13 +49,15 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 
 		case (kTeleopDrive) :
+			printf("In TeleopDrive\n");
 			robot_->SetPercentVBusDriveMode();
 
 			// Getting joystick values
-			double leftJoyY, rightJoyY, rightJoyX;
+			double leftJoyY, rightJoyY, rightJoyX, rightJoyZ;
 			leftJoyY = -humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kY);	// was neg
 			rightJoyY = -humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY);	// was neg
 			rightJoyX = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX);
+			rightJoyZ = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kZ);
 
 			if (humanControl_->GetHighGearDesired()) {
 				//printf("Set high gear\n");
@@ -74,20 +77,21 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				QuickTurn(rightJoyX);
 			} else if (humanControl_->GetArcadeDriveDesired()) {
 				//printf("Arcade driving\n");
-				ArcadeDrive(rightJoyX, leftJoyY);
+				ArcadeDrive(rightJoyX, leftJoyY, rightJoyZ);
 			} else if (!humanControl_->GetArcadeDriveDesired()){
 				//printf("Tank driving\n");
 				TankDrive(leftJoyY, rightJoyY);
 			} else {
 				printf("SOMETHING IS WRONG\n");
-				ArcadeDrive(rightJoyX, leftJoyY);		// Default to arcade drive
+				ArcadeDrive(rightJoyX, leftJoyY, rightJoyZ);		// Default to arcade drive
 			}
 			break;
 
 		case (kAlignWithPeg) :
 			if (!alignWithPegStarted_){
+				printf("Initializing pegCommand");
 				Profiler startAlignPegProfiler(robot_, "kAlignWithPeg");
-				pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_);
+				pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_, false);
 				pegCommand_->Init();
 				alignWithPegStarted_ = true;
 				nextState_ = kAlignWithPeg;
@@ -120,7 +124,7 @@ void DriveController::PrintDriveValues() {
 	SmartDashboard::PutNumber("Right drive encoder value", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 }
 
-void DriveController::ArcadeDrive(double myX, double myY) {
+void DriveController::ArcadeDrive(double myX, double myY, double myZ) {
 	SmartDashboard::PutString("Drive Mode", "Arcade Drive");
 	double thrustValue = myY * DriveDirection();
 	double rotateValue = myX;
@@ -174,6 +178,12 @@ void DriveController::ArcadeDrive(double myX, double myY) {
 		leftOutput = 0.0;
 		rightOutput = 0.0;
 	}
+
+	//sensitivity adjustment
+	//when z == 0 output = output, and when z==1 output = output^3
+
+	leftOutput = myZ * std::pow(leftOutput, 3.0) + (1 - myZ) * leftOutput;
+	rightOutput = myZ * std::pow(rightOutput, 3.0) + (1 - myZ) * rightOutput;
 
 	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
 	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
