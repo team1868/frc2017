@@ -20,7 +20,7 @@ private:
 /**
  * A class implementing Pivot PID the WPILibrary PID Controller
  */
-class PivotCommand : public AutoCommand, RobotModel {
+class PivotCommand : public AutoCommand {
 public:
 	/**
 	 * PivotCommand constructor that gives the desired turn and whether or not it is absolute position
@@ -77,6 +77,8 @@ private:
 	double desiredDeltaAngle_;
 	double initYaw_;
 	bool isDone_;
+
+	int numTimesOnTarget_;
 
 	RobotModel *robot_;
 	PIDController *pivotPID_;

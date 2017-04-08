@@ -62,7 +62,7 @@ void DriveStraightCommand::Init() {
 }
 
 void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
-	printf("Drive straight command update\n");
+//	printf("Drive straight command update\n");
 	SmartDashboard::PutNumber("Left Motor Output", leftMotorOutput_);
 	SmartDashboard::PutNumber("Right Motor Output", rightMotorOutput_);
 

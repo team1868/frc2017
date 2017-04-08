@@ -49,7 +49,6 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 
 		case (kTeleopDrive) :
-			printf("In TeleopDrive\n");
 			robot_->SetPercentVBusDriveMode();
 
 			// Getting joystick values
@@ -101,6 +100,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				pegCommand_->Update(currTimeSec, deltaTimeSec);
 				nextState_ = kAlignWithPeg;
 			} else {
+				printf("Align with peg teleop done \n");
 				alignWithPegStarted_ = false;
 				nextState_ = kTeleopDrive;
 			}

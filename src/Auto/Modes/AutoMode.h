@@ -27,6 +27,7 @@ public:
 				DO_PERIODIC(1, printf("Command complete at: %f \n", currTimeSec));
 				currentCommand = currentCommand->GetNextCommand();
 				if (currentCommand != NULL) {
+					DO_PERIODIC(1, printf("Command start at: %f \n", currTimeSec));
 					currentCommand->Init();
 					printf("Initializing current commmand\n");
 				}

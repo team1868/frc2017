@@ -45,12 +45,12 @@ static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 6; //CHANGE PORT
 #endif
 
 #if PRACT_BOT	// might want to check again
-static const int FLYWHEEL_MOTOR_PWM_PORT				= -1; //only if needed
-static const int FEEDER_MOTOR_PWM_PORT					= -1; //only if needed
-static const int INTAKE_MOTOR_PWM_PORT					= 0;
+static const int FLYWHEEL_MOTOR_PWM_PORT				= 5; // 7; //only if needed
+static const int FEEDER_MOTOR_PWM_PORT					= 5; // 1; //only if needed
+static const int INTAKE_MOTOR_PWM_PORT					= 5; // 0;
 static const int CLIMBER_MOTOR_PWM_PORT					= 5;
-static const int GEAR_PIVOT_MOTOR_PWM_PORT				= 6;
-static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 9; //= 5;
+static const int GEAR_PIVOT_MOTOR_PWM_PORT				= 5; // 6;
+static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 5; // 9; //= 5;
 #endif
 
 #if KOP_BOT
@@ -83,8 +83,8 @@ static const int LIMIT_SWITCH_PWM_PORT					= 7;
 #endif
 
 #if PRACT_BOT
-static const int FLYWHEEL_ENCODER_A_PWM_PORT			= -1;
-static const int FLYWHEEL_ENCODER_B_PWM_PORT			= -1;
+static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 3;	// Only if needed
+static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 4;	// Only if needed
 
 static const int LEFT_DRIVE_ENCODER_A_PWM_PORT			= 5;
 static const int LEFT_DRIVE_ENCODER_B_PWM_PORT			= 6;

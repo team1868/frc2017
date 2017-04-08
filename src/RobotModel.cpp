@@ -19,6 +19,9 @@ const int EDGES_PER_ENCODER_COUNT = 4;
 const double FLYWHEEL_DIAMETER = 2.875 / 12.0;		// In feet
 
 RobotModel::RobotModel() {
+
+	printf("in constructor of robotmodel\n");
+
 	timer_ = new Timer();
 	timer_->Start();
 

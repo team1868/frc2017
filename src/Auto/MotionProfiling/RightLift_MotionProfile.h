@@ -27,7 +27,7 @@ public:
 // Waypoint p2 = {-7.08, 3.57, d2r(-60)};
 
 private:
-	/*
+
 /*
  RIGHT LIFT MOTION PROFILE
  Waypoint p1 = {0.0, 0.0, 0.0};

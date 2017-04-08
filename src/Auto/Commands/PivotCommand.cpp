@@ -27,6 +27,8 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	GetIniValues();
 	// TODO ADD BACK IN !!!
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
+
+	numTimesOnTarget_ = 0;
 }
 
 void PivotCommand::GetIniValues() {
@@ -49,6 +51,8 @@ void PivotCommand::Init() {
 
 	SmartDashboard::PutNumber("Initial yaw", initYaw_);
 	isDone_ = false;
+
+	numTimesOnTarget_ = 0;
 }
 
 void PivotCommand::Reset() {
@@ -70,13 +74,19 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	SmartDashboard::PutBoolean("Timed out", timeOut);
 
-	if (pivotPID_->OnTarget() 		// && (fabs(talonOutput_->GetOutput()) < minDrivePivotOutput_)
+	if (pivotPID_->OnTarget()) {
+		numTimesOnTarget_++;
+	} else {
+		numTimesOnTarget_ = 0;
+	}
+
+	if ((pivotPID_->OnTarget() && numTimesOnTarget_ > 3) 		// && (fabs(talonOutput_->GetOutput()) < minDrivePivotOutput_)
 		|| timeOut) {
 		pivotPID_->Reset();
 		pivotPID_->Disable();
 		isDone_ = true;
 
-		printf("IS DONE \n");
+		printf("PIVOT IS DONE \n");
 		if (timeOut) {
 			printf("FROM TIME OUT\n");
 		}
