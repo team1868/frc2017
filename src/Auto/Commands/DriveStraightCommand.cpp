@@ -22,8 +22,8 @@ DriveStraightCommand::DriveStraightCommand(NavXPIDSource* navXSource, TalonEncod
 	leftMotorOutput_ = 0.0;
 	rightMotorOutput_ = 0.0;
 	isDone_ = false;
-	maxDriveTime_ = robot_->GetTime();
-
+	initialDriveTime_ = robot_->GetTime();
+	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
 	GetIniValues();
 
 	anglePID_ = new PIDController(rPFac_, rIFac_, rDFac_, navXSource_, anglePIDOutput_);
@@ -58,7 +58,7 @@ void DriveStraightCommand::Init() {
 	anglePID_->Enable();
 	distancePID_->Enable();
 
-	maxDriveTime_ = robot_->GetTime();
+	initialDriveTime_ = robot_->GetTime();
 }
 
 void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
@@ -70,8 +70,8 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutBoolean("Is Angle Met", anglePID_->OnTarget());
 	SmartDashboard::PutBoolean("Is Done", (anglePID_->OnTarget()) && (distancePID_->OnTarget()));
 
-	maxDriveTime_ = robot_->GetTime() - maxDriveTime_;
-	if ((anglePID_->OnTarget() && (distancePID_->OnTarget()))){ //} || (maxDriveTime_ > 4.0)) {
+	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
+	if ((anglePID_->OnTarget() && (distancePID_->OnTarget())) || (diffDriveTime_ > 10.0)) {
 		anglePID_->Reset();
 		distancePID_->Reset();
 
