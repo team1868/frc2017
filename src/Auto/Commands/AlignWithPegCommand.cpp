@@ -31,6 +31,7 @@ AlignWithPegCommand::AlignWithPegCommand(RobotModel *robot, NavXPIDSource *navXS
 
 	numTimesInkDriveStraightInit = 0;
 	timeStartForVision_ = 0.0;
+	timeStartForAlignWithPegCommand_ = 0.0;
 	printf("in alignWithPegCommand constructor\n");
 }
 
@@ -69,6 +70,7 @@ void AlignWithPegCommand::Init() {
 	numTimesInkPivotToAngleInit = 0;
 	numTimesInkDriveStraightInit = 0;
 
+	timeStartForAlignWithPegCommand_ = robot_->GetTime();
 }
 
 void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
@@ -152,6 +154,10 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 			break;
 	}
 	currState_ = nextState_;
+
+	if (robot_->GetTime() - timeStartForAlignWithPegCommand_ > 5.0) {	// Timeout for AlignWithPegCommand
+		isDone_ = true;
+	}
 }
 
 bool AlignWithPegCommand::IsDone() {

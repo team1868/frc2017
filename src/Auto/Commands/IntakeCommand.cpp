@@ -14,19 +14,19 @@ IntakeCommand::IntakeCommand(SuperstructureController *mySuperstructure, double 
 }
 
 void IntakeCommand::Init() {
-	superstructure_->SetAutoTimeIntakeDesired(true);
-	superstructure_->SetAutoIntakeTime(seconds_);
+//	superstructure_->SetAutoTimeIntakeDesired(true);
+//	superstructure_->SetAutoIntakeTime(seconds_);
 	isDone_ = false;
 }
 
 void IntakeCommand::Update(double currTimeSec, double deltaTimeSec) {
-	if (!superstructure_->GetAutoFinishedIntake()) {
-		superstructure_->Update(currTimeSec, deltaTimeSec);
-	} else {
-		isDone_ = true;
-		superstructure_->SetAutoTimeIntakeDesired(false);
-		superstructure_->SetAutoFinishedIntake(false);
-	}
+//	if (!superstructure_->GetAutoFinishedIntake()) {
+//		superstructure_->Update(currTimeSec, deltaTimeSec);
+//	} else {
+//		isDone_ = true;
+//		superstructure_->SetAutoTimeIntakeDesired(false);
+//		superstructure_->SetAutoFinishedIntake(false);
+//	}
 }
 
 bool IntakeCommand::IsDone() {

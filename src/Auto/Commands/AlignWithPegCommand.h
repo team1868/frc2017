@@ -84,7 +84,7 @@ private:
 	int numTimesInkPivotToAngleInit;
 	int numTimesInkDriveStraightInit;
 
-	double timeStartForVision_;
+	double timeStartForVision_, timeStartForAlignWithPegCommand_;
 
 	bool isDriveStraightDesired_;
 

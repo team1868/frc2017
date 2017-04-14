@@ -143,6 +143,9 @@ void DriveController::ArcadeDrive(double myX, double myY, double myZ) {
 		driveStraightPIDController_->Disable();
 		isDriveStraightStarted_ = false;
 
+		rotateValue = myZ * std::pow(rotateValue, 3.0) + (1 - myZ) * rotateValue;		// FIGURE OUT WHAT Z IS
+		printf("myZ: %f\n", myZ);
+
 		leftOutput += rotateValue;
 		rightOutput -= rotateValue;
 
@@ -182,8 +185,10 @@ void DriveController::ArcadeDrive(double myX, double myY, double myZ) {
 	//sensitivity adjustment
 	//when z == 0 output = output, and when z==1 output = output^3
 
-	leftOutput = myZ * std::pow(leftOutput, 3.0) + (1 - myZ) * leftOutput;
-	rightOutput = myZ * std::pow(rightOutput, 3.0) + (1 - myZ) * rightOutput;
+//	leftOutput = myZ * std::pow(leftOutput, 3.0) + (1 - myZ) * leftOutput;
+//	rightOutput = myZ * std::pow(rightOutput, 3.0) + (1 - myZ) * rightOutput;
+
+//	printf("myZ: %f\n", myZ);
 
 	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
 	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);

@@ -45,12 +45,12 @@ static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 6; //CHANGE PORT
 #endif
 
 #if PRACT_BOT	// might want to check again
-static const int FLYWHEEL_MOTOR_PWM_PORT				= 5; // 7; //only if needed
-static const int FEEDER_MOTOR_PWM_PORT					= 5; // 1; //only if needed
-static const int INTAKE_MOTOR_PWM_PORT					= 5; // 0;
-static const int CLIMBER_MOTOR_PWM_PORT					= 5;
+static const int FLYWHEEL_MOTOR_PWM_PORT				= 1; // 7; //only if needed
+static const int FEEDER_MOTOR_PWM_PORT					= 1; // 1; //only if needed
+static const int INTAKE_MOTOR_PWM_PORT					= 1; // 0;
+static const int CLIMBER_MOTOR_PWM_PORT					= 1;
 static const int GEAR_PIVOT_MOTOR_PWM_PORT				= 5; // 6;
-static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 5; // 9; //= 5;
+static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 7; // 9; //= 5;
 #endif
 
 #if KOP_BOT

@@ -129,27 +129,30 @@ public:
 
 	void TeleopPeriodic() {
 //		robot_->SetDriveValues(RobotModel::kAllWheels, 1.0);
+
+// TODO PUT THIS BACK IN
 		humanControl_->ReadControls();
 		driveController_->Update(currTimeSec_, deltaTimeSec_);
 		superstructureController_->Update(currTimeSec_, deltaTimeSec_);
-		SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearPivotEncoder()->Get());
-		SmartDashboard::PutNumber("Gear Mech Limit Switch", robot_->GetLimitSwitchState());
-		SmartDashboard::PutNumber("Gear Pivot Output", robot_->GetGearPivotMotor()->Get());
+//		SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearPivotEncoder()->Get());
+//		SmartDashboard::PutNumber("Gear Mech Limit Switch", robot_->GetLimitSwitchState());
+//		SmartDashboard::PutNumber("Gear Pivot Output", robot_->GetGearPivotMotor()->Get());
+// TODO PUT THIS BACK IN
 
 //		// for testing purposes, to take out
 //		if (!robot_->GetLimitSwitchState()) {
 //			robot_->GetGearIntakeEncoder()->Reset();
 //		}
 
-		if(humanControl_->GetGearCameraDesired()) {
-			SmartDashboard::PutString("Camera", "Gear");
-//			server.SetSource(gearCamera);
-		} else {
-			SmartDashboard::PutString("Camera", "Climb");
-//			server.SetSource(climbCamera);
-		}
+//		if(humanControl_->GetGearCameraDesired()) {
+//			SmartDashboard::PutString("Camera", "Gear");
+////			server.SetSource(gearCamera);
+//		} else {
+//			SmartDashboard::PutString("Camera", "Climb");
+////			server.SetSource(climbCamera);
+//		}
 		// Logs state of robot
-		Logger::LogState(robot_, humanControl_, deltaTimeSec_);
+		//Logger::LogState(robot_, humanControl_, deltaTimeSec_);
 	}
 
 	void TestInit() {
@@ -182,7 +185,7 @@ public:
 		SmartDashboard::PutNumber("LeftJoy Y", humanControl_->GetJoystickValue(ControlBoard::kLeftJoy, ControlBoard::kY));
 		SmartDashboard::PutNumber("RightJoy X", humanControl_->GetJoystickValue(ControlBoard::kRightJoy, ControlBoard::kX));
 
-//		SmartDashboard::PutNumber("Gear Mech Encoder", robot_->GetGearPivotEncoder()->Get());
+		SmartDashboard::PutNumber("Gear Pivot Encoder", robot_->GetGearPivotEncoder()->Get());
 //		SmartDashboard::PutNumber("Gear Mech Limit Switch", robot_->GetLimitSwitchState());
 //		SmartDashboard::PutNumber("Gear Pivot Output", robot_->GetGearPivotMotor()->Get());
 

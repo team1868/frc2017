@@ -6,11 +6,11 @@ HighGoalShootCommand::HighGoalShootCommand(SuperstructureController* mySuperstru
 }
 
 void HighGoalShootCommand::Init() {
-	superstructure_->SetAutoFlywheelDesired(true);
+//	superstructure_->SetAutoFlywheelDesired(true);
 }
 
 void HighGoalShootCommand::Update(double currTimeSec, double deltaTimeSec) {
-	superstructure_->Update(currTimeSec, deltaTimeSec);
+//	superstructure_->Update(currTimeSec, deltaTimeSec);
 }
 
 bool HighGoalShootCommand::IsDone() {
