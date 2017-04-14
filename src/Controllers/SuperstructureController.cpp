@@ -198,6 +198,9 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetDriveValues(RobotModel::kAllWheels, -0.3);
 			nextState_ = kDeployGear;
 		} else {
+			robot_->SetGearIntakeOutput(0.0);
+			robot_->SetGearPivotOutput(0.0);
+			robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 			nextState_ = kIdle;
 		}
 
