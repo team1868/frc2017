@@ -70,7 +70,7 @@ public:
 
 private:
 	// Desired values for driving and pivoting
-	double leftJoyX_, leftJoyY_, rightJoyX_, rightJoyY_, rightJoyZ_;
+	double leftJoyX_, leftJoyY_, leftJoyZ_, rightJoyX_, rightJoyY_, rightJoyZ_;
 
 	// Flywheel Velocity dial
 	double flywheelVelAdjust_;

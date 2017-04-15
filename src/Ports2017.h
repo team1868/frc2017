@@ -83,14 +83,14 @@ static const int LIMIT_SWITCH_PWM_PORT					= 7;
 #endif
 
 #if PRACT_BOT
-static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 3;	// Only if needed
-static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 4;	// Only if needed
+static const int FLYWHEEL_ENCODER_A_PWM_PORT			= 1;	// Only if needed
+static const int FLYWHEEL_ENCODER_B_PWM_PORT			= 2;	// Only if needed
 
 static const int LEFT_DRIVE_ENCODER_A_PWM_PORT			= 5;
 static const int LEFT_DRIVE_ENCODER_B_PWM_PORT			= 6;
 
-static const int RIGHT_DRIVE_ENCODER_A_PWM_PORT			= 1;
-static const int RIGHT_DRIVE_ENCODER_B_PWM_PORT			= 2;
+static const int RIGHT_DRIVE_ENCODER_A_PWM_PORT			= 3;
+static const int RIGHT_DRIVE_ENCODER_B_PWM_PORT			= 4;
 
 //static const int DISTANCE_SENSOR_PWM_PORT				= 9;
 static const int GEAR_INTAKE_MECH_ENCODER_A_PWM_PORT	= 7;	// Arbitrary values

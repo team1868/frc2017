@@ -56,20 +56,20 @@ private:
 	 * @param myX a double rotate value
 	 * @param myY a double thrust value (forwards/backwards)
 	 */
-	void ArcadeDrive(double myX, double myY, double myZ);
+	void ArcadeDrive(double myX, double myY, double myThrustZ, double myRotateZ);
 
 	/**
 	 * Senses how much each joystick is pushed and uses values to turn wheels
 	 * @param Left a double how much left joystick is pushed
 	 * @param Right a double how much right joystick is pushed
 	 */
-	void TankDrive(double Left, double Right);
+	void TankDrive(double myLeft, double myRight);
 
 	/**
 	 * Allows robot to turn quickly, at sharp angle
 	 * @param myRight a double allows robot to turn right or left
 	 */
-	void QuickTurn(double myRight);
+	void QuickTurn(double myRight, double myRotateZ);
 
 	/**
 	 * Indicates direction of drive (forwards or backwards)

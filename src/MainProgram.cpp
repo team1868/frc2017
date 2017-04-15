@@ -22,7 +22,7 @@ class MainProgram : public IterativeRobot {
 
 	double currTimeSec_, lastTimeSec_, deltaTimeSec_;
 
-//	cs::UsbCamera gearCamera;
+	cs::UsbCamera gearCamera;
 //	cs::UsbCamera climbCamera;
 //	cs::VideoSink server;
 public:
@@ -42,8 +42,8 @@ public:
 		Wait(1.0);
 		navXSource_->ResetAccumulatedYaw();
 
-		//CameraServer::GetInstance()->StartAutomaticCapture();
-//		gearCamera = CameraServer::GetInstance()->StartAutomaticCapture(1);		// Starting camera
+		CameraServer::GetInstance()->StartAutomaticCapture();
+//		gearCamera = CameraServer::GetInstance()->StartAutomaticCapture(0);		// Starting camera
 //		climbCamera = CameraServer::GetInstance()->StartAutomaticCapture(0);
 //		server = CameraServer::GetInstance()->GetServer();
 		// TODO move this to autocontroller? meh

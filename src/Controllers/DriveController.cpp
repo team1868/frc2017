@@ -52,11 +52,22 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			robot_->SetPercentVBusDriveMode();
 
 			// Getting joystick values
-			double leftJoyY, rightJoyY, rightJoyX, rightJoyZ;
+			double leftJoyY, leftJoyZ, rightJoyY, rightJoyX, rightJoyZ;
 			leftJoyY = -humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kY);	// was neg
+			leftJoyZ = humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kZ);
 			rightJoyY = -humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY);	// was neg
 			rightJoyX = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX);
 			rightJoyZ = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kZ);
+
+			// so leftJoyZ and rightJoyZ are from -1 to 1
+			leftJoyZ = (leftJoyZ + 1.0) / 2.0;
+			rightJoyZ = (rightJoyZ + 1.0) / 2.0;
+
+			printf("THRUST Z: %f\n", leftJoyZ);
+			printf("ROTATE Z: %f\n", rightJoyZ);
+
+			SmartDashboard::PutNumber("Thrust z", leftJoyZ);
+			SmartDashboard::PutNumber("Rotate z", rightJoyZ);
 
 			if (humanControl_->GetHighGearDesired()) {
 				//printf("Set high gear\n");
@@ -73,16 +84,16 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 				nextState_ = kAlignWithPeg;
 			} else if (humanControl_->GetQuickTurnDesired()) {
 				//printf("Quick turning\n");
-				QuickTurn(rightJoyX);
+				QuickTurn(rightJoyX, rightJoyZ);
 			} else if (humanControl_->GetArcadeDriveDesired()) {
 				//printf("Arcade driving\n");
-				ArcadeDrive(rightJoyX, leftJoyY, rightJoyZ);
+				ArcadeDrive(rightJoyX, leftJoyY, leftJoyZ, rightJoyZ);
 			} else if (!humanControl_->GetArcadeDriveDesired()){
 				//printf("Tank driving\n");
 				TankDrive(leftJoyY, rightJoyY);
 			} else {
 				printf("SOMETHING IS WRONG\n");
-				ArcadeDrive(rightJoyX, leftJoyY, rightJoyZ);		// Default to arcade drive
+				ArcadeDrive(rightJoyX, leftJoyY, leftJoyZ, rightJoyZ);		// Default to arcade drive
 			}
 			break;
 
@@ -124,7 +135,7 @@ void DriveController::PrintDriveValues() {
 	SmartDashboard::PutNumber("Right drive encoder value", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 }
 
-void DriveController::ArcadeDrive(double myX, double myY, double myZ) {
+void DriveController::ArcadeDrive(double myX, double myY, double myThrustZ, double myRotateZ) {
 	SmartDashboard::PutString("Drive Mode", "Arcade Drive");
 	double thrustValue = myY * DriveDirection();
 	double rotateValue = myX;
@@ -143,8 +154,8 @@ void DriveController::ArcadeDrive(double myX, double myY, double myZ) {
 		driveStraightPIDController_->Disable();
 		isDriveStraightStarted_ = false;
 
-		rotateValue = myZ * std::pow(rotateValue, 3.0) + (1 - myZ) * rotateValue;		// FIGURE OUT WHAT Z IS
-		printf("myZ: %f\n", myZ);
+		// myZ is 0.02
+		rotateValue = myRotateZ * std::pow(rotateValue, 3.0) + (1 - myRotateZ) * rotateValue;		// FIGURE OUT WHAT Z IS
 
 		leftOutput += rotateValue;
 		rightOutput -= rotateValue;
@@ -185,10 +196,8 @@ void DriveController::ArcadeDrive(double myX, double myY, double myZ) {
 	//sensitivity adjustment
 	//when z == 0 output = output, and when z==1 output = output^3
 
-//	leftOutput = myZ * std::pow(leftOutput, 3.0) + (1 - myZ) * leftOutput;
-//	rightOutput = myZ * std::pow(rightOutput, 3.0) + (1 - myZ) * rightOutput;
-
-//	printf("myZ: %f\n", myZ);
+	leftOutput = myThrustZ * std::pow(leftOutput, 3.0) + (1 - myThrustZ) * leftOutput;
+	rightOutput = myThrustZ * std::pow(rightOutput, 3.0) + (1 - myThrustZ) * rightOutput;
 
 	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
 	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
@@ -206,10 +215,12 @@ void DriveController::TankDrive(double left, double right) {
 	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
 }
 
-void DriveController::QuickTurn(double myRight) {
+void DriveController::QuickTurn(double myRight, double myRotateZ) {
 	SmartDashboard::PutString("Drive Mode", "Quick Turn");
-	robot_->SetDriveValues(RobotModel::kLeftWheels, myRight);
-	robot_->SetDriveValues(RobotModel::kRightWheels, -myRight);
+	double rotateValue = myRotateZ * std::pow(myRight, 3.0) + (1 - myRotateZ) * myRight;		// FIGURE OUT WHAT Z IS
+	printf("myRotateZ: %f\n", myRotateZ);
+	robot_->SetDriveValues(RobotModel::kLeftWheels, rotateValue);
+	robot_->SetDriveValues(RobotModel::kRightWheels, -rotateValue);
 }
 
 int DriveController::DriveDirection() {

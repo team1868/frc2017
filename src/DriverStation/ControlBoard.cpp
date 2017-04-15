@@ -8,11 +8,12 @@ ControlBoard::ControlBoard() {
 	operatorJoy_ = new Joystick(OPERATOR_JOY_USB_PORT);
 	operatorJoyB_ = new Joystick(OPERATOR_JOY_B_USB_PORT);
 
-	leftJoyX_ = 0;
-	leftJoyY_ = 0;
-	rightJoyX_ = 0;
-	rightJoyY_ = 0;
-	rightJoyZ_ = 0;
+	leftJoyX_ = 0.0;
+	leftJoyY_ = 0.0;
+	leftJoyZ_ = 0.0;
+	rightJoyX_ = 0.0;
+	rightJoyY_ = 0.0;
+	rightJoyZ_ = 0.0;
 
 	// Buttons for drive
 	driveDirectionButton_ = new ButtonReader(rightJoy_, DRIVE_DIRECTION_BUTTON_PORT);
@@ -70,6 +71,7 @@ void ControlBoard::ReadControls() {
 	ReadAllButtons();
 	leftJoyX_ = leftJoy_->GetX();
 	leftJoyY_ = leftJoy_->GetY();
+	leftJoyZ_ = leftJoy_->GetZ();
 	rightJoyX_ = rightJoy_->GetX();
 	rightJoyY_ = rightJoy_->GetY();
 	rightJoyZ_ = rightJoy_->GetZ();
@@ -121,7 +123,7 @@ double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
 				case(kY):
 					return leftJoyY_;
 				case(kZ):
-					return 0;
+					return leftJoyZ_;
 			}
 			break;
 	}

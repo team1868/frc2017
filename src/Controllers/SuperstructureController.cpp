@@ -192,7 +192,7 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 //			nextState_ = kDeployGear;
 //		}
 
-		if (robot_->GetTime() - initialGearDeployTime_ < 2.0) {
+		if (robot_->GetTime() - initialGearDeployTime_ < 1.0) {
 			robot_->SetGearIntakeOutput(0.9);
 			robot_->SetGearPivotOutput(gearPivotMotorOutput_);
 			robot_->SetDriveValues(RobotModel::kAllWheels, -0.3);
