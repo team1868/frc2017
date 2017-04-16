@@ -60,11 +60,13 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 			rightJoyZ = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kZ);
 
 			// so leftJoyZ and rightJoyZ are from -1 to 1
-			leftJoyZ = (leftJoyZ + 1.0) / 2.0;
-			rightJoyZ = (rightJoyZ + 1.0) / 2.0;
+//			leftJoyZ = (leftJoyZ + 1.0) / 2.0;
+//			rightJoyZ = (rightJoyZ + 1.0) / 2.0;
+			leftJoyZ = 0.3;
+			rightJoyZ = 0.7;
 
-			printf("THRUST Z: %f\n", leftJoyZ);
-			printf("ROTATE Z: %f\n", rightJoyZ);
+//			printf("THRUST Z: %f\n", leftJoyZ);
+//			printf("ROTATE Z: %f\n", rightJoyZ);
 
 			SmartDashboard::PutNumber("Thrust z", leftJoyZ);
 			SmartDashboard::PutNumber("Rotate z", rightJoyZ);

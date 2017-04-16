@@ -20,7 +20,7 @@ ControlBoard::ControlBoard() {
 	gearShiftButton_ = new ButtonReader(leftJoy_, HIGH_LOW_GEAR_BUTTON_PORT);
 	arcadeDriveButton_ = new ButtonReader(operatorJoy_, ARCADE_DRIVE_BUTTON_PORT);
 	quickTurnButton_ = new ButtonReader(rightJoy_, QUICK_TURN_BUTTON_PORT);
-	alignWithPegButton_ = new ButtonReader(rightJoy_, ALIGN_WITH_PEG_BUTTON_PORT); //Subject to change
+	alignWithPegButton_ = new ButtonReader(leftJoy_, ALIGN_WITH_PEG_BUTTON_PORT);
 
 	// Buttons for superstructure
 	flywheelSwitch_ = new ButtonReader(operatorJoy_, FLYWHEEL_SWITCH_PORT);

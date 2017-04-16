@@ -48,7 +48,7 @@ static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 6; //CHANGE PORT
 static const int FLYWHEEL_MOTOR_PWM_PORT				= 1; // 7; //only if needed
 static const int FEEDER_MOTOR_PWM_PORT					= 1; // 1; //only if needed
 static const int INTAKE_MOTOR_PWM_PORT					= 1; // 0;
-static const int CLIMBER_MOTOR_PWM_PORT					= 1;
+static const int CLIMBER_MOTOR_PWM_PORT					= 6;
 static const int GEAR_PIVOT_MOTOR_PWM_PORT				= 5; // 6;
 static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 7; // 9; //= 5;
 #endif
@@ -133,8 +133,8 @@ static const int DRIVE_DIRECTION_BUTTON_PORT			= 3;
 static const int HIGH_LOW_GEAR_BUTTON_PORT				= 3;
 static const int ARCADE_DRIVE_BUTTON_PORT				= 6;
 static const int QUICK_TURN_BUTTON_PORT					= 2;
-static const int BRAKE_BUTTON_PORT						= 2;
-static const int ALIGN_WITH_PEG_BUTTON_PORT 			= 1;  //TODO Change port
+//static const int BRAKE_BUTTON_PORT						= 2;
+static const int ALIGN_WITH_PEG_BUTTON_PORT 			= 2;
 
 //Superstructure controller button ports
 static const int FLYWHEEL_SWITCH_PORT					= 9;
