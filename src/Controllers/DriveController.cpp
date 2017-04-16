@@ -4,34 +4,28 @@
 DriveController::DriveController(RobotModel* robot, ControlBoard* humanControl, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoderSource) {
 	robot_ = robot;
 	humanControl_ = humanControl;
+	isDone_ = false;
+
+	thrustSensitivity_ = 0.0;
+	rotateSensitivity_ = 0.0;
+	quickTurnSensitivity_ = 0.0;
+
+	// For AlignWithPeg
+	alignWithPegStarted_ = false;
+	pegCommand_ = NULL;
 	navXSource_ = navX;
 	talonEncoderSource_ = talonEncoderSource;
-	anglePIDOutput_ = new AnglePIDOutput();
-	alignWithPegStarted_ = false;
 
-	// TODO THIS SHOULD READ FROM INI FILE (IN A SEPARATE HEADER)
-	pFac_ = 0.01;
-	iFac_ = 0.0;
-	dFac_ = 0.0;
-
-	driveStraightPIDController_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, anglePIDOutput_);
-	isDone_ = false;
-	isDriveStraightStarted_ = false;
-	desiredAngle_ = robot_->GetNavXYaw();
-	angleOutput_ = 0.0;
-
-	driveStraightPIDController_->SetOutputRange(-1.0, 1.0);
-	driveStraightPIDController_->SetContinuous(false);
-	driveStraightPIDController_->SetAbsoluteTolerance(2.0);
-
-	pegCommand_ = NULL;
-
-	currState_ = kInitialize;
-	nextState_ = kInitialize;
+	currState_ = kTeleopDrive;
+	nextState_ = kTeleopDrive;
 }
 
 void DriveController::Reset() {
 	robot_->SetPercentVBusDriveMode();
+
+	thrustSensitivity_ = robot_->pini_->getf("TELEOP DRIVING", "thrustSensitivity", 0.3);
+	rotateSensitivity_ = robot_->pini_->getf("TELEOP DRIVING", "rotateSensitivity", 0.5);
+	quickTurnSensitivity_ = robot_->pini_->getf("TELEOP DRIVING", "quickTurnSensitivity", 0.5);
 }
 
 void DriveController::Update(double currTimeSec, double deltaTimeSec) {
@@ -39,95 +33,153 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 
 	switch (currState_) {
 
-		case (kInitialize):
-			if (humanControl_->GetAlignWithPegDesired()) {
-				nextState_ = kAlignWithPeg;
-			} else {
-				nextState_ = kTeleopDrive;
-			}
+	case (kTeleopDrive) :
+		robot_->SetPercentVBusDriveMode();
 
-			break;
+		// Getting joystick values
+		double leftJoyY, leftJoyZ, rightJoyY, rightJoyX, rightJoyZ;
+		leftJoyY = -humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kY);	// was neg
+		leftJoyZ = humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kZ);
+		rightJoyY = -humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY);	// was neg
+		rightJoyX = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX);
+		rightJoyZ = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kZ);
 
-		case (kTeleopDrive) :
-			robot_->SetPercentVBusDriveMode();
-
-			// Getting joystick values
-			double leftJoyY, leftJoyZ, rightJoyY, rightJoyX, rightJoyZ;
-			leftJoyY = -humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kY);	// was neg
-			leftJoyZ = humanControl_->GetJoystickValue(RemoteControl::kLeftJoy, RemoteControl::kZ);
-			rightJoyY = -humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kY);	// was neg
-			rightJoyX = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kX);
-			rightJoyZ = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kZ);
-
-			// so leftJoyZ and rightJoyZ are from -1 to 1
+		// so leftJoyZ and rightJoyZ are from -1 to 1
 //			leftJoyZ = (leftJoyZ + 1.0) / 2.0;
 //			rightJoyZ = (rightJoyZ + 1.0) / 2.0;
-			leftJoyZ = 0.3;
-			rightJoyZ = 0.7;
+//		leftJoyZ = 0.3;		// TODO READ FROM INI!
+//		rightJoyZ = 0.7;
 
-//			printf("THRUST Z: %f\n", leftJoyZ);
-//			printf("ROTATE Z: %f\n", rightJoyZ);
+//		SmartDashboard::PutNumber("Thrust z", leftJoyZ);
+//		SmartDashboard::PutNumber("Rotate z", rightJoyZ);
 
-			SmartDashboard::PutNumber("Thrust z", leftJoyZ);
-			SmartDashboard::PutNumber("Rotate z", rightJoyZ);
+		if (humanControl_->GetHighGearDesired()) {
+			printf("Set high gear\n");
+			robot_->SetHighGear();
+		} else {
+			printf("Set low gear\n");
+			robot_->SetLowGear();
+		}
 
-			if (humanControl_->GetHighGearDesired()) {
-				//printf("Set high gear\n");
-				robot_->SetHighGear();
-			} else {
-				//printf("Set low gear\n");
-				robot_->SetLowGear();
-			}
-
+		if (humanControl_->GetAlignWithPegDesired()) {
+			nextState_ = kAlignWithPeg;
+		} else if (humanControl_->GetQuickTurnDesired()) {
+			QuickTurn(rightJoyX, rotateSensitivity_);
 			nextState_ = kTeleopDrive;
+		} else {
+			ArcadeDrive(rightJoyX, leftJoyY, thrustSensitivity_, rotateSensitivity_);
+			nextState_ = kTeleopDrive;
+		}
 
-			if (humanControl_->GetAlignWithPegDesired()) {
-				//printf("Going to alignwithpeg\n");
-				nextState_ = kAlignWithPeg;
-			} else if (humanControl_->GetQuickTurnDesired()) {
-				//printf("Quick turning\n");
-				QuickTurn(rightJoyX, rightJoyZ);
-			} else if (humanControl_->GetArcadeDriveDesired()) {
-				//printf("Arcade driving\n");
-				ArcadeDrive(rightJoyX, leftJoyY, leftJoyZ, rightJoyZ);
-			} else if (!humanControl_->GetArcadeDriveDesired()){
-				//printf("Tank driving\n");
-				TankDrive(leftJoyY, rightJoyY);
-			} else {
-				printf("SOMETHING IS WRONG\n");
-				ArcadeDrive(rightJoyX, leftJoyY, leftJoyZ, rightJoyZ);		// Default to arcade drive
-			}
-			break;
+		break;
 
-		case (kAlignWithPeg) :
-			if (!alignWithPegStarted_){
-				printf("Initializing pegCommand");
-				Profiler startAlignPegProfiler(robot_, "kAlignWithPeg");
-				pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_, false);
-				pegCommand_->Init();
-				alignWithPegStarted_ = true;
-				nextState_ = kAlignWithPeg;
-			}
+	case (kAlignWithPeg) :
+		if (!alignWithPegStarted_){
+			printf("Initializing AlignWithPeg teleop");
+			Profiler startAlignPegProfiler(robot_, "kAlignWithPeg");
+			pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_, false);
+			pegCommand_->Init();
+			alignWithPegStarted_ = true;
+			nextState_ = kAlignWithPeg;
+		}
 
-			if (!pegCommand_->IsDone()){
-				pegCommand_->Update(currTimeSec, deltaTimeSec);
-				nextState_ = kAlignWithPeg;
-			} else {
-				printf("Align with peg teleop done \n");
-				alignWithPegStarted_ = false;
-				nextState_ = kTeleopDrive;
-			}
+		if (!pegCommand_->IsDone()){
+			pegCommand_->Update(currTimeSec, deltaTimeSec);
+			nextState_ = kAlignWithPeg;
+		} else {
+			printf("Done with AlignWithPeg teleop\n");
+			alignWithPegStarted_ = false;
+			nextState_ = kTeleopDrive;
+		}
 
-			printf("IN ALIGN WITH PEG COMMAND\n");
-			break;
+		printf("In AlignWithPeg\n");
+		break;
 	}
 
 	currState_ = nextState_;
 }
 
+void DriveController::ArcadeDrive(double myX, double myY, double thrustSensitivity, double rotateSensitivity) {
+	SmartDashboard::PutString("Drive Mode", "Arcade Drive");
+
+	double thrustValue = myY * GetDriveDirection();
+	double rotateValue = myX;
+	double leftOutput = 0.0;
+	double rightOutput = 0.0;
+
+	// Account for small joystick jostles (deadband)
+	thrustValue = HandleDeadband(thrustValue, 0.02);
+	rotateValue = HandleDeadband(rotateValue, 0.02);
+
+	// Sensitivity adjustment
+	thrustValue = GetCubicAdjustment(thrustValue, thrustSensitivity);
+	rotateValue = GetCubicAdjustment(rotateValue, rotateSensitivity);
+
+	// Controls curvature
+	rotateValue *= fabs(thrustValue);
+
+	leftOutput = thrustValue + rotateValue;
+	rightOutput = thrustValue - rotateValue;
+
+    if (leftOutput > 1.0) {
+        leftOutput = 1.0;
+    } else if (rightOutput > 1.0) {
+    	rightOutput = 1.0;
+    } else if (leftOutput < -1.0) {
+    	leftOutput = -1.0;
+    } else if (rightOutput < -1.0) {
+        rightOutput = -1.0;
+    }
+
+	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
+	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
+
+	SmartDashboard::PutNumber("Left motor output", leftOutput );
+	SmartDashboard::PutNumber("Right motor output", rightOutput);
+}
+
+void DriveController::TankDrive(double left, double right) {		// Currently not in use
+	SmartDashboard::PutString("Drive Mode", "Tank Drive");
+	double leftOutput = left * GetDriveDirection();
+	double rightOutput = right * GetDriveDirection();
+
+	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
+	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
+}
+
+void DriveController::QuickTurn(double myRight, double myRotateZ) {
+	SmartDashboard::PutString("Drive Mode", "Quick Turn");
+
+	double rotateValue = GetCubicAdjustment(myRight, myRotateZ);
+
+	robot_->SetDriveValues(RobotModel::kLeftWheels, rotateValue);
+	robot_->SetDriveValues(RobotModel::kRightWheels, -rotateValue);
+}
+
+int DriveController::GetDriveDirection() {
+	if (humanControl_->GetReverseDriveDesired()) {
+		return -1;
+	} else {
+		return 1;
+	}
+}
+
+double DriveController::HandleDeadband(double value, double deadband) {
+	if (fabs(value) < deadband) {
+		return 0.0;
+	} else {
+		return value;
+	}
+}
+
+// Rotation sensitivity adjustment: when z == 0, output = output; when z==1, output = output^3
+double DriveController::GetCubicAdjustment(double value, double adjustmentConstant) {
+	return adjustmentConstant * std::pow(value, 3.0) + (1 - adjustmentConstant) * value;
+}
+
 void DriveController::PrintDriveValues() {
-	SmartDashboard::PutNumber("Drive direction", DriveDirection());
-	SmartDashboard::PutNumber("Get state", GetDriveState());
+	SmartDashboard::PutNumber("Drive direction", GetDriveDirection());
+	SmartDashboard::PutNumber("Get state", currState_);
 	SmartDashboard::PutNumber("NavX angle", robot_->GetNavXYaw());
 	SmartDashboard::PutNumber("Left drive distance", robot_->GetLeftDistance());
 	SmartDashboard::PutNumber("Right drive distance", robot_->GetRightDistance());
@@ -137,110 +189,8 @@ void DriveController::PrintDriveValues() {
 	SmartDashboard::PutNumber("Right drive encoder value", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 }
 
-void DriveController::ArcadeDrive(double myX, double myY, double myThrustZ, double myRotateZ) {
-	SmartDashboard::PutString("Drive Mode", "Arcade Drive");
-	double thrustValue = myY * DriveDirection();
-	double rotateValue = myX;
-	double leftOutput = 0.0;
-	double rightOutput = 0.0;
-
-	// If thrust is less than 0.1, do not rotate
-	if (fabs(thrustValue) < 0.1) {
-		rotateValue = 0.0;
-	}
-
-	leftOutput = thrustValue;
-	rightOutput = thrustValue;
-
-	if (fabs(rotateValue) > 0.1) {	 // If we want turn
-		driveStraightPIDController_->Disable();
-		isDriveStraightStarted_ = false;
-
-		// myZ is 0.02
-		rotateValue = myRotateZ * std::pow(rotateValue, 3.0) + (1 - myRotateZ) * rotateValue;		// FIGURE OUT WHAT Z IS
-
-		leftOutput += rotateValue;
-		rightOutput -= rotateValue;
-
-	} else { // If we want straight
-/*		if (!isDriveStraightStarted_) {
-			desiredAngle_ = robot_->GetNavXYaw();
-			driveStraight_->SetSetpoint(desiredAngle_);
-			driveStraight_->Enable();
-
-			angleOutput_ = anglePIDOutput_->GetPIDOutput();
-		} else {
-			printf("Driving Straight \n");
-			angleOutput_ = anglePIDOutput_->GetPIDOutput();
-		}
-
-		leftOutput += angleOutput_;
-		rightOutput -= angleOutput_;
-		SmartDashboard::PutNumber("Angle Error", driveStraight_->GetError());*/
-	}
-
-	// Finding the max output
-	double maxOutput = fmax(fabs(leftOutput), fabs(rightOutput));
-
-	// If the maxOutput exceeds 1.0, scale them down by maxOutput
-	if (maxOutput > 1.0) {
-		leftOutput /= maxOutput;
-		rightOutput /= maxOutput;
-	}
-
-	// 	TODO ask about sensitivity of the joysticks
-
-	if (fabs(thrustValue) < 0.15) {			// TODO change if necessary
-		leftOutput = 0.0;
-		rightOutput = 0.0;
-	}
-
-	//sensitivity adjustment
-	//when z == 0 output = output, and when z==1 output = output^3
-
-	leftOutput = myThrustZ * std::pow(leftOutput, 3.0) + (1 - myThrustZ) * leftOutput;
-	rightOutput = myThrustZ * std::pow(rightOutput, 3.0) + (1 - myThrustZ) * rightOutput;
-
-	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
-	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
-
-	SmartDashboard::PutNumber("Left motor output", leftOutput );
-	SmartDashboard::PutNumber("Right motor output", rightOutput);
-}
-
-void DriveController::TankDrive(double left, double right) {
-	SmartDashboard::PutString("Drive Mode", "Tank Drive");
-	double leftOutput = left * DriveDirection();
-	double rightOutput = right * DriveDirection();
-
-	robot_->SetDriveValues(RobotModel::kLeftWheels, leftOutput);
-	robot_->SetDriveValues(RobotModel::kRightWheels, rightOutput);
-}
-
-void DriveController::QuickTurn(double myRight, double myRotateZ) {
-	SmartDashboard::PutString("Drive Mode", "Quick Turn");
-	double rotateValue = myRotateZ * std::pow(myRight, 3.0) + (1 - myRotateZ) * myRight;		// FIGURE OUT WHAT Z IS
-	printf("myRotateZ: %f\n", myRotateZ);
-	robot_->SetDriveValues(RobotModel::kLeftWheels, rotateValue);
-	robot_->SetDriveValues(RobotModel::kRightWheels, -rotateValue);
-}
-
-int DriveController::DriveDirection() {
-	if (humanControl_->GetReverseDriveDesired()) {
-		return -1;
-	} else {
-		return 1;
-	}
-}
-
-int DriveController::GetDriveState() {
-	return currState_;
-}
-
 bool DriveController::IsDone() {
 	return isDone_;
 }
 
-DriveController::~DriveController() {
-
-}
+DriveController::~DriveController() { }
