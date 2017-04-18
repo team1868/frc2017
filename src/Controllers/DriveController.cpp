@@ -45,26 +45,26 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 		rightJoyZ = humanControl_->GetJoystickValue(RemoteControl::kRightJoy, RemoteControl::kZ);
 
 		// so leftJoyZ and rightJoyZ are from -1 to 1
-//			leftJoyZ = (leftJoyZ + 1.0) / 2.0;
-//			rightJoyZ = (rightJoyZ + 1.0) / 2.0;
+		thrustSensitivity_ = (leftJoyZ + 1.0) / 2.0;
+		rotateSensitivity_ = (rightJoyZ + 1.0) / 2.0;
 //		leftJoyZ = 0.3;		// TODO READ FROM INI!
-//		rightJoyZ = 0.7;
+//		rightJoyZ = 0.5;
 
-//		SmartDashboard::PutNumber("Thrust z", leftJoyZ);
-//		SmartDashboard::PutNumber("Rotate z", rightJoyZ);
+		SmartDashboard::PutNumber("Thrust z", thrustSensitivity_);
+		SmartDashboard::PutNumber("Rotate z", rotateSensitivity_);
 
 		if (humanControl_->GetHighGearDesired()) {
-			printf("Set high gear\n");
+			SmartDashboard::PutString("Gear", "High");
 			robot_->SetHighGear();
 		} else {
-			printf("Set low gear\n");
+			SmartDashboard::PutString("Gear", "Low");
 			robot_->SetLowGear();
 		}
 
 		if (humanControl_->GetAlignWithPegDesired()) {
 			nextState_ = kAlignWithPeg;
 		} else if (humanControl_->GetQuickTurnDesired()) {
-			QuickTurn(rightJoyX, rotateSensitivity_);
+			QuickTurn(rightJoyX, 0.0);
 			nextState_ = kTeleopDrive;
 		} else {
 			ArcadeDrive(rightJoyX, leftJoyY, thrustSensitivity_, rotateSensitivity_);
@@ -108,8 +108,8 @@ void DriveController::ArcadeDrive(double myX, double myY, double thrustSensitivi
 	double rightOutput = 0.0;
 
 	// Account for small joystick jostles (deadband)
-	thrustValue = HandleDeadband(thrustValue, 0.02);
-	rotateValue = HandleDeadband(rotateValue, 0.02);
+	thrustValue = HandleDeadband(thrustValue, 0.1);	// 0.02 was too low
+	rotateValue = HandleDeadband(rotateValue, 0.06);
 
 	// Sensitivity adjustment
 	thrustValue = GetCubicAdjustment(thrustValue, thrustSensitivity);

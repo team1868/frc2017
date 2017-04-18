@@ -155,7 +155,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 	}
 	currState_ = nextState_;
 
-	if (robot_->GetTime() - timeStartForAlignWithPegCommand_ > 5.0) {	// Timeout for AlignWithPegCommand
+	if (robot_->GetTime() - timeStartForAlignWithPegCommand_ > 3.5) {	// Timeout for AlignWithPegCommand
 		isDone_ = true;
 	}
 }
