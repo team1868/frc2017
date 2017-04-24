@@ -59,6 +59,11 @@ void DriveStraightCommand::Init() {
 	distancePID_->Enable();
 
 	initialDriveTime_ = robot_->GetTime();
+
+	printf("Initial Right Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
+	printf("Initial Left Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+	printf("Initial Average Distance: %f\n", initialAvgDistance_);
+	printf("Desired Distance: %f\n", desiredTotalAvgDistance_);
 }
 
 void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
@@ -72,6 +77,10 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
 	if ((anglePID_->OnTarget() && (distancePID_->OnTarget())) || (diffDriveTime_ > 10.0)) {
+		printf("Final Left Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
+		printf("Final Right Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
+		printf("Final Average Distance: %f\n", talonEncoderSource_->PIDGet());
+		printf("Distance Error: %f\n", distancePID_->GetAvgError());
 		anglePID_->Reset();
 		distancePID_->Reset();
 

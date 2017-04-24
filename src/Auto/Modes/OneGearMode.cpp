@@ -12,17 +12,22 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	double desiredAngle = 0.0;
 
 	if (autoMode_ == 2) {
-		desiredDistance = robot_->pini_->geti("DESIRED DISTANCES", "leftLiftDesiredDistance", -7.5);
+		SmartDashboard::PutString("Auto Mode", "LEFT LIFT AUTO");
+		desiredDistance = robot_->pini_->getf("DESIRED DISTANCES", "leftLiftDesiredDistance", -7.5);
 		desiredAngle = -60.0;
+		printf("Side Gear Distance: %f\n", desiredDistance);
 //		liftPath_ = new PathCommand(robot_, PathCommand::kLeftLift);
 	} else if (autoMode_ == 3) {
-		desiredDistance = robot_->pini_->geti("DESIRED DISTANCES", "middleLiftDesiredDistance", -6.0);
+		SmartDashboard::PutString("Auto Mode", "MIDDLE LIFT AUTO");
+		desiredDistance = robot_->pini_->getf("DESIRED DISTANCES", "middleLiftDesiredDistance", -6.0);
 		desiredAngle = 0.0;
 //		liftPath_ = new PathCommand(robot_, PathCommand::kMiddleLift);
 	} else if (autoMode_ == 4) {
-		desiredDistance = robot_->pini_->geti("DESIRED DISTANCES", "rightLiftDesiredDistance", -7.5);
+		SmartDashboard::PutString("Auto Mode", "RIGHT LIFT AUTO");
+		desiredDistance = robot_->pini_->getf("DESIRED DISTANCES", "rightLiftDesiredDistance", -7.5);
 		desiredAngle = 60.0;
-//		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
+		printf("Side Gear Distance: %f\n", desiredDistance);
+		//		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
 	} else {
 		// SOMETHING IS WRONG print something
 	}

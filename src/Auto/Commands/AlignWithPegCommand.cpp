@@ -41,7 +41,7 @@ void AlignWithPegCommand::RefreshIni() {
 
 void AlignWithPegCommand::Init() {
 	printf("in alignwithpegcommand init\n");
-	Profiler profiler(robot_, "Align With Peg Init");
+//	Profiler profiler(robot_, "Align With Peg Init");
 
 	context_ = new zmq::context_t(1);
 
@@ -103,7 +103,11 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 			} else {
 				printf("vision done at: %f\n", robot_->GetTime() - timeStartForVision_);
 				printf("ANGLE THAT WAS GOOD NO PIVOT: %f\n", -desiredPivotDeltaAngle_);
-				nextState_ = kDriveStraightInit;
+				if(isDriveStraightDesired_) {
+					nextState_ = kDriveStraightInit;
+				} else {
+					isDone_ = true;
+				}
 			}
 			break;
 
@@ -112,6 +116,8 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				pivotCommand_->Update(currTimeSec, deltaTimeSec);
 				nextState_ = kPivotToAngleUpdate;
 			} else {
+				ReadFromJetson();
+				printf("Final Vision Angle: %f\n", desiredPivotDeltaAngle_);
 				printf("Pivot To Angle Is Done\n");
 				if (isDriveStraightDesired_) {
 					nextState_ = kDriveStraightInit;
@@ -133,7 +139,7 @@ void AlignWithPegCommand::Update(double currTimeSec, double deltaTimeSec) {
 				// Subtract 10 inches bc of length of peg
 				// negative because technically driving backwards
 				driveStraightCommand_ = new DriveStraightCommand(navXSource_, talonSource_, angleOutput_, distanceOutput_,
-						robot_, -(desiredDistance_ - 10.0)/12.0);	// converting to feet
+						robot_, -(desiredDistance_ - 12.5)/12.0);	// converting to feet
 				driveStraightCommand_->Init();
 				nextState_ = kDriveStraightUpdate;
 			} else {
@@ -169,11 +175,11 @@ bool AlignWithPegCommand::IsDone() {
 }
 
 void AlignWithPegCommand::ReadFromJetson() {
-	Profiler profilerFromJetson(robot_, "ReadFromJetson");
+//	Profiler profilerFromJetson(robot_, "ReadFromJetson");
 	printf("in front of read from jetson\n");
 
 	try {
-		Profiler profilerInTry(robot_, "ProfilerInTry");
+		//Profiler profilerInTry(robot_, "ProfilerInTry");
 		string contents = s_recv(*subscriber_);
 
 		stringstream ss(contents);

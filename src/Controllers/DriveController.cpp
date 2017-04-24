@@ -76,7 +76,7 @@ void DriveController::Update(double currTimeSec, double deltaTimeSec) {
 	case (kAlignWithPeg) :
 		if (!alignWithPegStarted_){
 			printf("Initializing AlignWithPeg teleop");
-			Profiler startAlignPegProfiler(robot_, "kAlignWithPeg");
+			//Profiler startAlignPegProfiler(robot_, "kAlignWithPeg");
 			pegCommand_ = new AlignWithPegCommand(robot_, navXSource_, talonEncoderSource_, false);
 			pegCommand_->Init();
 			alignWithPegStarted_ = true;
@@ -112,11 +112,10 @@ void DriveController::ArcadeDrive(double myX, double myY, double thrustSensitivi
 	rotateValue = HandleDeadband(rotateValue, 0.06);
 
 	// Sensitivity adjustment
-	thrustValue = GetCubicAdjustment(thrustValue, thrustSensitivity);
 	rotateValue = GetCubicAdjustment(rotateValue, rotateSensitivity);
-
-	// Controls curvature
 	rotateValue *= fabs(thrustValue);
+
+	thrustValue = GetCubicAdjustment(thrustValue, thrustSensitivity);
 
 	leftOutput = thrustValue + rotateValue;
 	rightOutput = thrustValue - rotateValue;

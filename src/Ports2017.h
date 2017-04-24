@@ -1,8 +1,8 @@
 #ifndef SRC_PORTS2017_H_
 #define SRC_PORTS2017_H_
 
-#define COMP_BOT false
-#define PRACT_BOT true
+#define COMP_BOT true
+#define PRACT_BOT false
 #define KOP_BOT false
 
 /**
@@ -40,8 +40,8 @@ static const int FLYWHEEL_MOTOR_PWM_PORT				= -1;
 static const int FEEDER_MOTOR_PWM_PORT					= -1;
 static const int INTAKE_MOTOR_PWM_PORT					= 8;
 static const int CLIMBER_MOTOR_PWM_PORT					= 5;
-static const int GEAR_PIVOT_MOTOR_PWM_PORT				= 9; //CHANGE PORT
-static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 6; //CHANGE PORT
+static const int GEAR_PIVOT_MOTOR_PWM_PORT				= 6; //CHANGE PORT
+static const int GEAR_INTAKE_MOTOR_PWN_PORT				= 9; //CHANGE PORT
 #endif
 
 #if PRACT_BOT	// might want to check again
@@ -134,7 +134,7 @@ static const int HIGH_LOW_GEAR_BUTTON_PORT				= 3;
 static const int ARCADE_DRIVE_BUTTON_PORT				= 6;
 static const int QUICK_TURN_BUTTON_PORT					= 2;
 //static const int BRAKE_BUTTON_PORT						= 2;
-static const int ALIGN_WITH_PEG_BUTTON_PORT 			= 2;
+static const int ALIGN_WITH_PEG_BUTTON_PORT 			= 1;
 
 //Superstructure controller button ports
 static const int FLYWHEEL_SWITCH_PORT					= 9;

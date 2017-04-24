@@ -32,7 +32,7 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 }
 
 void PivotCommand::GetIniValues() {
-	Profiler profiler(robot_, "Pivot Ini");
+	//Profiler profiler(robot_, "Pivot Ini");
 	pFac_ = robot_->pini_->getf("PIVOT PID", "pFac", 0.0);
 	iFac_ = robot_->pini_->getf("PIVOT PID", "iFac", 0.0);
 	dFac_ = robot_->pini_->getf("PIVOT PID", "dFac", 0.0);
@@ -41,7 +41,7 @@ void PivotCommand::GetIniValues() {
 }
 
 void PivotCommand::Init() {
-	Profiler profiler(robot_, "Pivot Init");
+	//Profiler profiler(robot_, "Pivot Init");
 	initYaw_ = navXSource_->PIDGet();
 	pivotPID_->SetSetpoint(initYaw_ + desiredDeltaAngle_);
 	pivotPID_->SetContinuous(false);
@@ -50,6 +50,9 @@ void PivotCommand::Init() {
 	pivotPID_->Enable();
 
 	SmartDashboard::PutNumber("Initial yaw", initYaw_);
+	printf("Initial NavX Angle: %f\n", initYaw_);
+	printf("Desired NavX Angle: %f\n", initYaw_ + desiredDeltaAngle_);
+
 	isDone_ = false;
 
 	numTimesOnTarget_ = 0;
@@ -82,6 +85,8 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	if ((pivotPID_->OnTarget() && numTimesOnTarget_ > 3) 		// && (fabs(talonOutput_->GetOutput()) < minDrivePivotOutput_)
 		|| timeOut) {
+		printf("Final NavX Angle: %f\n", navXSource_->PIDGet());
+		printf("Angle NavX Error %f\n", pivotPID_->GetAvgError());
 		pivotPID_->Reset();
 		pivotPID_->Disable();
 		isDone_ = true;

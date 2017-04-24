@@ -65,8 +65,8 @@ double TalonEncoderPIDSource::PIDGet(){
 //	} else {
 //		averageTalonDistance_ = rightDistance;
 //	}
-	averageTalonDistance_= leftDistance;
-	//averageTalonDistance_= (rightDistance + leftDistance) / 2;
+//	averageTalonDistance_= leftDistance;
+	averageTalonDistance_= (rightDistance + leftDistance) / 2;
 
 	SmartDashboard::PutNumber("Left Distance", leftDistance);
 	SmartDashboard::PutNumber("Right Distance", rightDistance);
