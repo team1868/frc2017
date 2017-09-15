@@ -71,11 +71,12 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 	SmartDashboard::PutNumber("Pivot Error", pivotPID_->GetError());
 	SmartDashboard::PutNumber("Setpoint", pivotPID_->GetSetpoint());
 	SmartDashboard::PutNumber("Delta setpoint", pivotPID_->GetDeltaSetpoint());
-	SmartDashboard::PutBoolean("Is done", isDone_);
 
-	bool timeOut = (robot_->GetTime() - pivotCommandStartTime_ > 3.0);		// TODO test
+	double timeDiff = robot_->GetTime() - pivotCommandStartTime_;
+	bool timeOut = (timeDiff > 2.5);		// TODO test
 
 	SmartDashboard::PutBoolean("Timed out", timeOut);
+	SmartDashboard::PutNumber("Pivot Time diff", timeDiff);
 
 	if (pivotPID_->OnTarget()) {
 		numTimesOnTarget_++;
@@ -96,6 +97,8 @@ void PivotCommand::Update(double currTimeSec, double deltaTimeSec) {
 			printf("FROM TIME OUT\n");
 		}
 	}
+
+	SmartDashboard::PutBoolean("Is done", isDone_);
 }
 
 bool PivotCommand::IsDone() {
