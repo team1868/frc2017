@@ -56,6 +56,7 @@ void PivotCommand::Init() {
 	isDone_ = false;
 
 	numTimesOnTarget_ = 0;
+	pivotCommandStartTime_ = robot_->GetTime();
 }
 
 void PivotCommand::Reset() {
