@@ -35,6 +35,12 @@ public:
 	virtual bool GetGearOuttakeDesired() = 0;
 	virtual bool GetGearIntakeAdjustUpDesired() = 0;
 	virtual bool GetGearIntakeAdjustDownDesired() = 0;
+
+	// Auto controller button accessors
+	virtual bool GetLeftAutoDesired() = 0;
+	virtual bool GetMiddleAutoDesired() = 0;
+	virtual bool GetRightAutoDesired() = 0;
+
 	virtual ~RemoteControl() {}
 };
 

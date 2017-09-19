@@ -49,10 +49,24 @@ public:
 //		robot_->SetLowGear();
 		robot_->SetGearMech(true);
 
-		int kAutoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
+		//int kAutoMode = robot_->pini_->geti("AUTO MODE", "autoMode", 0);
 		enum autoModes {
 			kBlank, kDriveStraight, kLeftLift, kMiddleLift, kRightLift, kLeftLiftAndShoot, kRightLiftAndShoot
 		};
+
+		AutoMode *autoMode;
+		int kAutoMode;
+
+		//getting auto modes from switches
+		if (humanControl_->GetLeftAutoDesired()) {
+				kAutoMode = kLeftLift;
+		} else if (humanControl_->GetMiddleAutoDesired()) {
+				kAutoMode = kMiddleLift;
+		} else if (humanControl_->GetRightAutoDesired()) {
+				kAutoMode = kRightLift;
+		} else {
+				kAutoMode = kBlank;
+		}
 
 		/* ------------------ AUTO MODES ------------------ (TO IMPLEMENT SOME)
 		 * 0 BLANK
@@ -68,7 +82,6 @@ public:
 		 * ------------------------------------------------
 		 */
 
-		AutoMode *autoMode;
 
 		switch(kAutoMode) {
 		case kBlank :

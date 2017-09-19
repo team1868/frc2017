@@ -66,6 +66,10 @@ public:
 	bool GetGearIntakeAdjustUpDesired();
 	bool GetGearIntakeAdjustDownDesired();
 
+	bool GetLeftAutoDesired();
+	bool GetRightAutoDesired();
+	bool GetMiddleAutoDesired();
+
 	virtual ~ControlBoard();
 
 private:
@@ -82,6 +86,8 @@ private:
 		gearCameraDesired_, gearIntakeUpDesired_, gearIntakeDownDesired_, gearDeployDesired_, gearIntakeDesired_, gearOuttakeDesired_,
 		gearIntakeAdjustUpDesired_, gearIntakeAdjustDownDesired_;
 
+	bool leftAutoDesired_, middleAutoDesired_, rightAutoDesired_;
+
 	// Joysticks
 	Joystick *leftJoy_, *rightJoy_, *operatorJoy_, *operatorJoyB_;
 
@@ -92,6 +98,9 @@ private:
 	ButtonReader *flywheelSwitch_, *intakeSwitch_, *climberSwitch_, *reverseIntakeButton_, *reverseFeederButton_, *gearMechOutButton_,
 				 *gearSwitchButton_, *gearIntakeUpButton_, *gearIntakeDownButton_, *gearDeployButton_, *gearIntakeButton_,
 				 *gearOuttakeButton_, *gearIntakeAdjustUpButton_, *gearIntakeAdjustDownButton_;
+
+	// Buttons for auto
+	ButtonReader *leftAutoSwitch_, *middleAutoSwitch_, *rightAutoSwitch_;
 
 	void ReadAllButtons();
 };

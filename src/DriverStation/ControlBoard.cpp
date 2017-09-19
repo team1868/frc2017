@@ -65,10 +65,18 @@ ControlBoard::ControlBoard() {
 
 	cameraSwitchDesired_ = false;
 	gearCameraDesired_ = true;
+
+	leftAutoDesired_ = false;
+	middleAutoDesired_ = false;
+	rightAutoDesired_ = false;
 }
 
 void ControlBoard::ReadControls() {
 	ReadAllButtons();
+	leftAutoDesired_ = leftAutoSwitch_->IsDown();
+	middleAutoDesired_ = middleAutoSwitch_->IsDown();
+	rightAutoDesired_ = rightAutoSwitch_->IsDown();
+
 	leftJoyX_ = leftJoy_->GetX();
 	leftJoyY_ = leftJoy_->GetY();
 	leftJoyZ_ = leftJoy_->GetZ();
@@ -152,6 +160,11 @@ void ControlBoard::ReadAllButtons() {
 	gearOuttakeButton_->ReadValue();
 	gearIntakeAdjustUpButton_->ReadValue();
 	gearIntakeAdjustDownButton_->ReadValue();
+
+	//reading auto buttons
+	leftAutoSwitch_->ReadValue();
+	middleAutoSwitch_->ReadValue();
+	rightAutoSwitch_->ReadValue();
 }
 
 // Returns true if reverse drive is desired
