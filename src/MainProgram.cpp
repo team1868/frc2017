@@ -21,6 +21,7 @@ class MainProgram : public IterativeRobot {
 	TalonEncoderPIDSource *talonEncoderSource_;
 
 	double currTimeSec_, lastTimeSec_, deltaTimeSec_;
+	int lastAutoMode_, currAutoMode_;
 
 public:
 	void RobotInit() {
@@ -40,6 +41,7 @@ public:
 		navXSource_->ResetAccumulatedYaw();
 
 		CameraServer::GetInstance()->StartAutomaticCapture();
+		lastAutoMode_ = 0;
 	}
 
 	void AutonomousInit() {
@@ -58,16 +60,9 @@ public:
 		int kAutoMode;
 
 		//getting auto modes from switches
-		if (humanControl_->GetLeftAutoDesired()) {
-				kAutoMode = kLeftLift;
-		} else if (humanControl_->GetMiddleAutoDesired()) {
-				kAutoMode = kMiddleLift;
-		} else if (humanControl_->GetRightAutoDesired()) {
-				kAutoMode = kRightLift;
-		} else {
-				kAutoMode = kBlank;
-		}
+		kAutoMode = humanControl_->GetAutoModeDesired();
 
+		printf("Auto Mode: %d\n", kAutoMode);
 		/* ------------------ AUTO MODES ------------------ (TO IMPLEMENT SOME)
 		 * 0 BLANK
 		 *
@@ -82,7 +77,6 @@ public:
 		 * ------------------------------------------------
 		 */
 
-
 		switch(kAutoMode) {
 		case kBlank :
 			autoMode = new BlankMode();
@@ -91,13 +85,13 @@ public:
 			autoMode = new BlankMode();
 			break;
 		case kLeftLift :
-			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
+			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_, kAutoMode);
 			break;
 		case kMiddleLift :
-			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
+			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_, kAutoMode);
 			break;
 		case kRightLift :
-			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_);
+			autoMode = new OneGearMode(robot_, navXSource_, talonEncoderSource_, kAutoMode);
 			break;
 		case kLeftLiftAndShoot :
 			autoMode = new OneGearHighShootMode(robot_, superstructureController_, navXSource_, talonEncoderSource_, true);
@@ -183,6 +177,14 @@ public:
 		robot_->SetDriveValues(RobotModel::kAllWheels, 0.0);
 		robot_->ClearMotionProfileTrajectories();
 		driveController_->PrintDriveValues();
+		humanControl_->ReadAutoSwitches();
+
+		lastAutoMode_ = currAutoMode_;
+		currAutoMode_ = humanControl_->GetAutoModeDesired();
+
+		if (lastAutoMode_ != currAutoMode_) {
+			printf("AUTO MODE: %d", currAutoMode_);
+		}
 		SmartDashboard::PutNumber("Flywheel Velocity", robot_->GetFlywheelEncoder()->GetRate());
 		SmartDashboard::PutNumber("Flywheel Distance", robot_->GetFlywheelEncoder()->GetDistance());
 		SmartDashboard::PutNumber("Flywheel Pulses", robot_->GetFlywheelEncoder()->GetRaw());

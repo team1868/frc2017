@@ -154,9 +154,9 @@ static const int GEAR_OUTTAKE_BUTTON_PORT				= 1;
 static const int GEAR_INTAKE_ADJUST_UP_BUTTON_PORT		= 8;
 static const int GEAR_INTAKE_ADJUST_DOWN_BUTTON_PORT	= 7;
 
-static const int LEFT_AUTO_SWITCH_PORT 					= -1;
-static const int MIDDLE_AUTO_SWITCH_PORT 				= -1;
-static const int RIGHT_AUTO_SWITCH_PORT 				= -1;
+static const int LEFT_AUTO_SWITCH_PORT 					= 2;
+static const int MIDDLE_AUTO_SWITCH_PORT 				= 3;
+static const int RIGHT_AUTO_SWITCH_PORT 				= 4;
 
 //static const int REVERSE_INTAKE_BUTTON_PORT				= 2; //Change port
 //static const int REVERSE_FEEDER_BUTTON_PORT				= 3; //Change port

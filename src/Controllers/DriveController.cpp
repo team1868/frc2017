@@ -104,6 +104,7 @@ void DriveController::ArcadeDrive(double myX, double myY, double thrustSensitivi
 
 	double thrustValue = myY * GetDriveDirection();
 	double rotateValue = myX;
+//	double rotateValue = myX * GetDriveDirection(); // What reverse drive should actually be, test this when possible
 	double leftOutput = 0.0;
 	double rightOutput = 0.0;
 

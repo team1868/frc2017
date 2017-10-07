@@ -24,6 +24,8 @@ public:
 	 * @param j a Joystick
 	 * @param a a Axes
 	 */
+
+	void ReadAutoSwitches();
 	double GetJoystickValue(Joysticks j, Axes a);
 
 	// Drive controller button accessors
@@ -69,10 +71,15 @@ public:
 	bool GetLeftAutoDesired();
 	bool GetRightAutoDesired();
 	bool GetMiddleAutoDesired();
+	int GetAutoModeDesired();
 
 	virtual ~ControlBoard();
 
 private:
+	enum autoModes {
+				kBlank, kDriveStraight, kLeftLift, kMiddleLift, kRightLift, kLeftLiftAndShoot, kRightLiftAndShoot
+			};
+
 	// Desired values for driving and pivoting
 	double leftJoyX_, leftJoyY_, leftJoyZ_, rightJoyX_, rightJoyY_, rightJoyZ_;
 
@@ -87,6 +94,7 @@ private:
 		gearIntakeAdjustUpDesired_, gearIntakeAdjustDownDesired_;
 
 	bool leftAutoDesired_, middleAutoDesired_, rightAutoDesired_;
+	int currAutoMode_, lastAutoMode_;
 
 	// Joysticks
 	Joystick *leftJoy_, *rightJoy_, *operatorJoy_, *operatorJoyB_;

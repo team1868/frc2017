@@ -38,6 +38,11 @@ ControlBoard::ControlBoard() {
 	gearIntakeAdjustUpButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_ADJUST_UP_BUTTON_PORT);
 	gearIntakeAdjustDownButton_ = new ButtonReader(operatorJoyB_, GEAR_INTAKE_ADJUST_DOWN_BUTTON_PORT);
 
+	// Auto switches
+	leftAutoSwitch_ = new ButtonReader(operatorJoyB_, LEFT_AUTO_SWITCH_PORT);
+	middleAutoSwitch_ = new ButtonReader(operatorJoyB_, MIDDLE_AUTO_SWITCH_PORT);
+	rightAutoSwitch_ = new ButtonReader(operatorJoyB_, RIGHT_AUTO_SWITCH_PORT);
+
 	// Drivetrain variables
 	reverseDriveDesired_ = false;
 	highGearDesired_ = false;
@@ -69,13 +74,13 @@ ControlBoard::ControlBoard() {
 	leftAutoDesired_ = false;
 	middleAutoDesired_ = false;
 	rightAutoDesired_ = false;
+	currAutoMode_ = kBlank;
+	lastAutoMode_ = currAutoMode_;
 }
 
 void ControlBoard::ReadControls() {
 	ReadAllButtons();
-	leftAutoDesired_ = leftAutoSwitch_->IsDown();
-	middleAutoDesired_ = middleAutoSwitch_->IsDown();
-	rightAutoDesired_ = rightAutoSwitch_->IsDown();
+	ReadAutoSwitches();
 
 	leftJoyX_ = leftJoy_->GetX();
 	leftJoyY_ = leftJoy_->GetY();
@@ -110,6 +115,35 @@ void ControlBoard::ReadControls() {
 	gearOuttakeDesired_ = gearOuttakeButton_->IsDown();
 	gearIntakeAdjustUpDesired_ = gearIntakeAdjustUpButton_->IsDown();
 	gearIntakeAdjustDownDesired_ = gearIntakeAdjustDownButton_->IsDown();
+}
+
+void ControlBoard::ReadAutoSwitches() {
+	 leftAutoSwitch_->ReadValue();
+	 middleAutoSwitch_->ReadValue();
+	 rightAutoSwitch_->ReadValue();
+
+	char autoModec;
+	leftAutoDesired_ = leftAutoSwitch_->IsDown();
+	middleAutoDesired_ = middleAutoSwitch_->IsDown();
+	rightAutoDesired_ = rightAutoSwitch_->IsDown();
+
+	lastAutoMode_ = currAutoMode_;
+	if (leftAutoDesired_) {
+		currAutoMode_ = kLeftLift;
+		autoModec = 'l';
+	} else if (middleAutoDesired_) {
+		currAutoMode_ = kMiddleLift;
+		autoModec = 'm';
+	} else if (rightAutoDesired_) {
+		currAutoMode_ = kRightLift;
+		autoModec = 'r';
+	} else {
+		currAutoMode_ = kBlank;
+		autoModec = 'b';
+	}
+	if (currAutoMode_ != lastAutoMode_) {
+		printf("Changed auto mode to: %c %d\n", autoModec, currAutoMode_);
+	}
 }
 
 double ControlBoard::GetJoystickValue(Joysticks j, Axes a) {
@@ -254,6 +288,22 @@ bool ControlBoard::GetGearCameraDesired() {
 		SmartDashboard::PutBoolean("Camera Switched", true);
 	}
 	return gearCameraDesired_;
+}
+
+bool ControlBoard::GetLeftAutoDesired() {
+	return leftAutoDesired_;
+}
+
+bool ControlBoard::GetRightAutoDesired() {
+	return rightAutoDesired_;
+}
+
+bool ControlBoard::GetMiddleAutoDesired() {
+	return middleAutoDesired_;
+}
+
+int ControlBoard::GetAutoModeDesired() {
+	return currAutoMode_;
 }
 
 ControlBoard::~ControlBoard() {

@@ -12,7 +12,7 @@
 
 class OneGearMode : public AutoMode {
 public:
-	OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource);
+	OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEncoderPIDSource *talonSource, int kAutoMode);
 	virtual ~OneGearMode();
 	void CreateQueue();
 	void Init(); 	// to put in AutoMode
