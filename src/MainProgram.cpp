@@ -41,7 +41,11 @@ public:
 		navXSource_->ResetAccumulatedYaw();
 
 		CameraServer::GetInstance()->StartAutomaticCapture();
-		lastAutoMode_ = 0;
+		humanControl_->ReadAutoSwitches();
+		currAutoMode_ = humanControl_->GetAutoModeDesired();
+		lastAutoMode_ = currAutoMode_;
+
+		printf("First auto mode: %d\n", currAutoMode_);
 	}
 
 	void AutonomousInit() {
