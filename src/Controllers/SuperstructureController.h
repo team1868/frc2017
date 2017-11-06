@@ -40,14 +40,6 @@ public:
 	 */
 	void RefreshIni();
 
-	// Auto mutator methods
-
-	/**
-	 * Sets a
-	 * @param currTimeSec a double is the current time in seconds
-	 * @param deltaTimeSec a double is the update interval in seconds
-	 */
-
 	// State machine states
 	enum SuperstructureState {
 		kInit, kIdle, kGearIntakeMoveDown, kGearIntakeMoveUp, kDeployGear
