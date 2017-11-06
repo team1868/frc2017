@@ -2,6 +2,7 @@
 #include "WPILib.h"
 #include <cmath>
 
+// Constants for superstructure
 const double FLYWHEEL_FEEDER_DIFF_TIME = 3.0;
 const double GEAR_PIVOT_DOWN_TIME = 2.0;
 const double GEAR_OUTTAKE_TIME = 1.0;
@@ -13,24 +14,25 @@ SuperstructureController::SuperstructureController(RobotModel* myRobot, ControlB
 	// Climber variables
 	climberMotorOutput_ = 0.9;
 
-	// Gear intake mech variables
+	// Active gear mechanism variables from ini
 	gearIntakeMotorOutput_ = robot_->pini_->getf("GEAR MECH", "gearIntakeMotorOutput", 0.9);			// CHECK SIGNS
 	gearOuttakeMotorOutput_ = -gearIntakeMotorOutput_;
 	gearPivotMotorOutput_ = robot_->pini_->getf("GEAR MECH", "gearPivotMotorOutput", 0.3);
 	gearDownTicks_ = robot_->pini_->getf("GEAR MECH", "gearDownTicks", 60.0);
 	gearDeployTicks_ = robot_->pini_->getf("GEAR MECH", "gearDeployTicks", 30.0);
 
+	// Set active gear nechanism
 	gearPositionController_ = NULL;
+	initialGearPivotDownTime_ = 0.0;
+	initialGearPivotUpTime_ = 0.0;
+	initialGearDeployTime_ = 0.0;
 
-	// PASSIVE MECH
+	// Passive gear mechanism variables
 	gearMechPos_ = false;	// True is in, false is out
 
 	currState_ = kInit;
 	nextState_ = kInit;
 
-	initialGearPivotDownTime_ = 0.0;
-	initialGearPivotUpTime_ = 0.0;
-	initialGearDeployTime_ = 0.0;
 }
 
 void SuperstructureController::Reset() {
@@ -65,7 +67,6 @@ void SuperstructureController::Reset() {
 }
 
 void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
-	SetOutputs();
 	if (humanControl_->GetGearMechOutDesired()) {
 		gearMechPos_ = !gearMechPos_;
 		robot_->SetGearMech(gearMechPos_);
@@ -207,10 +208,6 @@ void SuperstructureController::Update(double currTimeSec, double deltaTimeSec) {
 		break;
 	}
 	currState_ = nextState_;
-}
-
-void SuperstructureController::SetOutputs() {
-
 }
 
 void SuperstructureController::RefreshIni() {
