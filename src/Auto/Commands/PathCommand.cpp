@@ -82,15 +82,6 @@ void PathCommand::Init() {
 
 			pointLength_ = robot_->pini_->geti("LEFT LIFT WAYPOINTS", "pointLength", 0);
 
-//			leftPFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lPFac", 0.0);
-//			leftIFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lIFac", 0.0);
-//			leftDFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lDFac", 0.0);
-//			leftFFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "lFFac", 0.0);
-//
-//			rightPFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rPFac", 0.0);
-//			rightIFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rIFac", 0.0);
-//			rightDFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rDFac", 0.0);
-//			rightFFac_ = robot_->pini_->getf("LEFT LIFT MOTION PROFILE PID", "rFFac", 0.0);
 			break;
 		case(kMiddleLift) :
 			printf("Middle lift\n");
@@ -112,18 +103,6 @@ void PathCommand::Init() {
 			p4_r_ = robot_->pini_->getf("MIDDLE LIFT WAYPOINTS", "p4_r", 0.0);
 
 			pointLength_ = robot_->pini_->getf("MIDDLE LIFT WAYPOINTS", "pointLength", 0.0);
-
-//			motionProfile = new LiftTwo_MotionProfile();
-//
-//			leftPFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lPFac", 0.1);
-//			leftIFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lIFac", 0.0);
-//			leftDFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lDFac", 50.0);
-//			leftFFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "lFFac", 0.92);
-//
-//			rightPFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rPFac", 0.1);
-//			rightIFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rIFac", 0.0);
-//			rightDFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rDFac", 50.0);
-//			rightFFac_ = robot_->pini_->getf("MIDDLE LIFT MOTION PROFILE PID", "rFFac", 0.90);
 			break;
 		case(kRightLift) :
 			printf("Right lift\n");
@@ -145,18 +124,6 @@ void PathCommand::Init() {
 			p4_r_ = robot_->pini_->getf("RIGHT LIFT WAYPOINTS", "p4_r", 0.0);
 
 			pointLength_ = robot_->pini_->getf("RIGHT LIFT WAYPOINTS", "pointLength", 0.0);
-
-//			motionProfile = new LiftThree_MotionProfile();
-//
-//			leftPFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lPFac", 0.1);
-//			leftIFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lIFac", 0.0);
-//			leftDFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lDFac", 62.0);
-//			leftFFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "lFFac", 0.92);
-//
-//			rightPFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rPFac", 0.1);
-//			rightIFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rIFac", 0.0);
-//			rightDFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rDFac", 50.0);
-//			rightFFac_ = robot_->pini_->getf("RIGHT LIFT MOTION PROFILE PID", "rFFac", 0.90);
 			break;
 		case(kHighGoalAfterLeftLift) :
 			printf("High goal after left lift\n");
@@ -178,18 +145,6 @@ void PathCommand::Init() {
 			p4_r_ = robot_->pini_->getf("LEFT HIGH GOAL WAYPOINTS", "p4_r", 0.0);
 
 			pointLength_ = robot_->pini_->getf("LEFT HIGH GOAL WAYPOINTS", "pointLength", 0.0);
-
-//			motionProfile = new HighGoalAfterLeftLift_MotionProfile();
-//
-//			leftPFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lPFac");
-//			leftIFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lIFac");
-//			leftDFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lDFac");
-//			leftFFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "lFFac");
-//
-//			rightPFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rPFac");
-//			rightIFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rIFac");
-//			rightDFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rDFac");
-//			rightFFac_ = robot_->pini_->getf("LEFT HIGH GOAL MOTION PROFILE PID", "rFFac");
 			break;
 		case(kHighGoalAfterRightLift) :
 			printf("High goal after right lift\n");
@@ -211,21 +166,8 @@ void PathCommand::Init() {
 			p4_r_ = robot_->pini_->getf("RIGHT HIGH GOAL WAYPOINTS", "p4_r", 0.0);
 
 			pointLength_ = robot_->pini_->getf("RIGHT HIGH GOAL WAYPOINTS", "pointLength", 0.0);
-
-//			motionProfile = new HighGoalAfterRightLift_MotionProfile();
-//
-//			leftPFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lPFac", 0.1);
-//			leftIFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lIFac", 0.0);
-//			leftDFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lDFac", 50.0);
-//			leftFFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "lFFac", 0.92);
-//
-//			rightPFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rPFac", 0.1);
-//			rightIFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rIFac", 0.0);
-//			rightDFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rDFac", 50.0);
-//			rightFFac_ = robot_->pini_->getf("RIGHT HIGH GOAL MOTION PROFILE PID", "rFFac)", 0.90);
 			break;
 		default :
-//			motionProfile = NULL;
 			printf("MOTION PROFILE IS NULL\n");
 			break;
 	}
@@ -277,7 +219,6 @@ void PathCommand::Init() {
 
 	pathfinder_modify_tank(trajectory, trajectoryLength_, leftTrajectory_, rightTrajectory_, WHEELBASE_WIDTH);
 
-//	free(trajectory);
 	for (int i = 0; i < trajectoryLength_; i++) {
 		cout << "position: " << trajectory->position << endl;
 		cout << "velocity: " << trajectory->velocity << endl;
@@ -312,7 +253,6 @@ void PathCommand::Init() {
 	                         rPFac, rIFac, rDFac, rVFac / MAX_VELOCITY, rAFac};          // Kp, Ki, Kd and Kv, Ka
 
 	// To make sure SRX's encoder is updating the RoboRIO fast enough
-	// we could take this out
 	robot_->leftMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->leftSlave_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
 	robot_->rightMaster_->SetStatusFrameRateMs(CANTalon::StatusFrameRate::StatusFrameRateQuadEncoder, 20);
@@ -332,8 +272,6 @@ void PathCommand::Init() {
 
 	initialAngle_ = robot_->GetNavXYaw();
 
-//	free(trajectory);
-//	free(points);
 	printf("AT THE END OF PATH COMMAND INIT\n");
 }
 
@@ -345,8 +283,6 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	rightError = get_error(rightEncoderFollower_);
 	SmartDashboard::PutNumber("Left Error", leftError);
 	SmartDashboard::PutNumber("Right Error", rightError);
-//	SmartDashboard::PutNumber("Left Velocity", robot_->leftMaster_->GetSpeed());
-//	SmartDashboard::PutNumber("Right Velocity", robot_->rightMaster_->GetSpeed());
 
 	// Arg 1: The EncoderConfig
 	// Arg 2: The EncoderFollower for this side
@@ -371,13 +307,10 @@ void PathCommand::Update(double currTimeSec, double deltaTimeSec) {
 	}
 
 	double angle_difference = desired_heading - gyro_heading;    // Make sure to bound this from -180 to 180, otherwise you will get super large values
-	double turn = 1.0 * (1.0/80.0) * angle_difference;			// CHECK THIS (why -1??)
+	double turn = 1.0 * (1.0/80.0) * angle_difference;
 
 	SmartDashboard::PutNumber("Left output", l);
 	SmartDashboard::PutNumber("Right output", r);
-
-//	robot_->SetDriveValues(RobotModel::kLeftWheels, l + turn);
-//	robot_->SetDriveValues(RobotModel::kRightWheels, r - turn);
 
 	robot_->SetDriveValues(RobotModel::kLeftWheels, l);
 	robot_->SetDriveValues(RobotModel::kRightWheels, r);
@@ -423,11 +356,11 @@ bool PathCommand::IsDone() {
 
 		isDone_ = true;
 
-//		// free stuff
-//		free(leftEncoderFollower_);
-//		free(rightEncoderFollower_);
-//		free(leftTrajectory_);
-//		free(rightTrajectory_);
+		// Free memory for the followers and trajectories
+		free(leftEncoderFollower_);
+		free(rightEncoderFollower_);
+		free(leftTrajectory_);
+		free(rightTrajectory_);
 
 		return true;
 	} else {

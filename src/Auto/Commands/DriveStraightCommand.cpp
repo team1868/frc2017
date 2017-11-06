@@ -51,9 +51,8 @@ void DriveStraightCommand::Init() {
 	anglePID_->SetOutputRange(-0.2, 0.2);
 	distancePID_->SetOutputRange(-0.8, 0.8);
 
-	// TODO fix this later
-	anglePID_->SetAbsoluteTolerance(2.0);			// 1 degree
-	distancePID_->SetAbsoluteTolerance(2.5/12.0);	// 1 inch
+	anglePID_->SetAbsoluteTolerance(2.0);
+	distancePID_->SetAbsoluteTolerance(2.5/12.0);
 
 	anglePID_->Enable();
 	distancePID_->Enable();
@@ -67,7 +66,6 @@ void DriveStraightCommand::Init() {
 }
 
 void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
-//	printf("Drive straight command update\n");
 	SmartDashboard::PutNumber("Left Motor Output", leftMotorOutput_);
 	SmartDashboard::PutNumber("Right Motor Output", rightMotorOutput_);
 
@@ -77,6 +75,9 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 
 	diffDriveTime_ = robot_->GetTime() - initialDriveTime_;
 	if ((anglePID_->OnTarget() && (distancePID_->OnTarget())) || (diffDriveTime_ > 10.0)) {
+		if (diffDriveTime_ > 10.0) {
+			printf("DRIVESTRAIGHT TIMED OUT!!\n");
+		}
 		printf("Final Left Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kLeftWheels));
 		printf("Final Right Distance: %f\n", robot_->GetDriveEncoderValue(RobotModel::kRightWheels));
 		printf("Final Average Distance: %f\n", talonEncoderSource_->PIDGet());
@@ -94,21 +95,12 @@ void DriveStraightCommand::Update(double currTimeSec, double deltaTimeSec) {
 		double dOutput = distancePIDOutput_->GetPIDOutput();
 		double rOutput = anglePIDOutput_->GetPIDOutput();
 
-		// TODO might want to check
 		rightMotorOutput_ = dOutput + rOutput;
 		leftMotorOutput_ = dOutput - rOutput;
 
-//		rightMotorOutput_ = dOutput;
-//		leftMotorOutput_ = dOutput;
-
-		// TODO put this maxOutput back in
 		// Getting the max value of the outputs and scale the down
 		double maxOutput = fmax(fabs(rightMotorOutput_), fabs(leftMotorOutput_));
 		SmartDashboard::PutNumber("Max output", maxOutput);
-//		if (maxOutput > 1.0) {
-//			rightMotorOutput_ = ( rightMotorOutput_ / maxOutput );
-//			leftMotorOutput_ = ( leftMotorOutput_ / maxOutput );
-//		}
 
 		SmartDashboard::PutNumber("Angle Error", anglePID_->GetError());
 		SmartDashboard::PutNumber("Desired Angle", initialAngle_);
@@ -129,16 +121,10 @@ void DriveStraightCommand::GetIniValues() {
 	rPFac_ = robot_->pini_->getf("DRIVESTRAIGHT PID", "rPFac", 0.0);
 	rIFac_ = robot_->pini_->getf("DRIVESTRAIGHT PID", "rIFac", 0.0);
 	rDFac_ = robot_->pini_->getf("DRIVESTRAIGHT PID", "rDFac", 0.0);
-//	rPFac_ = 0.0;
-//	rIFac_ = 0.0;
-//	rDFac_ = 0.0;
 
 	dPFac_ = robot_->pini_->getf("DRIVESTRAIGHT PID", "dPFac", 0.2);
 	dIFac_ = robot_->pini_->getf("DRIVESTRAIGHT PID", "dIFac", 0.0);
 	dDFac_ = robot_->pini_->getf("DRIVESTRAIGHT PID", "dDFac", 0.0);
-//	dPFac_ = 0.3;
-//	dIFac_ = 0.0;
-//	dDFac_ = 0.0;
 }
 
 DriveStraightCommand::~DriveStraightCommand() {

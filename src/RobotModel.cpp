@@ -39,10 +39,6 @@ RobotModel::RobotModel() {
 	leftSlave_->Set(LEFT_DRIVE_MASTER_ID);
 	rightSlave_->Set(RIGHT_DRIVE_MASTER_ID);
 
-//	leftMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-//	leftMaster_->ConfigEncoderCodesPerRev(ENCODER_COUNT_PER_ROTATION);
-//	leftMaster_->SetPosition(0);
-
 	leftDriveEncoder_ = new Encoder(LEFT_DRIVE_ENCODER_A_PWM_PORT, LEFT_DRIVE_ENCODER_B_PWM_PORT, false);		// TODO check if true or false
 	leftDriveEncoder_->SetDistancePerPulse(((WHEEL_DIAMETER) * M_PI) / ENCODER_COUNT_PER_ROTATION);
 
@@ -59,16 +55,11 @@ RobotModel::RobotModel() {
 	leftMaster_->SetInverted(true);					// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(true); // TODO check
 	#elif PRACT_BOT
-	//leftMaster_->SetSensorDirection(false);			// TODO check
 	leftMaster_->SetInverted(false);					// TODO check
 	leftMaster_->SetClosedLoopOutputDirection(false); // TODO check
 	#else
 	#error "DID NOT SET KOP COMP PRACTICE BOT"
 	#endif
-
-//	rightMaster_->SetFeedbackDevice(CANTalon::QuadEncoder);
-//	rightMaster_->ConfigEncoderCodesPerRev(ENCODER_COUNT_PER_ROTATION);
-//	rightMaster_->SetPosition(0);
 
 	#if KOP_BOT
 	rightMaster_->SetSensorDirection(true); 	// TODO check
@@ -79,7 +70,6 @@ RobotModel::RobotModel() {
 	rightMaster_->SetInverted(false);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(false);	// TODO check
 	#elif PRACT_BOT
-	//rightMaster_->SetSensorDirection(true); 	// TODO check
 	rightMaster_->SetInverted(true);			// TODO check_
 	rightMaster_->SetClosedLoopOutputDirection(true);	// TODO check
 	#else
@@ -198,24 +188,20 @@ double RobotModel::GetDriveEncoderValue(Wheels wheel) {
 	switch(wheel) {
 		case kLeftWheels:
 			return leftDriveEncoder_->Get();
-			//return leftMaster_->GetEncPosition();
 		case kRightWheels:
-			return rightDriveEncoder_->Get();		// TODO CHECK SIGNS
-			//return -rightMaster_->GetEncPosition();		// TODO check if we want the neg sign here!!!!
+			return rightDriveEncoder_->Get();
 		case kAllWheels:
-			return 0;
+			return 0;	// Means there's a problem
 	}
 	return 0;
 }
 
 double RobotModel::GetLeftDistance() {
 	return leftDriveEncoder_->GetDistance();
-	//return GetDriveEncoderValue(kLeftWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * EDGES_PER_ENCODER_COUNT);
 }
 
 double RobotModel::GetRightDistance() {
 	return rightDriveEncoder_->GetDistance();
-	//return GetDriveEncoderValue(kRightWheels) * (WHEEL_DIAMETER * M_PI) / (ENCODER_COUNT_PER_ROTATION * EDGES_PER_ENCODER_COUNT);
 }
 
 void RobotModel::ZeroNavXYaw() {
@@ -293,20 +279,13 @@ void RobotModel::SetGearInRobot(bool gearInRobot) {
 	gearInRobot_ = gearInRobot;
 }
 
-// TODO put distance sensor on robot and test this!
 void RobotModel::GearUpdate() {
 	distSensorLast_ = distSensorCurr_;
-//	distSensorCurr_ = distanceSensor_->Get();	// Boolean
+//	distSensorCurr_ = distanceSensor_->Get();	// not tested
 
 	if (distSensorLast_ && !distSensorCurr_) {
 		gearInRobot_ = !gearInRobot_;
 	}
-
-//	if (gearInRobot_) {
-//		printf("Gear is in robot\n");
-//	} else {
-//		printf("Gear is NOT in robot\n");
-//	}
 }
 
 void RobotModel::SetGearMech(bool dir) {

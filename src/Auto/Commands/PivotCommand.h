@@ -6,11 +6,30 @@
 #include "RobotModel.h"
 #include "Profiler.h"
 
+/**
+ *  Class for WPI PIDOutput for Pivoting
+ */
 class PivotPIDTalonOutput : public frc::PIDOutput {
 public:
+	/**
+	 * PivotPIDTalonOutput constructor to initialize the robot_ and output_
+	 * @param robot a Robot Model
+	 */
 	PivotPIDTalonOutput(RobotModel *robot);
+
+	/**
+	 * Uses the output from the PID loop to set the drive values to the left and right wheels
+	 */
 	void PIDWrite(double output);
+
+	/**
+	 * Destructor
+	 */
 	virtual ~PivotPIDTalonOutput();
+
+	/**
+	 * @return output_
+	 */
 	double GetOutput();
 private:
 	RobotModel *robot_;

@@ -12,13 +12,24 @@
 
 class Profiler {
 public:
+	/**
+	 * Assigns parameter values to robot and header. Initializes
+	 * the starting time from the current Timer value.
+	 */
 	Profiler(RobotModel* robot, std::string header);
-	double ReadTime();
+
+	/**
+	 * Prints out how long it took the command to end.
+	 */
 	virtual ~Profiler();
 
 private:
 	RobotModel* robot_;
 	double timeStart_;
+
+	/**
+	 * Description of the command being timed
+	 */
 	std::string header_;
 };
 

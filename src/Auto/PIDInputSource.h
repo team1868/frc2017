@@ -34,6 +34,10 @@ public:
 	 * Sets AccumulatedYaw and deltaYaw to zero and updates currYaw and lastYaw
 	 */
 	void ResetAccumulatedYaw();
+
+	/**
+	 * Destructor
+	 */
 	virtual ~NavXPIDSource();
 private:
 	double currYaw_, lastYaw_, deltaYaw_, accumulatedYaw_;
@@ -44,11 +48,29 @@ private:
 
 class TalonEncoderPIDSource : public frc::PIDSource {
 public:
+	/**
+	 * Assigns robot and sets averageTalonDistance to 0
+	 * @param robot a RobotModel
+	 */
 	TalonEncoderPIDSource(RobotModel *robot);
+
+	/**
+	 * Gets the distance from the left and right encoders and sets averTalonDistance as the average
+	 * of the two
+	 * @return averageTalonDistance_
+	 */
 	double PIDGet();
+
+	/**
+	 * Destructor
+	 */
 	virtual ~TalonEncoderPIDSource();
 private:
 	RobotModel *robot_;
+
+	/**
+	 * Average distance of the left and right encoders
+	 */
 	double averageTalonDistance_;
 };
 

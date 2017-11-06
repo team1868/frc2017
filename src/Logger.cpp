@@ -117,10 +117,6 @@ void Logger::CloseLogs() {
 }
 
 std::string Logger::GetTimeStamp(const char* fileName) {
-/*	struct timespec tp;
-	clock_gettime(CLOCK_REALTIME,&tp);
-	double realTime = (double)tp.tv_sec + (double)((double)tp.tv_nsec*1e-9);
-*/
 	time_t rawtime = time(0);
 	struct tm * timeinfo;	// get current time
 	char buffer [80];

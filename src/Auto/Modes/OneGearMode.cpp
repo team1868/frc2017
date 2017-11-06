@@ -11,26 +11,24 @@ OneGearMode::OneGearMode(RobotModel *robot, NavXPIDSource *navXSource, TalonEnco
 	double desiredDistance = 0.0;
 	double desiredAngle = 0.0;
 
+	//Setting to the right auto modeC
 	printf("Auto Mode: %d/n", autoMode_);
 	if (autoMode_ == 2) {
 		SmartDashboard::PutString("Auto Mode", "LEFT LIFT AUTO");
 		desiredDistance = robot_->pini_->getf("DESIRED DISTANCES", "leftLiftDesiredDistance", -7.5);
 		desiredAngle = -60.0;
 		printf("Side Gear Distance: %f\n", desiredDistance);
-//		liftPath_ = new PathCommand(robot_, PathCommand::kLeftLift);
 	} else if (autoMode_ == 3) {
 		SmartDashboard::PutString("Auto Mode", "MIDDLE LIFT AUTO");
 		desiredDistance = robot_->pini_->getf("DESIRED DISTANCES", "middleLiftDesiredDistance", -6.0);
 		desiredAngle = 0.0;
-//		liftPath_ = new PathCommand(robot_, PathCommand::kMiddleLift);
 	} else if (autoMode_ == 4) {
 		SmartDashboard::PutString("Auto Mode", "RIGHT LIFT AUTO");
 		desiredDistance = robot_->pini_->getf("DESIRED DISTANCES", "rightLiftDesiredDistance", -7.5);
 		desiredAngle = 60.0;
 		printf("Side Gear Distance: %f\n", desiredDistance);
-		//		liftPath_ = new PathCommand(robot_, PathCommand::kRightLift);
 	} else {
-		// SOMETHING IS WRONG print something
+		// SOMETHING IS WRONG
 	}
 
 	angleOutput_ = new AnglePIDOutput();
@@ -54,9 +52,6 @@ void OneGearMode::CreateQueue() {
 		pivotCommand_->SetNextCommand(alignWithPegCommand_);
 	}
 
-//	driveStraightCommand_->SetNextCommand(pivotCommand_);
-//	pivotCommand_->SetNextCommand(alignWithPegCommand_);
-//	firstCommand_ = alignWithPegCommand_;
 	currentCommand = firstCommand_;
 }
 
@@ -70,7 +65,7 @@ void OneGearMode::RefreshIni() {
 }
 
 bool OneGearMode::IsDone() {
-	return false;		// TODO
+	return false;
 }
 
 OneGearMode::~OneGearMode() {

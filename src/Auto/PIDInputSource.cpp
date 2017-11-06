@@ -59,13 +59,6 @@ double TalonEncoderPIDSource::PIDGet(){
 	double leftDistance = robot_->GetLeftDistance();
 	double rightDistance = robot_->GetRightDistance();
 
-//	averageTalonDistance_ = fmax(fabs(leftDistance), fabs(rightDistance));
-//	if ((averageTalonDistance_) == fabs(leftDistance)) {
-//		averageTalonDistance_ = leftDistance;
-//	} else {
-//		averageTalonDistance_ = rightDistance;
-//	}
-//	averageTalonDistance_= leftDistance;
 	averageTalonDistance_= (rightDistance + leftDistance) / 2;
 
 	SmartDashboard::PutNumber("Left Distance", leftDistance);

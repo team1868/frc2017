@@ -10,13 +10,42 @@
 
 class DriveStraightCommand : public AutoCommand {
 public:
+	/**
+	 * Constructor that generates the DriveStraight Command
+	 * @param navXSource angle input for the angle PID Loop
+	 * @param talonEncoderSource distance input for distance PID Loop
+	 * @param anglePIDOutput output for the angle PID loop
+	 * @param distancePIDOutput ouptut for the distance PID loop
+	 * @param robot robot model
+	 */
 	DriveStraightCommand(NavXPIDSource* navXSource, TalonEncoderPIDSource* talonEncoderSource,
 			AnglePIDOutput* anglePIDOutput, DistancePIDOutput* distancePIDOutput, RobotModel* robot,
 			double desiredDistance);
+
+	/**
+	 * Destructor
+	 */
 	virtual ~DriveStraightCommand();
+
+	/**
+	 * Initializes values for the distance and angle PID loops and enables the loops.
+	 */
 	void Init();
+
+	/**
+	 *	Checks if the PID is on target or if it times out, then sets isDone_ is true and
+	 *	stops the motors. Otherwise, sets the left and right motor values to the PID outputs.
+	 */
 	void Update(double currTime, double deltaTime);
+
+	/**
+	 * @return isDone_
+	 */
 	bool IsDone();
+
+	/**
+	 * Gets PID values from the ini file
+	 */
 	void GetIniValues();
 
 private:

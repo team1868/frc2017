@@ -25,14 +25,12 @@ PivotCommand::PivotCommand(RobotModel *robot, double desiredAngle, bool isAbsolu
 	pivotCommandStartTime_ = robot_->GetTime();
 
 	GetIniValues();
-	// TODO ADD BACK IN !!!
 	pivotPID_ = new PIDController(pFac_, iFac_, dFac_, navXSource_, talonOutput_);
 
 	numTimesOnTarget_ = 0;
 }
 
 void PivotCommand::GetIniValues() {
-	//Profiler profiler(robot_, "Pivot Ini");
 	pFac_ = robot_->pini_->getf("PIVOT PID", "pFac", 0.0);
 	iFac_ = robot_->pini_->getf("PIVOT PID", "iFac", 0.0);
 	dFac_ = robot_->pini_->getf("PIVOT PID", "dFac", 0.0);
@@ -127,13 +125,9 @@ PivotPIDTalonOutput::PivotPIDTalonOutput(RobotModel *robot){
 
 void PivotPIDTalonOutput::PIDWrite(double myOutput){
 	output_ = myOutput;
-	// one side is already mechanically inverted, so we don't need to negate the output of the wheels
+
 	robot_->SetDriveValues(RobotModel::kLeftWheels, -output_);
 	robot_->SetDriveValues(RobotModel::kRightWheels, output_);
-
-//	printf("in PID write\n");
-//	printf("left output: %f\n", -output);
-//	printf("right output: %f\n", output);
 
 	SmartDashboard::PutNumber("left output", -output_);
 	SmartDashboard::PutNumber("right output", output_);
