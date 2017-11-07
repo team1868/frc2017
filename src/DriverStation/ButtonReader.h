@@ -8,28 +8,38 @@
 class ButtonReader {
 public:
 	/**
-	 * Sets joystick, button, gets currState from rawbutton, sets last state to currState
+	 * ButtonReader constructor to set joystick, button, get currState, set lastState to currState
+	 * @param joy a Joystick
 	 */
 	ButtonReader(Joystick *joy, int buttonNum);
-	virtual ~ButtonReader();
+
 	/**
-	 * Sets lastState to currState, updates currState w/button
+	 * Destructor
+	 */
+	virtual ~ButtonReader();
+
+	/**
+	 * Updates lastState and current state, reads the value of the button
 	 */
 	void ReadValue();
+
 	/**
 	 * @return current state of button (whether its currently pressed)
 	 */
 	bool IsDown();
+
 	/**
-	 * @return true if lastState is true and currState is false. else returns false.
+	 * @return true if button changed from released to pressed
 	 */
 	bool WasJustPressed();
+
 	/**
-	 * @return true if lastState is false and currState is true. else returns false.
+	 * @return true if button changed from pressed to released
 	 */
 	bool WasJustReleased();
+
 	/**
-	 * @return true if lastState doesn't equal currState. else return false.
+	 * @return true if state was changed from pressed to released (or vice versa)
 	 */
 	bool StateJustChanged();
 
@@ -44,12 +54,16 @@ private:
 class ToggleButtonReader : public ButtonReader {
 public:
 	/**
-	 * Constructs an instance of class ButtonReader and initialized the current state
+	 * ToggleButtonReader constructor to initialize currToggleState
 	 * @param joy a Joystick
-	 * @param buttonNum an int
 	 */
 	ToggleButtonReader(Joystick *joy, int buttonNum);
+
+	/**
+	 * Destructor
+	 */
 	virtual ~ToggleButtonReader();
+
 	virtual bool GetState();
 
 private:
@@ -66,12 +80,13 @@ enum SwitchState {
 class SwitchReader {
 public:
 	/**
-	 * Initializes which joystick the switch is part of
+	 * SwitchReader constructor initializes which joystick the switch is part of
 	 * @param myJoy a Joystick
 	 * @param upButton an int
 	 * @param downButton an int
 	 */
 	SwitchReader(Joystick *myJoy, int upButton, int downButton);
+
 	/**
 	 * @return the state of the switch (up or down)
 	 */

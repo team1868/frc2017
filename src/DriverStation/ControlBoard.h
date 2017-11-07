@@ -9,23 +9,29 @@
 class ControlBoard : public RemoteControl {
 public:
 	/**
-	 * Sets leftJoy_, rightJoy_, operatorJoy_, operatorJoyB_
-	 * Initializes drivDirectionButton, gearShiftButton, arcadeDriveButton, quickTurnButton
-	 * Sets reverseDriveDesired_, gearShiftDesired_, arcadeDriveDesired_, quickTurnDesired_ to false
+	 * ControlBoard constructor
+	 * sets leftJoy_, rightJoy_, operatorJoy_, operatorJoyB_
+	 * initializes drivDirectionButton, gearShiftButton, arcadeDriveButton, quickTurnButton
+	 * sets reverseDriveDesired_, gearShiftDesired_, arcadeDriveDesired_, quickTurnDesired_ to false
 	 */
 	ControlBoard();
+
 	/**
 	 * Sets leftJoyX_, leftJoyY_, rightJoyX_, rightJoyY_
-	 * Sets reverseDriveDesired_, gearShiftDesired_, arcadeDriveDesired_, quickTurnDesired_
+	 * Sets drivetrain and superstructure variables (desired)
 	 */
 	void ReadControls();
+
+	/**
+	 * Sets currAutoMode_ based on switches
+	 */
+	void ReadAutoSwitches();
+
 	/**
 	 * returns rightJoy_ and leftJoy_ values
 	 * @param j a Joystick
 	 * @param a a Axes
 	 */
-
-	void ReadAutoSwitches();
 	double GetJoystickValue(Joysticks j, Axes a);
 
 	// Drive controller button accessors
@@ -34,7 +40,7 @@ public:
 	 */
 	bool GetReverseDriveDesired();
 	/**
-	 *@return true if gear shift is desired
+	 * @return true if gear shift is desired
 	 */
 	bool GetHighGearDesired();
 	/**
@@ -46,7 +52,7 @@ public:
 	 */
 	bool GetQuickTurnDesired();
 	/**
-	 * @returns true if align with peg is desired in Teleop :)
+	 * @returns true if align with peg is desired in Teleop
 	 */
 	bool GetAlignWithPegDesired();
 
@@ -68,11 +74,15 @@ public:
 	bool GetGearIntakeAdjustUpDesired();
 	bool GetGearIntakeAdjustDownDesired();
 
+	//Auto state accessors
 	bool GetLeftAutoDesired();
 	bool GetRightAutoDesired();
 	bool GetMiddleAutoDesired();
 	int GetAutoModeDesired();
 
+	/**
+	 * Destructor
+	 */
 	virtual ~ControlBoard();
 
 private:
@@ -86,9 +96,10 @@ private:
 	// Flywheel Velocity dial
 	double flywheelVelAdjust_;
 
-	// Bool values for drive
+	// Boolean values for drive
 	bool reverseDriveDesired_, highGearDesired_, arcadeDriveDesired_, quickTurnDesired_, alignWithPegDesired_;
-	// Bool values for superstructure
+
+	// Boolean values for superstructure
 	bool flywheelDesired_, intakeDesired_, climberDesired_, reverseIntakeDesired_, reverseFeederDesired_, gearMechOutDesired_, cameraSwitchDesired_,
 		gearCameraDesired_, gearIntakeUpDesired_, gearIntakeDownDesired_, gearDeployDesired_, gearIntakeDesired_, gearOuttakeDesired_,
 		gearIntakeAdjustUpDesired_, gearIntakeAdjustDownDesired_;
@@ -96,7 +107,6 @@ private:
 	bool leftAutoDesired_, middleAutoDesired_, rightAutoDesired_;
 	int currAutoMode_, lastAutoMode_;
 
-	// Joysticks
 	Joystick *leftJoy_, *rightJoy_, *operatorJoy_, *operatorJoyB_;
 
 	// Buttons for drive

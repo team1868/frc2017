@@ -11,12 +11,38 @@
 
 class DriveController {
 public:
+	/**
+	 * DriveController constructor
+	 * @param robot a RobotModel
+	 * @param humanControl a ControlBoard
+	 * @param navX a NavXPIDSource
+	 * @param talonEncoderSource a TalonEncoderPIDSource
+	 */
 	DriveController(RobotModel* robot, ControlBoard *humanControl, NavXPIDSource *navX, TalonEncoderPIDSource *talonEncoderSource);
+
+	/**
+	 * Deconstructor
+	 */
 	~DriveController();
 
+	/**
+	 * Resets drive controller (reset thrust, rotate, quickturn sensitivities)
+	 */
 	void Reset();
+
+	/**
+	 * Updates joy values and teleop currState with switch statement
+	 */
 	void Update(double currTimeSec, double deltaTimeSec);
+
+	/**
+	 * @return true if command is done
+	 */
 	bool IsDone();
+
+	/**
+	 * Prints direction, distance, yaw, encoder values to SmartDashboard
+	 */
 	void PrintDriveValues();
 
 	enum DriveState {
@@ -36,9 +62,19 @@ private:
 	void TankDrive(double myLeft, double myRight);
 	void QuickTurn(double myRight, double turnConstant);
 
+	/**
+	 * @return -1 if reverseDesired true, else 1
+	 */
 	int GetDriveDirection();
 
+	/**
+	 * @return value if greater than deadband, else 0
+	 */
 	double HandleDeadband(double value, double deadband);
+
+	/**
+	 * @return rotation sensitivity adjustment
+	 */
 	double GetCubicAdjustment(double value, double adjustmentConstant);
 
 	RobotModel *robot_;
