@@ -1,13 +1,16 @@
 #include <Auto/AutoController.h>
 
+// Blank constructor
 AutoController::AutoController() {
 	autoMode = nullptr;
 }
 
+// Constructor that sets auto mode
 AutoController::AutoController(AutoMode *myAutoMode){
 	autoMode = myAutoMode;
 }
 
+// Setting auto mode
 void AutoController::SetAutonomousMode(AutoMode *myAutoMode) {
 	autoMode = myAutoMode;
 }
