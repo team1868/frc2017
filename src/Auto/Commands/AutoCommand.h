@@ -17,7 +17,8 @@ using namespace std;
 class AutoCommand {
 public:
 	/**
-	 * AutoCommand, if extended, allows other commands to implement these methods
+	 * Constructor that generates a PathCommand
+	 * If extended, allows other commands to implement these methods
 	 */
 	AutoCommand() {
 		nextCommand = NULL;
@@ -45,6 +46,11 @@ private:
 
 class ParallelAutoCommand : public AutoCommand {
 public:
+	/**
+	 * Constructor that generates a ParallelAutoCommand
+	 * @param myFirst, an AutoCommand
+	 * @param mySecond, an AutoCommand
+	 */
 	ParallelAutoCommand(AutoCommand* myFirst, AutoCommand* mySecond) {
 		first = myFirst;
 		second = mySecond;
@@ -53,6 +59,9 @@ public:
 		done = false;
 	}
 
+	/**
+	 * Initializing both commands
+	 */
 	virtual void Init() {
 		first->Init();
 		second->Init();
