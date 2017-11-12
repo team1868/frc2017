@@ -59,7 +59,18 @@ private:
 	 * @param myY a double thrust value (forwards/backwards)
 	 */
 	void ArcadeDrive(double myX, double myY, double thrustSensitivity, double rotateSensitivity);
+	/**
+		 * Each joystick controls a corresponding side of the robot
+		 * @param myLeft gives the value of thrust for the left side
+		 * @param myRight gives the value of thrust for the right side
+		 */
 	void TankDrive(double myLeft, double myRight);
+
+	/**
+		 * Button on the joystick that, when pressed, allows the robot to turn in place quicker
+		 * @param myRight used to get the cubic adjustment
+		 * @param turnConstant the amount to turn
+		 */
 	void QuickTurn(double myRight, double turnConstant);
 
 	/**
@@ -73,7 +84,7 @@ private:
 	double HandleDeadband(double value, double deadband);
 
 	/**
-	 * @return rotation sensitivity adjustment
+	 * @return rotation sensitivity adjustment based on z-axis, adjustable by driver preference (currently around 3)
 	 */
 	double GetCubicAdjustment(double value, double adjustmentConstant);
 
