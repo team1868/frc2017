@@ -100,8 +100,7 @@ Checklist:
 
 Changing the INI File
 ========
-- ssh admin@roborio-1868-frc.local or admin@10.18.68.2 (if set on roboRIO)
---->password is empty (just hit return)
+- ssh into roboRIO.
 - cd /home/lvuser
 - ls  ---> lists files
 - vi robot.ini
