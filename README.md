@@ -105,6 +105,3 @@ Changing the INI File
 - ls  ---> lists files
 - vi robot.ini
 ---> you can modify this file by typing "i" (for insert). When you're done, hit escape and then ":wq" (saves and quits)
-
-------------------------------------------------------------
-Remember to write a detailed blog post on our [internal build season website](https://sites.google.com/site/scbuildseason2017/programming)!
